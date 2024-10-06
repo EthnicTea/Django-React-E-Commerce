@@ -81,7 +81,9 @@ ROOT_URLCONF = 'TechTower_Backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'C:\Users\Ren\Desktop\Django-React-E-Commerce/techtower-frontend/src')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
