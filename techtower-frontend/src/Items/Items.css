@@ -2,24 +2,10 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
-*{
-    margin: 0;
-    padding: 0;
-    font-family: "Outfit", sans-serif;
-    font-style: normal;
-  }
-  
-  body{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 10vh;
-    background: #dde5fc;
-  }
-  
+
   .it-itemCard-conteiner{
     position: relative;
-    width: 220px;
+    width: 22%;
     height: 320px;
     background: #ffffff;
     border-radius: 20px;
@@ -77,4 +63,8 @@
 
   .it-itemCard-img:hover {
     cursor: pointer;
+  }
+
+  .it-itemCard-conteiner p{
+    font-family: "Outfit", sans-serif;
   }

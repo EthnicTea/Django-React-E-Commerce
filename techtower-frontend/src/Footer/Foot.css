@@ -1,0 +1,56 @@
+.fm-footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.fm-footer-pay-container {
+    margin-bottom: 20px;
+}
+
+.fm-footer-pay {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.fm-footer-pay-logos img {
+    height: 40px; /* Ajusta el tamaño según sea necesario */
+    margin: 0 10px;
+}
+
+.fm-footer-social {
+    margin-bottom: 20px;
+}
+
+.fm-footer-social-p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.fm-footer-social-icons {
+    display: flex;
+    justify-content: center;
+}
+
+.social-icon {
+    height: 32px; /* Ajusta el tamaño del icono */
+    margin: 0 10px;
+    transition: transform 0.3s;
+}
+
+.social-icon:hover {
+    cursor: pointer;
+    transform: scale(1.1); /* Hace que el ícono crezca un poco */
+}
+
+.fm-footer-finalfooter {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    margin-top: 4px 0;
+    font-size: .871rem;
+    padding: 4px 0;
+    width: 100%;
+}

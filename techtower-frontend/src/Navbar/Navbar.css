@@ -1,0 +1,142 @@
+/* Estilos generales de la primera navbar */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "Outfit", sans-serif;
+    font-style: normal;
+  }
+
+html, body {
+    background-color: #d8faff;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.navbar, .navbar-categories {
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f8f8;
+    font-family: "Outfit", sans-serif;
+    width: 100%; 
+    box-sizing: border-box; 
+    margin: 0; 
+}
+
+/* Sección de mensaje superior */
+.navbar-top-message {
+    background-color: #6d94ff;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    padding: 5px 2px;
+    width: 100%;
+    margin: 0; 
+}
+
+.navbar-top-message a {
+    color: #ffffff;
+}
+
+.navbar-main {
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.navbar-logo a {
+    font-size: 24px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.navbar-search {
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+.navbar-search-input {
+    padding: 5px;
+    width: 80%;
+    font-size: 16px;
+    border: 1px solid #ddd;
+}
+
+.navbar-search-button {
+    background-color: #333;
+    color: white;
+    padding: 7px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.navbar-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.navbar-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+.navbar-hamburger {
+    display: none;
+}
+
+/* Segunda navbar: categorías */
+.navbar-categories {
+    background-color: #406ce4;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    margin: 0; 
+}
+
+.categories-list {
+    display: flex;
+    justify-content: space-between; 
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.category-item a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 20px;
+    display: block;
+}
+
+.category-item a:hover {
+    background-color: #2f52b3;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+/* Responsividad: colapsar en pantallas pequeñas */
+@media (max-width: 768px) {
+    .navbar-main {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar-hamburger {
+        display: block;
+    }
+
+    .navbar-search {
+        width: 100%;
+    }
+
+    .categories-list {
+        flex-direction: column;
+    }
+}
