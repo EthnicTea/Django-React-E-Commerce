@@ -1,4 +1,6 @@
 import './Navbar.css'
+import { BsFillCartFill } from "react-icons/bs";
+import { BsBoxArrowInRight } from "react-icons/bs";
 export function Navbar() {
     return (
         <>
@@ -8,7 +10,7 @@ export function Navbar() {
                 <div className="navbar-top-message">
                     <span>
                         ¡Recuerda que siempre será gratis el retiro de los productos! Además de la variedad de productos con despacho gratis, vea más&nbsp;
-                        <a href="https://youtu.be/TXYMMsoTMLQ?si=VWpSQZZU72iSxieY">AQUÍ</a>
+                        <a href="https://youtu.be/ZvdY-E6jvJs?si=M_j_BsxeIgIXR9lX">AQUÍ</a>
                     </span>
                 </div>
 
@@ -36,10 +38,12 @@ export function Navbar() {
 
                     <div className="navbar-icons">
                         <div className="navbar-icon">
-                            <img src="/path-to-user-icon.png" alt="User" />
+                            <span>Iniciar Sesión</span>
+                            <BsBoxArrowInRight className='icon'/>
                         </div>
                         <div className="navbar-icon">
-                            <img src="/path-to-cart-icon.png" alt="Cart" />
+                            <span className='icon'>Carrito</span>
+                            <BsFillCartFill className='icon'/>
                         </div>
                     </div>
 
@@ -58,11 +62,11 @@ export function Navbar() {
             {/* Segunda navbar: categorías */}
             <nav className="navbar-categories">
                 <ul className="categories-list">
-                    <li className="category-item"><a href="#">Categoría 1</a></li>
-                    <li className="category-item"><a href="#">Categoría 2</a></li>
-                    <li className="category-item"><a href="#">Categoría 3</a></li>
-                    <li className="category-item"><a href="#">Categoría 4</a></li>
-                    <li className="category-item"><a href="#">Categoría 5</a></li>
+                    <li className="category-item"><a href="#">Computación</a></li>
+                    <li className="category-item"><a href="#">Gaming y Streaming</a></li>
+                    <li className="category-item"><a href="#">Componentes</a></li>
+                    <li className="category-item"><a href="#">Conectividad y Redes</a></li>
+                    <li className="category-item"><a href="#">Equipos de audio y video</a></li>
                 </ul>
             </nav>
         </>

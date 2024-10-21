@@ -10,7 +10,7 @@
   }
 
 html, body {
-    background-color: #d8faff;
+    background-color: #dee4ee;
     margin: 0;
     padding: 0;
     height: 100%;
@@ -79,10 +79,30 @@ html, body {
     gap: 15px;
 }
 
-.navbar-icon img {
-    width: 24px;
-    height: 24px;
+.navbar-icon span{
+    color: #ffffff;
 }
+
+.navbar-icon span:hover{
+    color: #b0befc;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* No me gusta como se ven los iconos, por ahora texto */
+.icon {
+    color: #ffffff;
+    padding-left: 0.3em;
+    display: contents; /*Esto los quita*/
+}
+
+.icon:hover {
+    color: #b0befc;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+
 
 .navbar-hamburger {
     display: none;

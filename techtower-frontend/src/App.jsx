@@ -1,15 +1,22 @@
 import'./App.css'
-import { Navbar } from './Navbar/Navbar.jsx'
-import { Items } from './Items/Items.jsx'
-import { Foot } from './Footer/Foot.jsx'
+import { Navbar } from './components/Navbar.jsx'
+import { Hero } from './components/Hero.jsx'
+import { Items } from './components/Items.jsx'
+import { Foot } from './components/Foot.jsx'
 export function App (){
   return (
     <article>
       <header>
         <Navbar />
+        <Hero />
       </header>
       <body>
-        <Items />
+        <div className='items-container'>
+          <Items />
+          <Items />
+          <Items />
+          <Items />
+        </div>
       </body>
       <footer>
         <Foot />

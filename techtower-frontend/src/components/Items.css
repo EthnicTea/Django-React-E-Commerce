@@ -1,0 +1,98 @@
+/* Fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+.items-container {
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: space-around;
+  gap: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.it-itemCard {
+  flex: 1 1 calc(25% - 40px); /* Cada item ocupa el 25% del ancho menos el margen */
+  max-width: calc(25% - 40px); /* Establece un ancho máximo para que sea responsivo */
+  box-sizing: border-box; /* Asegura que padding y margen no afecten el tamaño del item */
+}
+
+.it-itemCard-container {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.it-itemCard-container:hover {
+  transform: scale(1.01);
+}
+
+/* Responsividad */
+@media (min-width: 750px) {
+  .it-itemCard {
+    flex-basis: calc(25% - 20px); 
+  }
+}
+
+.it-itemCard-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover; 
+  display: block;
+  cursor: pointer;
+}
+
+.it-itemCard-infoManufactur {
+  margin: 10px 0;
+  font-weight: 600;
+  font-size: 1.2em;
+  color: black;
+}
+
+.it-itemCard-infoName {
+  margin: 5px 0;
+  font-weight: 400;
+  font-size: 1em;
+  color: black;
+}
+
+.it-itemCard-infoPrice,
+.it-itemCard-infoPrice-regular {
+  font-weight: 300;
+  font-size: 0.9em;
+  margin: 5px 0;
+}
+
+.it-itemCard-infoPrice span,
+.it-itemCard-infoPrice-regular span {
+  font-size: 0.8em;
+}
+
+.it-itemCard-container p {
+  font-family: "Outfit", sans-serif;
+}
+
+/* Espacio en las orillas */
+.it-itemCard {
+  padding: 15px;
+}
+
+/* Responsividad: Para pantallas pequeñas */
+@media (max-width: 1024px) {
+  .it-itemCard {
+    flex: 1 1 calc(50% - 40px); /* Cada item ocupará el 50% del ancho en pantallas medianas */
+    max-width: calc(50% - 40px);
+  }
+}
+
+@media (max-width: 750px) {
+  .it-itemCard {
+    flex: 1 1 100%; /* En pantallas pequeñas, cada item ocupará el 100% del ancho */
+    max-width: 100%;
+  }
+}
