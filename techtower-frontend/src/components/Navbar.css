@@ -79,8 +79,16 @@ html, body {
     gap: 15px;
 }
 
-.navbar-icon span{
+.navbar-link {
     color: #ffffff;
+    text-decoration: none;
+
+}
+
+.navbar-link:hover{
+    color: #b0befc;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
 .navbar-icon span:hover{

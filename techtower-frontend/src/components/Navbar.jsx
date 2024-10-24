@@ -1,6 +1,7 @@
 import './Navbar.css'
 import { BsFillCartFill } from "react-icons/bs";
 import { BsBoxArrowInRight } from "react-icons/bs";
+import { Link } from 'react-router-dom';
 export function Navbar() {
     return (
         <>
@@ -38,7 +39,9 @@ export function Navbar() {
 
                     <div className="navbar-icons">
                         <div className="navbar-icon">
-                            <span>Iniciar Sesión</span>
+                            <span>
+                                <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
+                            </span>
                             <BsBoxArrowInRight className='icon'/>
                         </div>
                         <div className="navbar-icon">
