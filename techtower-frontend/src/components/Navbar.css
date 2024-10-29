@@ -74,43 +74,53 @@ html, body {
     cursor: pointer;
 }
 
+/* Inicio de sesión y Carrito */
+
 .navbar-icons {
     display: flex;
-    gap: 15px;
+    align-items: center;
+    gap: 16px;
 }
 
-.navbar-link {
-    color: #ffffff;
+/* Icono de usuario y menú desplegable */
+.navbar-icon {
+    position: relative;
+}
+
+.dropbtn {
+    font-size: 1.5em;
+    color: white;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    top: 100%; /* Posiciona debajo del botón */
+    right: 10px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
     text-decoration: none;
-
+    display: block;
+    text-align: left;
 }
 
-.navbar-link:hover{
-    color: #b0befc;
-    cursor: pointer;
-    transition: 0.2s;
+.dropdown-content a:hover {
+    background-color: #ddd;
 }
 
-.navbar-icon span:hover{
-    color: #b0befc;
-    cursor: pointer;
-    transition: 0.2s;
+.navbar-icon:hover .dropdown-content {
+    display: block; /* Mostrar el menú desplegable al hacer hover */
 }
-
-/* No me gusta como se ven los iconos, por ahora texto */
-.icon {
-    color: #ffffff;
-    padding-left: 0.3em;
-    display: contents; /*Esto los quita*/
-}
-
-.icon:hover {
-    color: #b0befc;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-
 
 .navbar-hamburger {
     display: none;
@@ -160,6 +170,9 @@ html, body {
         display: block;
     }
 
+    .dropdown-content {
+        left: 0;
+    }
     .navbar-search {
         width: 100%;
     }

@@ -1,6 +1,7 @@
 import './Navbar.css'
 import { BsFillCartFill } from "react-icons/bs";
-import { BsBoxArrowInRight } from "react-icons/bs";
+import { FiUser } from "react-icons/fi";
+import { FiMenu } from "react-icons/fi";
 import { Link } from 'react-router-dom';
 export function Navbar() {
     return (
@@ -37,26 +38,25 @@ export function Navbar() {
                         </form>
                     </div>
 
-                    <div className="navbar-icons">
-                        <div className="navbar-icon">
-                            <span>
+                    <div className="navbar-icons"> 
+                        <div className="navbar-icon dropdown">
+                            <button className='dropbtn'>
+                                <FiUser className='icon-user'/>
+                            </button>
+                            <div className="dropdown-content">
                                 <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
-                            </span>
-                            <BsBoxArrowInRight className='icon'/>
+                                <Link to="#" className='navbar-link'>Registrarse</Link>
+                            </div> 
                         </div>
                         <div className="navbar-icon">
-                            <span className='icon'>Carrito</span>
-                            <BsFillCartFill className='icon'/>
+                            <button className='dropbtn'>
+                                <BsFillCartFill className='icon-cart'/>
+                            </button>
                         </div>
                     </div>
-
                     <div className="navbar-hamburger">
                         <button className="hamburger-button">
-                            <svg viewBox="0 0 100 80" width="30" height="30">
-                                <rect width="100" height="10"></rect>
-                                <rect y="30" width="100" height="10"></rect>
-                                <rect y="60" width="100" height="10"></rect>
-                            </svg>
+                            <FiMenu />
                         </button>
                     </div>
                 </div>
