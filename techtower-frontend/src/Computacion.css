@@ -1,22 +1,22 @@
-.gaming-section {
+.computacion-section {
     padding: 2rem;
     background-color: #1a1a1d;
     color: #ffffff;
     text-align: center;
 }
 
-.gaming-title {
+.computacion-title {
     font-size: 2rem;
     margin-bottom: 1rem;
     color: #e94560;
 }
 
-.gaming-description {
+.computacion-description {
     font-size: 1.2rem;
     margin-bottom: 2rem;
 }
 
-.gaming-products {
+.computacion-products {
     display: flex;
     justify-content: center;
     gap: 2rem;
@@ -46,17 +46,9 @@
 
 .product-price {
     font-size: 1rem;
-    color: rgb(255, 255, 255);
+    color: #c9c9c9;
     margin: 0.5rem 0;
 }
-
-.product-price2{
-    font-size: 1rem;
-    color: rgb(255, 255, 255);
-    margin: 0.5rem 0;
-}
-
-
 
 .product-button {
     background-color: #e94560;

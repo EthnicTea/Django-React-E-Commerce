@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import './Gaming.css';
+import './Computacion.css';
 import Items2 from './components/Items2.jsx';
 import Filtro from './components/Filtro.jsx';
 
-const Gaming = () => {
+const Computacion = () => {
     const [filters, setFilters] = useState({ brand: '', category: '' });
 
     // Lista de productos
     const products = [
-        { id: 3, name: 'Silla Gaming Ergonomica Corsair', brand: 'Corsair', category: 'Silla', price: '$137.650 Transferencia', price2: '$180.000 Otro metodo de pago', image: 'https://cdn2.spider.cl/16922-large_default/silla-corsair-tc60-gaming-black-grey.jpg' },
-        { id: 4, name: 'Teclado Mecánico Razer RGB', brand: 'Razer', category: 'Teclado', price: '$80.000 Transferencia', price2: '$100.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/vqczuwsv_e8307d49_thumbnail_512.png' },
+        { id: 1, name: 'Monitor Plano ASUS VA24EHF Eye Care', brand: 'Asus', category: 'Monitor', price: '$99.990 Transferencia', price2: '$105.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/q0txzqxy_c4b644f0_thumbnail_512.png' },
+        { id: 2, name: 'Adaptador Conversor de Video DisplayPort a HDMI', brand: 'STARTECH.COM', category: 'Adaptador', price: '$10.000 Transferencia', price2: '$15.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/8kwt_kf4_58344fa0_thumbnail_512.jpg' },
         // Añadir más productos con sus propiedades
     ];
 
@@ -25,14 +25,14 @@ const Gaming = () => {
     });
 
     return (
-        <section className="gaming-section">
-            <h1 className="gaming-title">Explora el Mundo del Gaming</h1>
-            <p className="gaming-description">Encuentra todo lo que necesitas para mejorar tu experiencia gaming: desde Sillas hasta los últimos Teclados.</p>
+        <section className="computacion-section">
+            <h1 className="computacion-title">Explora el Apartado de Computación</h1>
+            <p className="computacion-description">Encuentra todo lo que necesitas para mejorar tu experiencia en el mundo digital: desde accesorios hasta los ultimos monitores!.</p>
             
             {/* Filtro de productos */}
             <Filtro onFilter={handleFilterChange} />
 
-            <div className="gaming-products">
+            <div className="computacion-products">
                 {filteredProducts.map((product) => (
                     <Items2 
                         key={product.id} 
@@ -47,4 +47,4 @@ const Gaming = () => {
     );
 };
 
-export default Gaming;
+export default Computacion;

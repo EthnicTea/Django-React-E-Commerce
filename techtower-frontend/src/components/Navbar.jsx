@@ -65,11 +65,11 @@ export function Navbar() {
             {/* Segunda navbar: categorías */}
             <nav className="navbar-categories">
                 <ul className="categories-list">
-                    <li className="category-item"><a href="#">Computación</a></li>
+                    <li className="category-item"><Link to="/Computacion">Computación</Link></li>
                     <li className="category-item"><Link to="/Gaming">Streaming y Gaming</Link></li>
-                    <li className="category-item"><a href="#">Componentes</a></li>
-                    <li className="category-item"><a href="#">Conectividad y Redes</a></li>
-                    <li className="category-item"><a href="#">Equipos de audio y video</a></li>
+                    <li className="category-item"><Link to="/Componentes">Componentes</Link></li>
+                    <li className="category-item"><Link to="/Conectividad">Conectividad y Redes</Link></li>
+                    <li className="category-item"><Link to="/AudioVideo">Equipos de Audio y Video</Link></li>
                 </ul>
             </nav>
         </>

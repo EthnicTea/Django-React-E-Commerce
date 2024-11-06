@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Gaming.css';
+import './Audio-Video.css';
 import Items2 from './components/Items2.jsx';
 import Filtro from './components/Filtro.jsx';
 
@@ -8,8 +8,8 @@ const Gaming = () => {
 
     // Lista de productos
     const products = [
-        { id: 3, name: 'Silla Gaming Ergonomica Corsair', brand: 'Corsair', category: 'Silla', price: '$137.650 Transferencia', price2: '$180.000 Otro metodo de pago', image: 'https://cdn2.spider.cl/16922-large_default/silla-corsair-tc60-gaming-black-grey.jpg' },
-        { id: 4, name: 'Teclado Mecánico Razer RGB', brand: 'Razer', category: 'Teclado', price: '$80.000 Transferencia', price2: '$100.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/vqczuwsv_e8307d49_thumbnail_512.png' },
+        { id: 9, name: 'Audífonos Inalámbricos JBL Wave Buds, TWS, In Ear, Bluetooth 5.2, Color Negro', brand: 'JBL', category: 'Audífonos', price: '$50.000 Transferencia', price2: '$52.260 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/298ynsi0_34010889_thumbnail_512.jpg' },
+        { id: 10, name: 'Audífonos Inalámbricos Logitech Zone Vibe 100, Over-Ear, Wireless Bluetooth', brand: 'Logitech', category: 'Audífonos', price: '$110.170 Transferencia', price2: '$115.130 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/5qsxnirn_26a97526_thumbnail_512.jpg' },
         // Añadir más productos con sus propiedades
     ];
 
@@ -26,8 +26,8 @@ const Gaming = () => {
 
     return (
         <section className="gaming-section">
-            <h1 className="gaming-title">Explora el Mundo del Gaming</h1>
-            <p className="gaming-description">Encuentra todo lo que necesitas para mejorar tu experiencia gaming: desde Sillas hasta los últimos Teclados.</p>
+            <h1 className="gaming-title">Explora la Zona del Sonido y Video</h1>
+            <p className="gaming-description">Encuentra todo lo que necesitas para mejorar tu experiencia audiovisual : desde Audifonós de alta gama hasta Videocamaras.</p>
             
             {/* Filtro de productos */}
             <Filtro onFilter={handleFilterChange} />

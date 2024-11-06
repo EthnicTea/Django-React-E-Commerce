@@ -8,8 +8,8 @@ const Gaming = () => {
 
     // Lista de productos
     const products = [
-        { id: 3, name: 'Silla Gaming Ergonomica Corsair', brand: 'Corsair', category: 'Silla', price: '$137.650 Transferencia', price2: '$180.000 Otro metodo de pago', image: 'https://cdn2.spider.cl/16922-large_default/silla-corsair-tc60-gaming-black-grey.jpg' },
-        { id: 4, name: 'Teclado Mecánico Razer RGB', brand: 'Razer', category: 'Teclado', price: '$80.000 Transferencia', price2: '$100.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/vqczuwsv_e8307d49_thumbnail_512.png' },
+        { id: 5, name: 'Unidad SSD Kingston NV2, 500GB', brand: 'Kingston', category: 'SSD', price: '$59.990 Transferencia', price2: '$62.690 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/y2qb2v_n_cc9779c9_thumbnail_512.jpg' },
+        { id: 6, name: 'Gabinete Gamer Aerocool Designer G V2 ARGB, Color Negro', brand: 'Aerocool', category: 'Gabinete', price: '$49.990 Transferencia', price2: '$52.240 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/v32yidd0_a9b07e6a_thumbnail_512.png' },
         // Añadir más productos con sus propiedades
     ];
 
@@ -26,8 +26,8 @@ const Gaming = () => {
 
     return (
         <section className="gaming-section">
-            <h1 className="gaming-title">Explora el Mundo del Gaming</h1>
-            <p className="gaming-description">Encuentra todo lo que necesitas para mejorar tu experiencia gaming: desde Sillas hasta los últimos Teclados.</p>
+            <h1 className="gaming-title">Explora la Sección del Update</h1>
+            <p className="gaming-description">Encuentra todos los componentes que necesites para optimizar tu experiencia: desde Gabinetes hasta las últimas Tarjetas Graficas.</p>
             
             {/* Filtro de productos */}
             <Filtro onFilter={handleFilterChange} />
