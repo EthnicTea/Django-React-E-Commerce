@@ -66,7 +66,7 @@ export function Navbar() {
             <nav className="navbar-categories">
                 <ul className="categories-list">
                     <li className="category-item"><a href="#">Computación</a></li>
-                    <li className="category-item"><a href="#">Gaming y Streaming</a></li>
+                    <li className="category-item"><Link to="/Gaming">Streaming y Gaming</Link></li>
                     <li className="category-item"><a href="#">Componentes</a></li>
                     <li className="category-item"><a href="#">Conectividad y Redes</a></li>
                     <li className="category-item"><a href="#">Equipos de audio y video</a></li>
