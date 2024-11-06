@@ -1,0 +1,73 @@
+.gaming-section {
+    padding: 2rem;
+    background-color: #1a1a1d;
+    color: #ffffff;
+    text-align: center;
+}
+
+.gaming-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #e94560;
+}
+
+.gaming-description {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.gaming-products {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.product-card {
+    background-color: #2b2b2e;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.product-name {
+    font-size: 1.1rem;
+    color: #e94560;
+    margin-top: 1rem;
+}
+
+.product-price {
+    font-size: 1rem;
+    color: white;
+    margin: 0.5rem 0;
+}
+
+.product-price2{
+    font-size: 1rem;
+    color: white;
+    margin: 0.5rem 0;
+}
+
+
+
+.product-button {
+    background-color: #e94560;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.product-button:hover {
+    background-color: #c23747;
+}
