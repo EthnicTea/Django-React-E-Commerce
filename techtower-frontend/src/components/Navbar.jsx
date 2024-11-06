@@ -45,7 +45,7 @@ export function Navbar() {
                             </button>
                             <div className="dropdown-content">
                                 <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
-                                <Link to="#" className='navbar-link'>Registrarse</Link>
+                                <Link to="/register" className='navbar-link'>Registrarse</Link>
                             </div> 
                         </div>
                         <div className="navbar-icon">

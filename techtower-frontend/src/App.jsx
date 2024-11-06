@@ -4,7 +4,8 @@ import { Navbar } from './components/Navbar.jsx'
 import { Hero } from './components/Hero.jsx'
 import { Items } from './components/Items.jsx'
 import { Foot } from './components/Foot.jsx'
-import { Login } from './Login.jsx' // Importa la página de login
+import { Login } from './Login.jsx'
+import { Register } from './Register.jsx'
 import Gaming from './Gaming.jsx';
 import Computacion from './Computacion.jsx';
 import Componentes from './Componentes.jsx';
@@ -39,6 +40,7 @@ export function App() {
       <Route path="/conectividad" element={<ConectividadRedes />} />
       <Route path="/audiovideo" element={<AudioVideo />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
     <footer>
       <Foot />
