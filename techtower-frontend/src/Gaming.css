@@ -46,7 +46,13 @@
 
 .product-price {
     font-size: 1rem;
-    color: #c9c9c9;
+    color: rgb(255, 255, 255);
+    margin: 0.5rem 0;
+}
+
+.product-price2 {
+    font-size: 1rem;
+    color: rgb(255, 255, 255);
     margin: 0.5rem 0;
 }
 
