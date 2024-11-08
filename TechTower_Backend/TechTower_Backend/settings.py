@@ -33,7 +33,14 @@ DEBUG = True
 
 # El * es para que permita cualquier host alojar la aplicación como tal. Luego si se quisiera alojar en
 # un servidor, se debe cambiar!
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*"] 
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Importante para el uso de JWT Tokens que serviran para la verificación de personal dentro de la página web.
 REST_FRAMEWORK = {
@@ -60,12 +67,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'APIbackend',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    #'APIbackend',
+    'APIbackend.apps.ApibackendConfig'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,7 +82,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'TechTower_Backend.urls'
@@ -110,6 +118,8 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
+AUTH_USER_MODEL = 'APIbackend.UsuarioApp'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
