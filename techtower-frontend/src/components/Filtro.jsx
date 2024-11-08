@@ -6,8 +6,8 @@ const Filtro = ({ onFilter }) => {
     const [selectedBrand, setSelectedBrand] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
 
-    const brands = ['Logitech', 'Razer', 'Corsair', 'SteelSeries', 'HyperX', 'Asus', 'STARTECH.COM', 'Kingston', 'Aerocool', 'TRIPP LITE', 'XTECH', 'JBL'];
-    const categories = ['Teclado', 'Audífonos', 'Mouse', 'Monitor', 'Silla', 'Adaptador', 'SSD', 'Gabinete', 'Conector'];
+    const brands = ['Logitech', 'Razer', 'Corsair', 'HyperX', 'Asus', 'STARTECH.COM', 'Kingston', 'Aerocool', 'TRIPP LITE', 'XTECH', 'JBL', 'AZIO', 'HP', 'HIKVISION', 'KENSINGTON', 'GENIUS', 'ULTRA', 'Redragon', 'MSI', 'Cougar', 'TP-LINK', 'BOYA'];
+    const categories = ['Teclado', 'Audifonos', 'Mouse', 'Monitor', 'Silla', 'Adaptador', 'SSD', 'Gabinete', 'Conector', 'WebCam', 'Notebook', 'Pendrive', 'MousePad', 'Base para Notebook', 'Microfono', 'Ram', 'Tarjeta Grafica', 'Placa Madre', 'Fuente de Poder', 'Cooler', 'Access Point', 'Parlante'];
 
     const handleBrandChange = (e) => {
         setSelectedBrand(e.target.value);
