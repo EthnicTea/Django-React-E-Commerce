@@ -51,7 +51,7 @@ class UsuarioApp(AbstractBaseUser, PermissionsMixin):
 
     # Como antes, el email es el username, los nombres son solo datos de envío
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['rut', 'nombre', 'apellido']  # Datos requeridos adicionales para el registro
+    REQUIRED_FIELDS = ['nombre', 'apellido']  # Datos requeridos adicionales para el registro
 
     def __str__(self):
         return self.email
