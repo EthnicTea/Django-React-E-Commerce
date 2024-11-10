@@ -11,6 +11,7 @@ import Computacion from './Computacion.jsx';
 import Componentes from './Componentes.jsx';
 import ConectividadRedes from './Conectividad-Redes.jsx';
 import AudioVideo from './Audio-Video.jsx';
+import Ofertas   from './Ofertas.jsx';
 
 export function App() {
   return (
@@ -41,6 +42,7 @@ export function App() {
       <Route path="/audiovideo" element={<AudioVideo />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/ofertas" element={<Ofertas />} />
     </Routes>
     <footer>
       <Foot />
