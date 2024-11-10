@@ -10,7 +10,9 @@ from .validations import custom_validation, validate_email, validate_password
 class UserRegister(APIView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request):
+        print(request.data)
         clean_data = custom_validation(request.data)
+        clean_data = request.data
         serializer = UserRegisterSerializer(data=clean_data)
         # Una vez que el usuario haya creado y pasado todas las comprobaciones
         # el metodo serializer creará un nuevo usuario
@@ -19,6 +21,7 @@ class UserRegister(APIView):
             if user:
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    
 
 # También esta vista será visible para todos
 class UserLogin(APIView):

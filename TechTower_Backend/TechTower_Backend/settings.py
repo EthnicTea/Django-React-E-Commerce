@@ -116,8 +116,12 @@ pymysql.version_info = (1, 4, 3, "final", 0)
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'e-commerce',
+        'USER': 'root',
+        'PASSWORD': 'root', # Quitar la contraseña si corresponde, depende de donde este el repo
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 AUTH_USER_MODEL = 'APIbackend.UsuarioApp'

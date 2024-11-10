@@ -4,7 +4,7 @@ UserModel = get_user_model()
 
 def custom_validation(data):
     email = data['email'].strip()
-    username = data['username'].strip()
+    # username = data['username'].strip()
     password = data['password'].strip()
     ###
     if not email or UserModel.objects.filter(email=email).exists():
@@ -13,9 +13,9 @@ def custom_validation(data):
     if not password or len(password) < 8:
         raise ValidationError('Elija una contraseña con al menos 8 caracteres')
     ##
-    if not username:
+    '''if not username:
         raise ValidationError('Eliga otro nombre')
-    return data
+    return data'''
 
 
 def validate_email(data):
@@ -24,14 +24,14 @@ def validate_email(data):
         raise ValidationError('El email es obligatorio')
     return True
 
-def validate_username(data):
+'''def validate_username(data):
     username = data['username'].strip()
     if not username:
         raise ValidationError('Eliga otro nombre')
-    return True
+    return True'''
 
 def validate_password(data):
     password = data['password'].strip()
     if not password:
-        raise ValidationError('a password is needed')
+        raise ValidationError('Se necesita una contraseña')
     return True
