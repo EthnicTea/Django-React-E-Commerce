@@ -12,7 +12,7 @@ export function Navbar() {
                 <div className="navbar-top-message">
                     <span>
                         ¡Recuerda que siempre será gratis el retiro de los productos! Además de la variedad de productos con despacho gratis, vea más&nbsp;
-                        <a href="https://youtu.be/ZvdY-E6jvJs?si=M_j_BsxeIgIXR9lX">AQUÍ</a>
+                        <Link to="/terminos">Aquí</Link>
                     </span>
                 </div>
 

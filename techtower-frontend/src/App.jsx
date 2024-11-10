@@ -12,6 +12,7 @@ import Componentes from './Componentes.jsx';
 import ConectividadRedes from './Conectividad-Redes.jsx';
 import AudioVideo from './Audio-Video.jsx';
 import Ofertas   from './Ofertas.jsx';
+import Terminos from './Terminos.jsx'
 
 export function App() {
   return (
@@ -43,6 +44,7 @@ export function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/ofertas" element={<Ofertas />} />
+      <Route path="/terminos" element={<Terminos />} />
     </Routes>
     <footer>
       <Foot />
