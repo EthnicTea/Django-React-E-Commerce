@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import pymysql
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
@@ -45,10 +46,12 @@ CORS_ALLOW_CREDENTIALS = True
 # Importante para el uso de JWT Tokens que serviran para la verificación de personal dentro de la página web.
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication', 
     ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.isAuthenticated",
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
     ),
 }
 
@@ -108,17 +111,15 @@ WSGI_APPLICATION = 'TechTower_Backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+pymysql.install_as_MySQLdb()
+pymysql.version_info = (1, 4, 3, "final", 0)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'BD_TechTower',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 AUTH_USER_MODEL = 'APIbackend.UsuarioApp'
 
 # Password validation
