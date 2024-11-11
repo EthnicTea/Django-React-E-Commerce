@@ -1,43 +1,83 @@
 import React, { useState } from 'react';
 import './Register.css';
+import axios from 'axios';
 
 export function Register() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
+  /////////////////////////////////////////////////
+  const submitRegistration = async (e) => {
+    e.preventDefault();
+
+    // Verificar que los campos no estén vacíos
+    if (!email || !password) {
+      alert('Por favor, llena todos los campos.');
+      return;
+    }
+
+    try {
+      // Realizar la solicitud POST
+      await axios.post('/api/register', { email, password });
+      onRegister(true); // Marca al usuario como autenticado
+    } catch (error) {
+      console.error('Registration failed', error);
+      // alert('Hubo un error al registrarte.');
+    }
+  };
+
   const [selectedRegion, setSelectedRegion] = useState('');
   const [selectedComuna, setSelectedComuna] = useState('');
-  
+
   const handleRegionChange = (event) => {
     setSelectedRegion(event.target.value);
-    // Aquí se puede algo con el cambio de región, como cargar las comunas correspondientes bla bla
   };
 
   return (
     <div className='form'>
       <div className="form-register">
         <h5>Registro</h5>
-        <form>
+        <form onSubmit={submitRegistration}>
           <label>
             Nombre:
-            <input className="controls" type="text" name="name" placeholder="Nombre" required />
+            <input className="controls" type="text" name="name" placeholder="Nombre" />
           </label>
           <label>
             Apellido:
-            <input className="controls" type="text" name="lastname" placeholder="Apellido" required />
+            <input className="controls" type="text" name="lastname" placeholder="Apellido"/>
           </label>
           <label>
             RUT:
-            <input className="controls" type="text" name="rut" placeholder="RUT" required />
+            <input className="controls" type="text" name="rut" placeholder="RUT" />
           </label>
           <label>
             E-mail:
-            <input className="controls" type="email" name="email" placeholder="Correo electrónico" required />
+            <input
+              className="controls"
+              type="email"
+              name="email"
+              placeholder="Correo electrónico"
+              value={email} // Vinculamos el input con el estado
+              onChange={(e) => setEmail(e.target.value)} // Actualizamos el estado cuando cambia el valor
+              required
+            />
           </label>
           <label>
             Teléfono:
-            <input className="controls" type="tel" name="phone" placeholder="Teléfono" required />
+            <input className="controls" type="tel" name="phone" placeholder="Teléfono" />
           </label>
           <label>
             Contraseña:
-            <input className="controls" type="password" name="password" placeholder="Contraseña" required />
+            <input
+              className="controls"
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              value={password} // Vinculamos el input con el estado
+              onChange={(e) => setPassword(e.target.value)} // Actualizamos el estado cuando cambia el valor
+              required
+            />
           </label>
           <label>
             Confirmar Contraseña:
