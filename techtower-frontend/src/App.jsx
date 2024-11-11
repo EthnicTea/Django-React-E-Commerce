@@ -15,6 +15,7 @@ import ConectividadRedes from './Conectividad-Redes.jsx';
 import AudioVideo from './Audio-Video.jsx';
 import Ofertas   from './Ofertas.jsx';
 import Terminos from './Terminos.jsx';
+import MasVendidos  from './components/MasVendidos.jsx'
 import axios from 'axios';
 
 axios.defaults.baseURL = "http://127.0.0.1:8000";
@@ -54,10 +55,7 @@ export function App() {
           <>
             <Hero />
             <div className="items-container">
-              <Items />
-              <Items />
-              <Items />
-              <Items />
+              <MasVendidos />
             </div>
           </>
         } 
@@ -71,6 +69,7 @@ export function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/ofertas" element={<Ofertas />} />
       <Route path="/terminos" element={<Terminos />} />
+      <Route path="/masvendidos" element={<MasVendidos />} />
     </Routes>
     <footer>
       <Foot />
