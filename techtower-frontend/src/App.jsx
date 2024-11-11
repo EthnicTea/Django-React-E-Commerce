@@ -1,20 +1,46 @@
-import './App.css'
+import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Navbar } from './components/Navbar.jsx'
-import { Hero } from './components/Hero.jsx'
-import { Items } from './components/Items.jsx'
-import { Foot } from './components/Foot.jsx'
-import { Login } from './Login.jsx'
-import { Register } from './Register.jsx'
+import { Navbar } from './components/Navbar.jsx';
+import { Hero } from './components/Hero.jsx';
+import { Items } from './components/Items.jsx';
+import { Foot } from './components/Foot.jsx';
+import { Login } from './Login.jsx';
+import { Register } from './Register.jsx';
+import { useEffect } from 'react';
+import { getCsrfToken } from './services/getcsrftoken';
 import Gaming from './Gaming.jsx';
 import Computacion from './Computacion.jsx';
 import Componentes from './Componentes.jsx';
 import ConectividadRedes from './Conectividad-Redes.jsx';
 import AudioVideo from './Audio-Video.jsx';
 import Ofertas   from './Ofertas.jsx';
-import Terminos from './Terminos.jsx'
+import Terminos from './Terminos.jsx';
+import axios from 'axios';
+
+axios.defaults.baseURL = "http://127.0.0.1:8000";
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+axios.defaults.withCredentials = true;
+
+const client = axios.create({
+  baseURL: "http://127.0.0.1:8000"
+});
+
+client.post("/api/login", {
+  email: "usuario@example.com",
+  password: "contraseña123"
+}).then(response => {
+  console.log(response.data);
+}).catch(error => {
+  console.error(error.response.data);
+});
 
 export function App() {
+
+  useEffect(() => {
+    getCsrfToken();
+  }, []);
+
   return (
     <Router>
   <article>

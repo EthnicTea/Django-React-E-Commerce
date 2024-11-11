@@ -3,12 +3,38 @@ import { BsFillCartFill } from "react-icons/bs";
 import { FiUser } from "react-icons/fi";
 import { FiMenu } from "react-icons/fi";
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
+
 export function Navbar() {
+
+    const [userEmail, setUserEmail] = useState(null); // Estado para el correo del usuario
+
+    useEffect(() => {
+        // Aquí verificamos si el usuario está logueado
+        const storedEmail = localStorage.getItem('userEmail');
+        if (storedEmail) {
+          setUserEmail(storedEmail); // Si existe el correo, lo almacenamos en el estado
+        }
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            await axios.post('/api/logout');  // Llamamos a la API de logout
+            localStorage.removeItem('userEmail');  // Eliminamos el correo del localStorage
+            setUserEmail(null);  // Limpiamos el estado de correo
+            window.location.href = '/';  // Redirigimos al home o a la página de login
+        } catch (error) {
+            console.error('Error en el logout:', error);
+        }
+    };
+
     return (
         <>
             {/* Primera navbar */}
             <nav className="navbar">
-                {/* Sección superior con mensaje */}
                 <div className="navbar-top-message">
                     <span>
                         ¡Recuerda que siempre será gratis el retiro de los productos! Además de la variedad de productos con despacho gratis, vea más&nbsp;
@@ -16,10 +42,9 @@ export function Navbar() {
                     </span>
                 </div>
 
-                {/* Sección principal */}
                 <div className="navbar-main">
                     <div className="navbar-logo">
-                        <a href="/">TechTower</a>
+                        <Link to="/">TechTower</Link>
                     </div>
 
                     <div className="navbar-search">
@@ -31,21 +56,30 @@ export function Navbar() {
                             />
                             <button type="submit" className="navbar-search-button">
                                 <svg stroke="currentColor" fill="none" viewBox="0 0 32 32" height="20" width="20">
-                                    <circle cx="14.75" cy="14.75" r="8.75" stroke-width="2"></circle>
-                                    <path d="M26 26L21 21" stroke-width="2" stroke-linecap="round"></path>
+                                    <circle cx="14.75" cy="14.75" r="8.75" strokeWidth="2"></circle>
+                                    <path d="M26 26L21 21" strokeWidth="2" strokeLinecap="round"></path>
                                 </svg>
                             </button>
                         </form>
                     </div>
 
-                    <div className="navbar-icons"> 
+                    <div className="navbar-icons">
                         <div className="navbar-icon dropdown">
                             <button className='dropbtn'>
                                 <FiUser className='icon-user'/>
                             </button>
                             <div className="dropdown-content">
-                                <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
-                                <Link to="/register" className='navbar-link'>Registrarse</Link>
+                                {userEmail ? (
+                                    <>
+                                        <span className="navbar-link">Bienvenido, {userEmail}</span> {/* Mostrar correo del usuario */}
+                                        <button onClick={handleLogout} className='navbar-link'>Cerrar Sesión</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
+                                        <Link to="/register" className='navbar-link'>Registrarse</Link>
+                                    </>
+                                )}
                             </div> 
                         </div>
                         <div className="navbar-icon">
