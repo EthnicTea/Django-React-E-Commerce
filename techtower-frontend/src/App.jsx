@@ -6,6 +6,7 @@ import { Items } from './components/Items.jsx'
 import { Foot } from './components/Foot.jsx'
 import { Login } from './Login.jsx'
 import { Register } from './Register.jsx'
+import MasVendidos  from './components/MasVendidos.jsx'
 import Gaming from './Gaming.jsx';
 import Computacion from './Computacion.jsx';
 import Componentes from './Componentes.jsx';
@@ -28,10 +29,7 @@ export function App() {
           <>
             <Hero />
             <div className="items-container">
-              <Items />
-              <Items />
-              <Items />
-              <Items />
+              <MasVendidos />
             </div>
           </>
         } 
@@ -45,6 +43,7 @@ export function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/ofertas" element={<Ofertas />} />
       <Route path="/terminos" element={<Terminos />} />
+      <Route path="/masvendidos" element={<MasVendidos />} />
     </Routes>
     <footer>
       <Foot />
