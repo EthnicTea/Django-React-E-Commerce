@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
@@ -24,19 +25,27 @@ class UserRegister(APIView):
     
 
 # También esta vista será visible para todos
+
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
-    authentication_classes = (SessionAuthentication,)
+    authentication_classes = ()  # No se necesita autenticación previa
+
     def post(self, request):
         data = request.data
-        # un par de validaciones para iniciar sesión
-        assert validate_email(data)
-        assert validate_password(data)
         serializer = UserLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
-            user = serializer.check_user(data)
-            login(request, user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            email = data.get('email')
+            password = data.get('password')
+            # Usamos authenticate con el email si es un modelo personalizado
+            user = authenticate(request, username=email, password=password)
+            if user is not None:
+                # Si el usuario es válido, logueamos al usuario
+                login(request, user)
+                return Response({"message": "Login exitoso"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Credenciales incorrectas"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 # Metodo post para ejectutar el logout    
 class UserLogout(APIView):
