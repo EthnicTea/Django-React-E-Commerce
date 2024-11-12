@@ -124,7 +124,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'e-commerce',
         'USER': 'root',
-        'PASSWORD': 'root', # Quitar la contraseña si corresponde, depende de donde este el repo
+        'PASSWORD': '', # Quitar la contraseña si corresponde, depende de donde este el repo
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
