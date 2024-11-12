@@ -15,11 +15,11 @@ const BestSellers = () => {
       <h2>Más Vendidos</h2>
       <div className="product-list">
         {bestSellingProducts.map(product => (
-          <div key={product.id} className="product-card">
+          <div key={product.id} className="product-card-header-seller">
             <img src={product.image} alt={product.name} className="product-image" />
-            <h3 className="product-name">{product.name}</h3>
-            <p className="product-price">{product.price}</p>
-            <p className="product-price">{product.price2}</p>
+            <h3 className="product-name-header-seller">{product.name}</h3>
+            <p className="product-price-header-seller">{product.price}</p>
+            <p className="product-price-header-seller">{product.price2}</p>
           </div>
         ))}
       </div>

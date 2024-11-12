@@ -13,7 +13,7 @@ export function Hero() {
                     <h1 className="h1-offer">Siempre calidad y ofertas todo el año</h1>
                     <div className="flex items">
                         <p className="base-text">Revisa nuestras mejores ofertas&nbsp;
-                        <Link to="/ofertas">Aquí</Link>
+                        <Link to="/ofertas" className='link-hero'>Aquí</Link>
                         </p>
                     </div>
                 </div>
