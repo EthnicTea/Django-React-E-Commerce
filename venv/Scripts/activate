@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\Ren\Desktop\Django-React-E-Commerce\venv"
+VIRTUAL_ENV="C:\Users\Ren\Django-React-E-Commerce\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
