@@ -32,20 +32,22 @@ export function Register() {
       return;
     }
 
+    const userData = {
+      password: password,
+      email: email,
+      rut: rut,
+      nombre: name,
+      apellido: lastname,
+      telefono: telephone,
+      region: selectedRegion,
+      comuna: selectedComuna,
+      direccion: addressNumber,
+      data_apartamento: apartmentNumber,
+    }
+
     try {
       // Realizar la solicitud POST al backend
-      const response = await axios.post('/api/register', {
-        name,
-        lastname,
-        rut,
-        email,
-        telephone,
-        password,
-        region: selectedRegion,
-        comuna: selectedComuna,
-        address_number: addressNumber,
-        apartment_number: apartmentNumber,
-      });
+      const response = await axios.post('/api/register', userData);
 
       console.log('Registro exitoso:', response.data);
       alert('Registro exitoso.');
