@@ -1,11 +1,17 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model, login, logout
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer
 from rest_framework import permissions, status
 from .validations import custom_validation, validate_email, validate_password
+
+def get_csrf_token(request):
+    token = get_token(request)  # Obtén el token CSRF
+    return JsonResponse({'csrfToken': token})
 
 # Cualquiera puede acceder al registro
 class UserRegister(APIView):
@@ -29,8 +35,9 @@ class UserRegister(APIView):
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()  # No se necesita autenticación previa
-
+        
     def post(self, request):
+        print("Datos recibidos en el backend:", request.data)  # Depuración
         data = request.data
         serializer = UserLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
@@ -39,14 +46,16 @@ class UserLogin(APIView):
             # Usamos authenticate con el email si es un modelo personalizado
             user = authenticate(request, username=email, password=password)
             if user is not None:
-                # Si el usuario es válido, logueamos al usuario
-                login(request, user)
-                return Response({"message": "Login exitoso"}, status=status.HTTP_200_OK)
-            else:
-                return Response({"error": "Credenciales incorrectas"}, status=status.HTTP_400_BAD_REQUEST)
-
+                try: 
+                    # Si el usuario es válido, logueamos al usuario
+                    login(request, user)
+                    return Response({"email": user.email, "message": "Login exitoso"}, status=status.HTTP_200_OK)
+                except Exception as e:
+                    print("Error al autenticar:", str(e))
+                    return Response({"error": "Credenciales incorrectas"}, status=status.HTTP_400_BAD_REQUEST)
+        print("Errores del serializador:", serializer.errors)  # Depuración
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 # Metodo post para ejectutar el logout    
 class UserLogout(APIView):
     def post(self, request):

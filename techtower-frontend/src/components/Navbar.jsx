@@ -1,4 +1,4 @@
-import './Navbar.css'
+import './Navbar.css';
 import { BsFillCartFill } from "react-icons/bs";
 import { FiUser } from "react-icons/fi";
 import { FiMenu } from "react-icons/fi";
@@ -9,23 +9,23 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 export function Navbar() {
+    const [userEmail, setUserEmail] = useState(null); // Estado para manejar el correo del usuario
 
-    const [userEmail, setUserEmail] = useState(null); // Estado para el correo del usuario
-
+    // Efecto para cargar el correo del usuario desde el localStorage al montar el componente
     useEffect(() => {
-        // Aquí verificamos si el usuario está logueado
-        const storedEmail = localStorage.getItem('userEmail');
+        const storedEmail = localStorage.getItem('userEmail'); // Obtén el correo guardado
         if (storedEmail) {
-          setUserEmail(storedEmail); // Si existe el correo, lo almacenamos en el estado
+            setUserEmail(storedEmail); // Actualiza el estado con el correo del usuario
         }
     }, []);
 
+    // Función para manejar el logout
     const handleLogout = async () => {
         try {
-            await axios.post('/api/logout');  // Llamamos a la API de logout
-            localStorage.removeItem('userEmail');  // Eliminamos el correo del localStorage
-            setUserEmail(null);  // Limpiamos el estado de correo
-            window.location.href = '/';  // Redirigimos al home o a la página de login
+            await axios.post('/api/logout'); // Llamamos a la API de logout
+            localStorage.removeItem('userEmail'); // Eliminamos el correo del localStorage
+            setUserEmail(null); // Limpiamos el estado de correo
+            window.location.href = '/'; // Redirigimos al home o a la página de login
         } catch (error) {
             console.error('Error en el logout:', error);
         }

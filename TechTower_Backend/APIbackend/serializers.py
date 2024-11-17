@@ -27,14 +27,18 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
-    def check_user(self, clean_data):
-        user = authenticate(email=clean_data['email'],
-            password=clean_data['password'])
+    def validate(self, data):
+        email = data.get('email')
+        password = data.get('password')
+        user = authenticate(email=email, password=password)
         if not user:
-            raise ValidationError('No se encuentra ese usuario')
-        return user
+            print("No se encuentra ese usuario")
+            raise serializers.ValidationError('No se encuentra ese usuario.')
+        data['user'] = user  # Puedes incluir el usuario autenticado en los datos validados
+        return data
+    print("Serializer ha fallado")
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ('email', 'rut', 'nombre', 'apellido', 'telefono', 'region', 'comuna', 'direccion', 'data_apartamento')
+        fields = ('email', 'rut', 'nombre', 'apellido', 'telefono', 'region', 'comuna', 'direccion', 'data_departamento')
