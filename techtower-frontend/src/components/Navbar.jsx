@@ -31,6 +31,12 @@ export function Navbar() {
         }
     };
 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+    
     return (
         <>
             {/* Primera navbar */}
@@ -65,14 +71,14 @@ export function Navbar() {
 
                     <div className="navbar-icons">
                         <div className="navbar-icon dropdown">
-                            <button className='dropbtn'>
+                            <button className='dropbtn' onClick={toggleDropdown}>
                                 <FiUser className='icon-user'/>
                             </button>
-                            <div className="dropdown-content">
+                            <div className={`dropdown-content ${isDropdownOpen ? 'open' : ''}`}>
                                 {userEmail ? (
                                     <>
-                                        <span className="navbar-link">Bienvenido, {userEmail}</span> {/* Mostrar correo del usuario */}
-                                        <button onClick={handleLogout} className='navbar-link'>Cerrar Sesión</button>
+                                        <span className="navbar-link-user">Bienvenido, {userEmail}</span>
+                                        <button onClick={handleLogout} className='navbar-link-user' role="logout">Cerrar Sesión</button>
                                     </>
                                 ) : (
                                     <>
@@ -80,7 +86,7 @@ export function Navbar() {
                                         <Link to="/register" className='navbar-link'>Registrarse</Link>
                                     </>
                                 )}
-                            </div> 
+                            </div>
                         </div>
                         <div className="navbar-icon">
                             <button className='dropbtn'>
