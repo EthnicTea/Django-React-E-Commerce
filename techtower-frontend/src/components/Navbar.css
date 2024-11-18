@@ -82,7 +82,7 @@ html, body {
     gap: 16px;
 }
 
-/* Icono de usuario y menú desplegable */
+/* ícono y menú desplegable */
 .navbar-icon {
     position: relative;
 }
@@ -93,38 +93,97 @@ html, body {
     background-color: transparent;
     border: none;
     cursor: pointer;
+    padding: 10px; /* Ampliar relleno interno */
+    margin-right: 5px; /* Separar ligeramente de otros elementos */
+    border-radius: 2px; /* Estilo más visual */
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.dropbtn:hover {
+    transform: scale(1.1);
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
 }
 
 .dropdown-content {
-    display: none;
+    display: none; 
     position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    top: 100%; /* Posiciona debajo del botón */
-    right: 10px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    min-width: 200px;
+    top: calc(100% + 5px);
+    right: 0;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
+    overflow: hidden;
+    opacity: 0;
 }
 
-.dropdown-content a {
+.dropdown-content.open {
+    display: block;
+    opacity: 1; 
+    transform: translateY(0);
+}
+
+.navbar-link {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-    text-align: left;
+    text-align: center;
 }
 
-.dropdown-content a:hover {
+.navbar-link:hover{
     background-color: #ddd;
 }
 
-.navbar-icon:hover .dropdown-content {
-    display: block; /* Mostrar el menú desplegable al hacer hover */
+/* Links dentro del dropdown */
+.dropdown-content span,
+.dropdown-content button {
+    color: #000000;
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    display: block;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-content span:hover,
+.dropdown-content button:hover {
+    background-color: #ddd; /* Resalta con un fondo más claro */
+}
+
+.navbar-link-user {
+    font-weight: 400;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Botón de logout con estilos */
+.navbar-link-user[role="logout"] {
+    color: #cc1717; /* Color especial para logout */
+    font-weight: bold;
+    border-top: 1px solid #444;
+}
+
+/* Botón de logout al hover */
+.navbar-link-user[role="logout"]:hover {
+    background-color: #da1515;
+    color: white;
+}
+
+/* Ajustes del ícono */
+.icon-user {
+    margin: 0 5px;
 }
 
 .navbar-hamburger {
     display: none;
 }
+
 
 /* Segunda navbar: categorías */
 .navbar-categories {
