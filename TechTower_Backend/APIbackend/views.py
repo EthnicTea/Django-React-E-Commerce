@@ -91,12 +91,12 @@ class ProductList(ListAPIView):
 class ProductDetail(RetrieveAPIView):
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
-    lookup_field = 'id'
+    lookup_field = 'IdProducto'
 
 class ProductUpdate(UpdateAPIView):
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
-    lookup_field = 'id'
+    lookup_field = 'IdProducto'
 
     def perform_update(self, serializer):
         # Lógica adicional
@@ -105,4 +105,4 @@ class ProductUpdate(UpdateAPIView):
 class ProductDelete(DestroyAPIView):
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
-    lookup_field = 'id'
+    lookup_field = 'IdProducto'
