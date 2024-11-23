@@ -4,11 +4,12 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
-from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer
+from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer, ProductSerializer
 from rest_framework import permissions, status
-from .validations import custom_validation, validate_email, validate_password
-
+from .models import Producto
+from .validations import custom_validation # custom_product
 def get_csrf_token(request):
     token = get_token(request)  # Obtén el token CSRF
     return JsonResponse({'csrfToken': token})
@@ -68,3 +69,40 @@ class UserView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+    
+class ProductCreate(APIView):
+    def post(self, request):
+        print(request.data)
+        # clean_data = custom_product(request.data)
+        serializer = ProductSerializer(data=request.data)
+        data = request.data
+        if serializer.is_valid(raise_exception=True):
+            producto = serializer.create(data)
+            producto.save()
+            if producto:
+                return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+      
+class ProductList(ListAPIView):
+    queryset = Producto.objects.all()
+    serializer_class = ProductSerializer
+
+# Detalle de un producto específico
+class ProductDetail(RetrieveAPIView):
+    queryset = Producto.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'id'
+
+class ProductUpdate(UpdateAPIView):
+    queryset = Producto.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'id'
+
+    def perform_update(self, serializer):
+        # Lógica adicional
+        serializer.save()
+
+class ProductDelete(DestroyAPIView):
+    queryset = Producto.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'id'

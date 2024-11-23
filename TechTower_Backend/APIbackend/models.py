@@ -58,21 +58,44 @@ class UsuarioApp(AbstractBaseUser, PermissionsMixin):
 
 class Producto(models.Model):
     IdProducto = models.AutoField(primary_key=True)
-    NomProducto = models.CharField(max_length=30)
+    NomProducto = models.CharField(max_length=200)
+    MarcaProducto = models.CharField(max_length=100)
+    CategoriaProducto = models.CharField(max_length=50)
     DescripcionProducto = models.TextField()
-    PrecioProducto = models.IntegerField()
-    StockProducto = models.PositiveIntegerField()
+    PrecioTransferencia = models.IntegerField()
+    PrecioOtroMetodo = models.IntegerField()
+    StockProducto = models.IntegerField()
+    ImagenProducto = models.URLField()
+
+    def __str__(self):
+        return self.NomProducto
+
+class OrdenProducto(models.Model):
+    Orden = models.ForeignKey('Orden', on_delete=models.CASCADE)
+    Producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    Cantidad = models.PositiveIntegerField(default=1)
 
 class Orden(models.Model):
     IdOrden = models.AutoField(primary_key=True)
-    FechaOrden = models.DateField(max_length=10)
-    EstadoOrden = models.CharField(max_length=30)
-    UsuarioOrden = models.ForeignKey(UsuarioApp, on_delete=models.CASCADE)
-    ProductOrden = models.ManyToManyField(Producto)
-    TotalOrden = models.IntegerField()
+    FechaOrden = models.DateField(auto_now_add=True)
+    EstadoOrden = models.CharField(max_length=30, default='Pendiente')
+    UsuarioOrden = models.ForeignKey('UsuarioApp', on_delete=models.CASCADE)
+    Productos = models.ManyToManyField('Producto', through=OrdenProducto)
+    TotalOrden = models.IntegerField(blank=True, null=True)
 
 class Pago(models.Model):
     IdPago = models.AutoField(primary_key=True)
+    Orden = models.OneToOneField('Orden', on_delete=models.CASCADE)
     MetodoPago = models.CharField(max_length=20)
     MontoPago = models.IntegerField()
-    FechaPago = models.DateField(max_length=10)
+    FechaPago = models.DateField(auto_now_add=True)
+
+'''class Carrito(models.Model):
+    UsuarioCarrito = models.ForeignKey('UsuarioApp', on_delete=models.CASCADE)
+    ProductoCarrito = models.ForeignKey('Producto', on_delete=models.CASCADE) 
+    CantidadCarrito = models.PositiveIntegerField(default=1) 
+    FechaAgregado = models.DateTimeField(auto_now_add=True)
+
+    # Calcular el total dinámicamente.
+    # Vincular el carrito con las órdenes.
+    # Procesar pagos y confirmar pedidos.'''

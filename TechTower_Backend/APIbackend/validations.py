@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+
 UserModel = get_user_model()
 
 def custom_validation(data):
@@ -35,3 +36,11 @@ def validate_password(data):
     if not password:
         raise ValidationError('Se necesita una contraseña')
     return True
+
+'''def custom_product(data):
+    if not PrecioTransferencia:
+        raise ValidationError('Es necesario agregar el precio transferencia')
+    PrecioTransferencia = data['PrecioTransferencia'].strip("$").replace(".", "")
+    if not PrecioOtroMetodo:
+        raise ValidationError('Es necesario agregar el precio efectivo/tarjeta')
+    PrecioOtroMetodo = data['PrecioOtroMetodo'].strip("$").replace(".", "")'''

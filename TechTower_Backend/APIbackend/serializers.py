@@ -1,6 +1,7 @@
 from django.forms import ValidationError
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
+from .models import Producto
 
 UserModel = get_user_model()
 
@@ -42,3 +43,27 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ('email', 'rut', 'nombre', 'apellido', 'telefono', 'region', 'comuna', 'direccion', 'data_departamento')
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producto
+        fields = '__all__'
+    
+    def create(self, data):
+        product_obj = Producto.objects.create(
+            NomProducto=data['NomProducto'],
+            MarcaProducto=data['MarcaProducto'],
+            CategoriaProducto=data['CategoriaProducto'],
+            DescripcionProducto=data['DescripcionProducto'],
+            PrecioTransferencia=data['PrecioTransferencia'],
+            PrecioOtroMetodo=data['PrecioOtroMetodo'],
+            StockProducto=data['StockProducto'],
+            ImagenProducto=data['ImagenProducto'],
+        )
+        return product_obj
+
+class ProductEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = ()

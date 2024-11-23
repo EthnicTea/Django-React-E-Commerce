@@ -8,4 +8,9 @@ urlpatterns = [
 	path('logout', views.UserLogout.as_view(), name='logout'),
 	path('user', views.UserView.as_view(), name='user'),
     path('csrf/', get_csrf_token, name='csrf_token'),
+    path('products/create', views.ProductCreate.as_view(), name='product-create'),
+    path('products', views.ProductList.as_view(), name='product-list'),
+    path('products/<int:id>', views.ProductDetail.as_view(), name='product-detail'),
+    path('products/update/<int:id>', views.ProductUpdate.as_view(), name='product-update'),
+    path('products/delete/<int:id>', views.ProductDelete.as_view(), name='product-delete'),
 ]
