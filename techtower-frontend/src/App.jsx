@@ -17,6 +17,7 @@ import Ofertas   from './Ofertas.jsx';
 import Terminos from './Terminos.jsx';
 import MasVendidos  from './components/MasVendidos.jsx'
 import axios from 'axios';
+import { Crud } from './Crud.jsx'
 
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -70,6 +71,7 @@ export function App() {
       <Route path="/ofertas" element={<Ofertas />} />
       <Route path="/terminos" element={<Terminos />} />
       <Route path="/masvendidos" element={<MasVendidos />} />
+      <Route path="/crud" element={<Crud />} />
     </Routes>
     <footer>
       <Foot />
