@@ -16,6 +16,7 @@ import AudioVideo from './Audio-Video.jsx';
 import Ofertas   from './Ofertas.jsx';
 import Terminos from './Terminos.jsx';
 import MasVendidos  from './components/MasVendidos.jsx'
+import Carrito from './Carrito.jsx'
 import axios from 'axios';
 import { Crud } from './Crud.jsx'
 
@@ -71,6 +72,7 @@ export function App() {
       <Route path="/ofertas" element={<Ofertas />} />
       <Route path="/terminos" element={<Terminos />} />
       <Route path="/masvendidos" element={<MasVendidos />} />
+      <Route path="/carrito" element={<Carrito />} />
       <Route path="/crud" element={<Crud />} />
     </Routes>
     <footer>

@@ -89,9 +89,11 @@ export function Navbar() {
                             </div>
                         </div>
                         <div className="navbar-icon">
-                            <button className='dropbtn'>
-                                <BsFillCartFill className='icon-cart'/>
-                            </button>
+                            <Link to="/carrito">
+                                <button className='dropbtn'>
+                                    <BsFillCartFill className='icon-cart'/>
+                                </button>
+                            </Link>
                         </div>
                     </div>
                     <div className="navbar-hamburger">
@@ -101,7 +103,6 @@ export function Navbar() {
                     </div>
                 </div>
             </nav>
-
             {/* Segunda navbar: categorías */}
             <nav className="navbar-categories">
                 <ul className="categories-list">
