@@ -9,23 +9,22 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 export function Navbar() {
-    const [userEmail, setUserEmail] = useState(null); // Estado para manejar el correo del usuario
+    const [userEmail, setUserEmail] = useState(null);
 
-    // Efecto para cargar el correo del usuario desde el localStorage al montar el componente
     useEffect(() => {
-        const storedEmail = localStorage.getItem('userEmail'); // Obtén el correo guardado
+        const storedEmail = localStorage.getItem('userEmail');
         if (storedEmail) {
-            setUserEmail(storedEmail); // Actualiza el estado con el correo del usuario
+            setUserEmail(storedEmail);
         }
     }, []);
 
     // Función para manejar el logout
     const handleLogout = async () => {
         try {
-            await axios.post('/api/logout'); // Llamamos a la API de logout
-            localStorage.removeItem('userEmail'); // Eliminamos el correo del localStorage
-            setUserEmail(null); // Limpiamos el estado de correo
-            window.location.href = '/'; // Redirigimos al home o a la página de login
+            await axios.post('/api/logout');
+            localStorage.removeItem('userEmail');
+            setUserEmail(null);
+            window.location.href = '/';
         } catch (error) {
             console.error('Error en el logout:', error);
         }

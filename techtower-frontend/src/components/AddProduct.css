@@ -1,0 +1,66 @@
+.container{
+    width: 600px;
+    background: #007BFF;
+    padding: 30px;
+    margin: auto;
+    margin-top: 50px;
+    border-radius: 4px;
+    font-family: 'calibri';
+    color: white;
+    margin-bottom: 50px;
+    box-shadow: 7px 13px 37px #000;
+}
+
+.container h2{
+    font-size: 22px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.crudspan {
+    text-align: center;
+}
+
+.crudinput{
+    width: 100%;
+    background: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    border: 1px solid white;
+    font-size: 18px;
+    box-sizing: border-box;
+    color: black;
+    box-shadow: 5px 5px 10px #000;
+}
+
+.submitproduct{
+    width: 100%;
+    background: #04AA6D;
+    border: none;
+    padding: 12px;
+    color: black;
+    margin: 16px 0;
+    font-size: 16px;
+    box-shadow: 5px 5px 10px #000;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.submitproduct:hover{
+    background-color: #0b6444;
+    color: white;
+    transition: 0.3s;
+}
+
+.success-message{
+    text-align: center;
+    font-size: 24px;
+    color: rgb(255, 255, 255);
+}
+
+.error-message{
+    text-align: center;
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+}
