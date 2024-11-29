@@ -1,36 +1,38 @@
 import React, { useState } from 'react';
-import './Login.css';
+import { loginUser } from "./App.jsx";
 import axios from 'axios';
+import "./Login.css"
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 export function Login() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Evitamos que se recargue la página al enviar el formulario
+    e.preventDefault();
     try {
-      // Envía una petición POST al backend para hacer login
-      const response = await axios.post('/api/login', { 
-        email, 
-        password 
+      const response = await axios.post("/api/login", {
+        email: email,
+        password: password,
       });
 
-      if (response.data && response.data.email) { 
-        localStorage.setItem('userEmail', response.data.email); // Guarda el email
-        window.location.href = '/'; // Redirige al home
-    } else {
-        console.error('La respuesta no contiene el email');
-    }
-    } catch (error) {
-        console.error('Error en el login:', error);
-        setError('Error al iniciar sesión, intente nuevamente');
-    }
-};
+      console.log(response.data); // Verifica qué datos llegan
 
+      if (response.data) {
+        localStorage.setItem('userEmail', response.data.email || '');
+        localStorage.setItem('isStaff', response.data.is_staff ? 'true' : 'false');
+        window.location.href = '/'; 
+      } else {
+        setError('No se pudieron obtener los datos del usuario.');
+      }
+    } catch (error) {
+      console.error('Error en el login:', error);
+      setError('Error al iniciar sesión, intente nuevamente.');
+    }
+  };
 
   return (
     <div className="form-login">
@@ -41,7 +43,7 @@ export function Login() {
           <input 
             className="controls" 
             type="email" 
-            placeholder="pepito@gmail.com" 
+            placeholder="ejemplo@correo.com" 
             value={email}
             onChange={(e) => setEmail(e.target.value)} 
           />

@@ -10,24 +10,27 @@ axios.defaults.withCredentials = true;
 
 export function Navbar() {
     const [userEmail, setUserEmail] = useState(null);
-
+    const [isStaff, setIsStaff] = useState(false);
+  
     useEffect(() => {
-        const storedEmail = localStorage.getItem('userEmail');
-        if (storedEmail) {
-            setUserEmail(storedEmail);
-        }
+      const email = localStorage.getItem('userEmail');
+      const staffStatus = localStorage.getItem('isStaff') === 'true';
+  
+      setUserEmail(email);
+      setIsStaff(staffStatus);
     }, []);
-
-    // Función para manejar el logout
+  
     const handleLogout = async () => {
-        try {
-            await axios.post('/api/logout');
-            localStorage.removeItem('userEmail');
-            setUserEmail(null);
-            window.location.href = '/';
-        } catch (error) {
-            console.error('Error en el logout:', error);
-        }
+      try {
+        await axios.post('/api/logout');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('isStaff');
+        setUserEmail(null);
+        setIsStaff(false);
+        window.location.href = '/';
+      } catch (error) {
+        console.error('Error en el logout:', error);
+      }
     };
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -35,7 +38,7 @@ export function Navbar() {
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
-    
+
     return (
         <>
             {/* Primera navbar */}
@@ -78,6 +81,9 @@ export function Navbar() {
                                     <>
                                         <span className="navbar-link-user">Bienvenido, {userEmail}</span>
                                         <button onClick={handleLogout} className='navbar-link-user' role="logout">Cerrar Sesión</button>
+                                        {isStaff && (
+                                            <Link to="/crud" className="navbar-link">Administrar Productos</Link>
+                                        )}
                                     </>
                                 ) : (
                                     <>
@@ -115,3 +121,4 @@ export function Navbar() {
         </>
     );
 }
+    
