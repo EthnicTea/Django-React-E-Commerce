@@ -1,5 +1,5 @@
 import './Foot.css'
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 export function Foot() {
     return (
         <div className="fm-footer">
@@ -32,9 +32,6 @@ export function Foot() {
             {/* Información final */}
             <div className="fm-footer-finalfooter">
                 <p className="fm-footer-finalfooter-p">© 2024 | TechTower.cl Todos los derechos reservados | Desarrollado por el equipo maravilla dinamita alpha lobo</p>
-                <span>Link Crud:
-                    <Link to="/crud">Aquí</Link>
-                </span>
             </div>  
         </div>
     );
