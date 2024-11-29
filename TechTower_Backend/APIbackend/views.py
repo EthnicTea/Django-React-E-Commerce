@@ -2,8 +2,11 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model, login, logout
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from rest_framework.authentication import SessionAuthentication
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import user_passes_test
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
 from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer, ProductSerializer
@@ -31,14 +34,15 @@ class UserRegister(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
 
-# También esta vista será visible para todos
+def is_staff_user(user):
+    return user.is_staff
 
+ 
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()  # No se necesita autenticación previa
-        
+    
     def post(self, request):
-        print("Datos recibidos en el backend:", request.data)  # Depuración
+        print("Datos recibidos en el backend:", request.data) # Depuración
         data = request.data
         serializer = UserLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
@@ -50,7 +54,7 @@ class UserLogin(APIView):
                 try: 
                     # Si el usuario es válido, logueamos al usuario
                     login(request, user)
-                    return Response({"email": user.email, "message": "Login exitoso"}, status=status.HTTP_200_OK)
+                    return Response({"email": user.email, 'is_staff': user.is_staff, "message": "Login exitoso"}, status=status.HTTP_200_OK)
                 except Exception as e:
                     print("Error al autenticar:", str(e))
                     return Response({"error": "Credenciales incorrectas"}, status=status.HTTP_400_BAD_REQUEST)
@@ -62,14 +66,14 @@ class UserLogout(APIView):
     def post(self, request):
         logout(request)
         return Response(status=status.HTTP_200_OK)
-
-# La vista del usuario asumirá que si hay autenticación
+    
 class UserView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
-    
+
+
 class ProductCreate(APIView):
     def post(self, request):
         print(request.data)
