@@ -41,8 +41,8 @@ class UsuarioApp(AbstractBaseUser, PermissionsMixin):
     region = models.TextField(blank=True, null=True)
     comuna = models.TextField(blank=True, null=True)
     # numeroc, debe ser dirección, se debe cambiar, también en el frontend!
-    direccion = models.CharField(blank=True, null=True, max_length=25)
-    data_departamento = models.CharField(blank=True, null=True, max_length=25)
+    direccion = models.CharField(blank=True, null=True, max_length=255)
+    data_departamento = models.CharField(blank=True, null=True, max_length=255)
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -81,7 +81,7 @@ class Orden(models.Model):
     EstadoOrden = models.CharField(max_length=30, default='Pendiente')
     UsuarioOrden = models.ForeignKey('UsuarioApp', on_delete=models.CASCADE)
     Productos = models.ManyToManyField('Producto', through=OrdenProducto)
-    TotalOrden = models.IntegerField(blank=True, null=True)
+    TotalOrden = models.IntegerField(blank=True, null=True) # Se puede calcular dinámicamente
 
 class Pago(models.Model):
     IdPago = models.AutoField(primary_key=True)

@@ -23,7 +23,8 @@ class UserRegister(APIView):
     def post(self, request):
         print(request.data)
         clean_data = custom_validation(request.data)
-        clean_data = request.data
+        # La siguiente línea es redundante, ya que custom_validation ya limpia los datos.
+        # clean_data = request.data
         serializer = UserRegisterSerializer(data=clean_data)
         # Una vez que el usuario haya creado y pasado todas las comprobaciones
         # el metodo serializer creará un nuevo usuario
@@ -51,14 +52,11 @@ class UserLogin(APIView):
             # Usamos authenticate con el email si es un modelo personalizado
             user = authenticate(request, username=email, password=password)
             if user is not None:
-                try: 
-                    # Si el usuario es válido, logueamos al usuario
-                    login(request, user)
-                    return Response({"email": user.email, 'is_staff': user.is_staff, "message": "Login exitoso"}, status=status.HTTP_200_OK)
-                except Exception as e:
-                    print("Error al autenticar:", str(e))
-                    return Response({"error": "Credenciales incorrectas"}, status=status.HTTP_400_BAD_REQUEST)
-        print("Errores del serializador:", serializer.errors)  # Depuración
+                login(request, user)
+                return Response({"email": user.email, 'is_staff': user.is_staff, "message": "Login exitoso"}, status=status.HTTP_200_OK)
+            # El return de aquí captura el caso de que `user` sea `None`.
+            return Response({"error": "Credenciales incorrectas"}, status=status.HTTP_400_BAD_REQUEST)
+        print("Errores del serializador:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Metodo post para ejectutar el logout    
@@ -73,8 +71,8 @@ class UserView(APIView):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
-
 class ProductCreate(APIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden crear productos (is_staff=True)
     def post(self, request):
         print(request.data)
         # clean_data = custom_product(request.data)
@@ -82,22 +80,25 @@ class ProductCreate(APIView):
         data = request.data
         if serializer.is_valid(raise_exception=True):
             producto = serializer.create(data)
-            producto.save()
+            # producto.save() # Redundante si ya se guarda en el método create
             if producto:
                 return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response({"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
       
 class ProductList(ListAPIView):
+    permission_classes = [permissions.AllowAny] # Cualquiera puede ver la lista de productos    
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
 
 # Detalle de un producto específico
 class ProductDetail(RetrieveAPIView):
+    permission_classes = [permissions.AllowAny] # Cualquiera puede ver la lista de productos
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'IdProducto'
 
 class ProductUpdate(UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden ver la lista de productos
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'IdProducto'
@@ -107,6 +108,7 @@ class ProductUpdate(UpdateAPIView):
         serializer.save()
 
 class ProductDelete(DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden ver la lista de productos
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'IdProducto'
