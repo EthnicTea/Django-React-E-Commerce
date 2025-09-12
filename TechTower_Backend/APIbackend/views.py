@@ -6,13 +6,21 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
-from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer, ProductSerializer
 from rest_framework import permissions, status
-from .models import Producto
-from .validations import custom_validation # custom_product
+
+from .models import Producto, Carrito, ItemCarrito, Producto
+from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer, ProductSerializer, CarritoSerializer, ItemCarritoSerializer
+
+from .validations import custom_validation # No es util
+
+'''
+    Cambiar el sistema de autenticación a token-based en el futuro.
+    Por ahora, se usa session-based auth para simplicidad.
+'''
+
 def get_csrf_token(request):
     token = get_token(request)  # Obtén el token CSRF
     return JsonResponse({'csrfToken': token})
@@ -22,14 +30,14 @@ class UserRegister(APIView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request):
         print(request.data)
-        clean_data = custom_validation(request.data)
-        # La siguiente línea es redundante, ya que custom_validation ya limpia los datos.
+        # Validations.py es donde se pueden agregar validaciones personalizadas. Pero no es util
+        # clean_data = custom_validation(request.data)
         # clean_data = request.data
-        serializer = UserRegisterSerializer(data=clean_data)
+        serializer = UserRegisterSerializer(data=request.data)
         # Una vez que el usuario haya creado y pasado todas las comprobaciones
         # el metodo serializer creará un nuevo usuario
         if serializer.is_valid(raise_exception=True):
-            user = serializer.create(clean_data)
+            user = serializer.create(serializer.validated_data)
             if user:
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -112,3 +120,81 @@ class ProductDelete(DestroyAPIView):
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'IdProducto'
+
+# ================= Carrito de Compras ==================
+class CartView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_or_create_cart(self, user):
+        """ Obtiene el carrito del usuario o crea uno si no existe. """
+        cart, created = Carrito.objects.get_or_create(usuario=user)
+        return cart
+
+    def get(self, request):
+        """ Ver el contenido del carrito. """
+        cart = self.get_or_create_cart(request.user)
+        serializer = CarritoSerializer(cart)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        """ Añadir un producto al carrito. """
+        cart = self.get_or_create_cart(request.user)
+        producto_id = request.data.get('producto')
+        cantidad = request.data.get('cantidad', 1)
+
+        try:
+            producto = Producto.objects.get(IdProducto=producto_id)
+        except Producto.DoesNotExist:
+            return Response({"error": "El producto no existe."}, status=status.HTTP_404_NOT_FOUND)
+
+        item, created = ItemCarrito.objects.get_or_create(
+            carrito=cart,
+            producto=producto,
+            defaults={'cantidad': cantidad}
+        )
+
+        if not created:
+            item.cantidad += cantidad
+            item.save()
+
+        serializer = CarritoSerializer(cart)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def patch(self, request):
+        """ Actualizar la cantidad de un producto en el carrito. """
+        cart = self.get_or_create_cart(request.user)
+        item_id = request.data.get('item_id')
+        cantidad = request.data.get('cantidad')
+
+        if not item_id or cantidad is None:
+            return Response({"error": "Se requiere 'item_id' y 'cantidad'"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            item = ItemCarrito.objects.get(id=item_id, carrito=cart)
+        except ItemCarrito.DoesNotExist:
+            return Response({"error": "El ítem no existe en este carrito."}, status=status.HTTP_404_NOT_FOUND)
+
+        if cantidad <= 0:
+            item.delete()
+            return Response({"message": "Producto eliminado del carrito."}, status=status.HTTP_200_OK)
+        
+        item.cantidad = cantidad
+        item.save()
+
+        serializer = CarritoSerializer(cart)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request):
+        """ Eliminar un producto del carrito. """
+        cart = self.get_or_create_cart(request.user)
+        item_id = request.data.get('item_id')
+
+        if not item_id:
+            return Response({"error": "Se requiere el ID del ítem a eliminar."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            item = ItemCarrito.objects.get(id=item_id, carrito=cart)
+            item.delete()
+            return Response({"message": "Producto eliminado del carrito."}, status=status.HTTP_200_OK)
+        except ItemCarrito.DoesNotExist:
+            return Response({"error": "El ítem no existe en este carrito."}, status=status.HTTP_404_NOT_FOUND)

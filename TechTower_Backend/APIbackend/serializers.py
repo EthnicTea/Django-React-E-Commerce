@@ -1,7 +1,7 @@
 from django.forms import ValidationError
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
-from .models import Producto
+from .models import Producto, Carrito, ItemCarrito
 
 UserModel = get_user_model()
 
@@ -9,20 +9,16 @@ UserModel = get_user_model()
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = '__all__'
+        fields = ('email', 'password') 
+        extra_kwargs = {'password': {'write_only': True}} # Oculta la contraseña en la respuesta de la API.
 
-    def create(self, clean_data):
-        user_obj = UserModel.objects.create_user(email=clean_data['email'], password=clean_data['password'],
-            rut=clean_data['rut'],
-            nombre=clean_data['nombre'],
-            apellido=clean_data['apellido'],
-            telefono=clean_data['telefono'],
-            region=clean_data['region'],
-            comuna=clean_data['comuna'],
-            direccion=clean_data['direccion'],
-            data_departamento=clean_data['data_apartamento'],
-            )
-        user_obj.save()
+    def create(self, validated_data):
+        # Solo email y password son obligatorios.
+        # Los otros campos se dejarán con sus valores por defecto (blank=True, null=True).
+        user_obj = UserModel.objects.create_user(
+            email=validated_data['email'],
+            password=validated_data['password'],
+        )
         return user_obj
     
 class UserLoginSerializer(serializers.Serializer):
@@ -67,3 +63,25 @@ class ProductEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ()
+
+# Serializadores para el carrito de compras
+
+class ItemCarritoSerializer(serializers.ModelSerializer):
+    # Esto asegura que la respuesta de la API incluya la información del producto
+    # en lugar de solo su ID.
+    producto = serializers.PrimaryKeyRelatedField(queryset=Producto.objects.all())
+
+    class Meta:
+        model = ItemCarrito
+        fields = ['id', 'producto', 'cantidad']
+        read_only_fields = ['id']
+
+class CarritoSerializer(serializers.ModelSerializer):
+    # Aquí anidamos el serializador del ItemCarrito.
+    # El 'many=True' es crucial porque un carrito puede tener muchos items.
+    items = ItemCarritoSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Carrito
+        fields = ['id', 'usuario', 'items', 'activo', 'creado_en']
+        read_only_fields = ['id', 'usuario', 'activo', 'creado_en']

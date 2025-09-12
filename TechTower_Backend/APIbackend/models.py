@@ -51,7 +51,7 @@ class UsuarioApp(AbstractBaseUser, PermissionsMixin):
 
     # Como antes, el email es el username, los nombres son solo datos de envío
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nombre', 'apellido']  # Datos requeridos adicionales para el registro
+    # REQUIRED_FIELDS = ['nombre', 'apellido']  # Datos requeridos adicionales para el registro
 
     def __str__(self):
         return self.email
@@ -90,12 +90,28 @@ class Pago(models.Model):
     MontoPago = models.IntegerField()
     FechaPago = models.DateField(auto_now_add=True)
 
-'''class Carrito(models.Model):
-    UsuarioCarrito = models.ForeignKey('UsuarioApp', on_delete=models.CASCADE)
-    ProductoCarrito = models.ForeignKey('Producto', on_delete=models.CASCADE) 
-    CantidadCarrito = models.PositiveIntegerField(default=1) 
-    FechaAgregado = models.DateTimeField(auto_now_add=True)
+class Carrito(models.Model):
+    usuario = models.OneToOneField('UsuarioApp', on_delete=models.CASCADE, related_name="carrito")
+    # Este campo asegura que un usuario solo tenga un carrito "activo" a la vez.
+    activo = models.BooleanField(default=True)
+    creado_en = models.DateTimeField(auto_now_add=True)
+    
+    def vaciar(self):
+        self.items.all().delete() # Elimina todos los items del carrito 
 
-    # Calcular el total dinámicamente.
-    # Vincular el carrito con las órdenes.
-    # Procesar pagos y confirmar pedidos.'''
+    def __str__(self):
+        return f"Carrito de {self.usuario.email}"
+
+class ItemCarrito(models.Model):
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name="items")
+    producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ('carrito', 'producto')
+
+    def subtotal(self):
+        return self.cantidad * self.producto.PrecioTransferencia
+
+    def __str__(self):
+        return f"{self.cantidad} x {self.producto.NomProducto}"
