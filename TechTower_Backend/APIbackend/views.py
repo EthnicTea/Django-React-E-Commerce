@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Producto, Carrito, ItemCarrito, Producto
 from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer, ProductSerializer, CarritoSerializer, ItemCarritoSerializer
@@ -19,6 +20,9 @@ from .validations import custom_validation # No es util
 '''
     Cambiar el sistema de autenticación a token-based en el futuro.
     Por ahora, se usa session-based auth para simplicidad.
+
+    Se agregó el uso de JWT tokens para autenticación.
+    Pero no se quitó el sistema de session-based auth.
 '''
 
 def get_csrf_token(request):
@@ -46,7 +50,6 @@ class UserRegister(APIView):
 def is_staff_user(user):
     return user.is_staff
 
- 
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
     
@@ -57,22 +60,32 @@ class UserLogin(APIView):
         if serializer.is_valid(raise_exception=True):
             email = data.get('email')
             password = data.get('password')
-            # Usamos authenticate con el email si es un modelo personalizado
+            # Usamos authenticate con el email como username
             user = authenticate(request, username=email, password=password)
             if user is not None:
-                login(request, user)
-                return Response({"email": user.email, 'is_staff': user.is_staff, "message": "Login exitoso"}, status=status.HTTP_200_OK)
-            # El return de aquí captura el caso de que `user` sea `None`.
+                # Generar tokens para el usuario autenticado
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                
+                return Response({
+                    'email': user.email,
+                    'is_staff': user.is_staff,
+                    'refresh': str(refresh),
+                    'access': access_token,
+                    'message': "Login exitoso"
+                }, status=status.HTTP_200_OK)
             return Response({"error": "Credenciales incorrectas"}, status=status.HTTP_400_BAD_REQUEST)
-        print("Errores del serializador:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# Metodo post para ejectutar el logout    
+# Metodo post para ejectutar el logout
+
+# No desloguea
 class UserLogout(APIView):
     def post(self, request):
         logout(request)
         return Response(status=status.HTTP_200_OK)
-    
+
+# Muestra datos correctamente. No obstante, también se puede obtener desde el token JWT, por que un usuario deslogeado puede ver los datos.
 class UserView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request):
