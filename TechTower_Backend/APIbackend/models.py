@@ -57,38 +57,38 @@ class UsuarioApp(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Producto(models.Model):
-    IdProducto = models.AutoField(primary_key=True)
-    NomProducto = models.CharField(max_length=200)
-    MarcaProducto = models.CharField(max_length=100)
-    CategoriaProducto = models.CharField(max_length=50)
-    DescripcionProducto = models.TextField()
-    PrecioTransferencia = models.IntegerField()
-    PrecioOtroMetodo = models.IntegerField()
-    StockProducto = models.IntegerField()
-    ImagenProducto = models.URLField()
+    producto_id = models.AutoField(primary_key=True)
+    nombre_producto = models.CharField(max_length=200)
+    marca_producto = models.CharField(max_length=100)
+    categoria_producto = models.CharField(max_length=50)
+    descripcion_producto = models.TextField()
+    precio_transferencia = models.IntegerField()
+    precio_otro = models.IntegerField()
+    stock_producto = models.IntegerField()
+    imagen = models.URLField()
 
     def __str__(self):
-        return self.NomProducto
+        return self.nombre_producto
 
 class OrdenProducto(models.Model):
-    Orden = models.ForeignKey('Orden', on_delete=models.CASCADE)
-    Producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
-    Cantidad = models.PositiveIntegerField(default=1)
+    orden = models.ForeignKey('Orden', on_delete=models.CASCADE)
+    producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
 
 class Orden(models.Model):
-    IdOrden = models.AutoField(primary_key=True)
-    FechaOrden = models.DateField(auto_now_add=True)
-    EstadoOrden = models.CharField(max_length=30, default='Pendiente')
-    UsuarioOrden = models.ForeignKey('UsuarioApp', on_delete=models.CASCADE)
-    Productos = models.ManyToManyField('Producto', through=OrdenProducto)
-    TotalOrden = models.IntegerField(blank=True, null=True) # Se puede calcular dinámicamente
+    orden_id = models.AutoField(primary_key=True)
+    fecha_orden = models.DateField(auto_now_add=True)
+    estado_orden = models.CharField(max_length=30, default='Pendiente')
+    usuario_orden = models.ForeignKey('UsuarioApp', on_delete=models.CASCADE)
+    productos = models.ManyToManyField('Producto', through=OrdenProducto)
+    total_orden = models.IntegerField(blank=True, null=True) # Se puede calcular dinámicamente
 
 class Pago(models.Model):
-    IdPago = models.AutoField(primary_key=True)
-    Orden = models.OneToOneField('Orden', on_delete=models.CASCADE)
-    MetodoPago = models.CharField(max_length=20)
-    MontoPago = models.IntegerField()
-    FechaPago = models.DateField(auto_now_add=True)
+    pago_id = models.AutoField(primary_key=True)
+    orden = models.OneToOneField('Orden', on_delete=models.CASCADE)
+    metodo_pago = models.CharField(max_length=20)
+    monto_pago = models.IntegerField()
+    fecha_pago = models.DateField(auto_now_add=True)
 
 class Carrito(models.Model):
     usuario = models.OneToOneField('UsuarioApp', on_delete=models.CASCADE, related_name="carrito")
@@ -111,7 +111,7 @@ class ItemCarrito(models.Model):
         unique_together = ('carrito', 'producto')
 
     def subtotal(self):
-        return self.cantidad * self.producto.PrecioTransferencia
+        return self.cantidad * self.producto.precio_transferencia
 
     def __str__(self):
-        return f"{self.cantidad} x {self.producto.NomProducto}"
+         return f"{self.cantidad} x {self.producto.nombre_producto}"

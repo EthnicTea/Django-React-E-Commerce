@@ -18,11 +18,15 @@ from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerial
 from .validations import custom_validation # No es util
 
 '''
+    NOTAS:
     Cambiar el sistema de autenticación a token-based en el futuro.
     Por ahora, se usa session-based auth para simplicidad.
 
     Se agregó el uso de JWT tokens para autenticación.
     Pero no se quitó el sistema de session-based auth.
+
+    Añadir QueryParameters para filtrar productos por categoría, marca, etc.
+    Puede ser útil para el frontend.
 '''
 
 def get_csrf_token(request):
@@ -31,7 +35,8 @@ def get_csrf_token(request):
 
 # Cualquiera puede acceder al registro
 class UserRegister(APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [permissions.AllowAny]
+
     def post(self, request):
         print(request.data)
         # Validations.py es donde se pueden agregar validaciones personalizadas. Pero no es util
@@ -51,7 +56,7 @@ def is_staff_user(user):
     return user.is_staff
 
 class UserLogin(APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [permissions.AllowAny]
     
     def post(self, request):
         print("Datos recibidos en el backend:", request.data) # Depuración
@@ -81,19 +86,22 @@ class UserLogin(APIView):
 
 # No desloguea
 class UserLogout(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     def post(self, request):
         logout(request)
         return Response(status=status.HTTP_200_OK)
 
 # Muestra datos correctamente. No obstante, también se puede obtener desde el token JWT, por que un usuario deslogeado puede ver los datos.
 class UserView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
 class ProductCreate(APIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden crear productos (is_staff=True)
+
     def post(self, request):
         print(request.data)
         # clean_data = custom_product(request.data)
@@ -116,13 +124,13 @@ class ProductDetail(RetrieveAPIView):
     permission_classes = [permissions.AllowAny] # Cualquiera puede ver la lista de productos
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
-    lookup_field = 'IdProducto'
+    lookup_field = 'producto_id'
 
 class ProductUpdate(UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden ver la lista de productos
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
-    lookup_field = 'IdProducto'
+    lookup_field = 'producto_id'
 
     def perform_update(self, serializer):
         # Lógica adicional
@@ -132,7 +140,7 @@ class ProductDelete(DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden ver la lista de productos
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
-    lookup_field = 'IdProducto'
+    lookup_field = 'producto_id'
 
 # ================= Carrito de Compras ==================
 class CartView(APIView):
@@ -156,7 +164,7 @@ class CartView(APIView):
         cantidad = request.data.get('cantidad', 1)
 
         try:
-            producto = Producto.objects.get(IdProducto=producto_id)
+            producto = Producto.objects.get(producto_id=producto_id)
         except Producto.DoesNotExist:
             return Response({"error": "El producto no existe."}, status=status.HTTP_404_NOT_FOUND)
 

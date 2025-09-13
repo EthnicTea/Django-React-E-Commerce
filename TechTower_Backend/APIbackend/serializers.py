@@ -33,7 +33,7 @@ class UserLoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('No se encuentra ese usuario.')
         data['user'] = user  # Puedes incluir el usuario autenticado en los datos validados
         return data
-    print("Serializer ha fallado")
+    # print("Serializer ha fallado")
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,14 +48,14 @@ class ProductSerializer(serializers.ModelSerializer):
     
     def create(self, data):
         product_obj = Producto.objects.create(
-            NomProducto=data['NomProducto'],
-            MarcaProducto=data['MarcaProducto'],
-            CategoriaProducto=data['CategoriaProducto'],
-            DescripcionProducto=data['DescripcionProducto'],
-            PrecioTransferencia=data['PrecioTransferencia'],
-            PrecioOtroMetodo=data['PrecioOtroMetodo'],
-            StockProducto=data['StockProducto'],
-            ImagenProducto=data['ImagenProducto'],
+            nombre_producto=data['nombre_producto'],
+            marca_producto=data['marca_producto'],
+            categoria_producto=data['categoria_producto'],
+            descripcion_producto=data['descripcion_producto'],
+            precio_transferencia=data['precio_transferencia'],
+            precio_otro=data['precio_otro'],
+            stock_producto=data['stock_producto'],
+            imagen=data['imagen'],
         )
         return product_obj
 
