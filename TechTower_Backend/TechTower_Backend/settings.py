@@ -89,7 +89,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     #'APIbackend',
-    'APIbackend.apps.ApibackendConfig'
+    'APIbackend.apps.ApibackendConfig',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
