@@ -1,16 +1,25 @@
+import os
+import json
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model, login, logout
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.urls import reverse
+from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
+from django.views.decorators.csrf import csrf_exempt
+
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from google import genai
+from google.genai.errors import APIError
 
 from .models import Producto, Carrito, ItemCarrito, Producto
 from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer, ProductSerializer, CarritoSerializer, ItemCarritoSerializer
@@ -100,7 +109,8 @@ class UserView(APIView):
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
 class ProductCreate(APIView):
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden crear productos (is_staff=True)
+    # permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden crear productos (is_staff=True)
+    permission_classes = [permissions.AllowAny] # Depuración
 
     def post(self, request):
         print(request.data)
@@ -219,3 +229,55 @@ class CartView(APIView):
             return Response({"message": "Producto eliminado del carrito."}, status=status.HTTP_200_OK)
         except ItemCarrito.DoesNotExist:
             return Response({"error": "El ítem no existe en este carrito."}, status=status.HTTP_404_NOT_FOUND)
+        
+# ================== Google GenAI Example ==================
+
+# Usaremos @csrf_exempt solo para pruebas iniciales con Postman.
+# **¡Para producción, SE DEBE usar el método seguro de Django!**
+class AsistenteIAView(APIView):
+
+    def post(self, request):
+        try:
+            # Traer ID del Frontend
+            componente_ids = request.data.get('ids', [])
+
+            if not componente_ids:
+                return Response({"error": "No se proporcionaron IDs de componentes."}, status=400)
+
+            # Consulta DB
+            productos_seleccionados = Producto.objects.filter(producto_id__in=componente_ids)
+
+            # Lista de strings con los detalles relevantes
+            # Evitar enviar datos sensibles
+            datos_para_ia = []
+            for p in productos_seleccionados:
+                datos_para_ia.append(
+                    f"Componente: {p.nombre_producto}, Stock: {p.stock_producto}, Marca: {p.marca_producto}, Precio Tradicional: {p.precio_otro}, Precio Transferencia: {p.precio_transferencia}"
+                )
+            
+            datos_contexto = "\n".join(datos_para_ia)
+
+            # Prompt base, sujeto a cambios. Lo ideal es que el usuario envie el prompt entero.
+            prompt = (
+                "Eres un experto en hardware, revisa la siguiente lista de componentes y evalúa su compatibilidad. "
+                "Si hay incompatibilidad, explica el motivo (ej: socket, potencia, o cuello de botella). " \
+                "Evita sobre extenderte, y da una solución"
+                "Lista de Componentes:\n"
+                f"--- INICIO DATOS DB ---\n{datos_contexto}\n--- FIN DATOS DB ---\n"
+            )
+
+            # Llamada a la API
+            client = genai.Client(api_key=settings.GEMINI_API_KEY)
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt
+            )
+
+            # Recojer la respuesta
+            return Response({"respuesta_ia": response.text})
+
+        except Producto.DoesNotExist:
+             return Response({"error": "Uno o más IDs de productos no fueron encontrados."}, status=404)
+        except Exception as e:
+            return Response({"error": f"Error interno: {str(e)}"}, status=500)
+            

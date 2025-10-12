@@ -56,6 +56,7 @@ class UsuarioApp(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+# Quizás agregar una tabla de "ficha técnica" todos los datos específicos
 class Producto(models.Model):
     producto_id = models.AutoField(primary_key=True)
     nombre_producto = models.CharField(max_length=200)
@@ -65,7 +66,7 @@ class Producto(models.Model):
     precio_transferencia = models.IntegerField()
     precio_otro = models.IntegerField()
     stock_producto = models.IntegerField()
-    imagen = models.URLField()
+    imagen = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.nombre_producto
