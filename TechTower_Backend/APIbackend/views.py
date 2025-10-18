@@ -230,11 +230,10 @@ class CartView(APIView):
         except ItemCarrito.DoesNotExist:
             return Response({"error": "El ítem no existe en este carrito."}, status=status.HTTP_404_NOT_FOUND)
         
-# ================== Google GenAI Example ==================
+# ================== Google GenAI ==================
 
-# Usaremos @csrf_exempt solo para pruebas iniciales con Postman.
 # **¡Para producción, SE DEBE usar el método seguro de Django!**
-class AsistenteIAView(APIView):
+class AsistenteIAViewCompatible(APIView):
 
     def post(self, request):
         try:
@@ -281,3 +280,73 @@ class AsistenteIAView(APIView):
         except Exception as e:
             return Response({"error": f"Error interno: {str(e)}"}, status=500)
             
+class AsistenteIAViewPresupuesto(APIView):
+
+    def post(self, request):
+        if request.method != 'POST':
+            return JsonResponse({'error': 'Solo se acepta método POST'}, status=405)
+
+        try:
+            # Obtener datos del usuario
+            data = json.loads(request.body)
+            presupuesto = data.get('presupuesto')
+            perfil_uso = data.get('perfil', 'uso general') # Si el usuario no lo define, se asume
+
+            if not presupuesto or not isinstance(presupuesto, (int, float)):
+                return JsonResponse({'error': 'Debe especificar un presupuesto válido'}, status=400)
+
+            # consulta a la base de datos 
+            datos_productos = list(Producto.objects.all().values())
+            
+            # Formato del Prompt!
+            # "El System Prompt define el rol y las reglas de la IA"
+            system_prompt = (
+                "Eres un experto en armado de PC y asistente de la tienda Techtower. "
+                "Tu misión es seleccionar la MEJOR configuración de componentes posible "
+                "que se ajuste al presupuesto del cliente y su perfil de uso. "
+                "El presupuesto máximo es ${:,.0f} CLP. El uso principal es: {}. "
+                "Solo debes usar los productos listados en el JSON. "
+                "Tu respuesta DEBE ser un objeto JSON con dos claves: 'seleccion_final' (una lista de los IDs de los productos elegidos) y 'justificacion' (un párrafo explicando el por qué de la elección, mencionando el equilibrio precio/rendimiento)."
+                .format(presupuesto, perfil_uso)
+            )
+            
+            # El User Prompt le da los datos para trabajar
+            user_prompt = "Lista de productos disponibles: \n" + json.dumps(datos_productos, indent=2)
+
+            # Preparar la llamada a la IA (Descomentar para usar)
+            api_key = os.environ.get('API_KEY_IA')
+
+            client = genai.Client(api_key=api_key)
+            response = client.models.generate_content(
+               model='gemini-2.5-flash',
+               contents=[system_prompt, user_prompt]
+            )
+            
+            texto_ia = response.text
+            # Quitar el envoltorio de markdown 
+            if texto_ia.startswith("```json"):
+                texto_limpio = texto_ia.replace("```json\n", "").replace("\n```", "").strip()
+            else:
+                texto_limpio = texto_ia
+
+            # Convertir el string limpio en un objeto Python
+                try:
+                    resultado_ia_json = json.loads(texto_limpio)
+                except json.JSONDecodeError:
+                    # Si la IA no devolvió un JSON válido, manejamos el error
+                    resultado_ia_json = {"error": "La IA no devolvió un formato JSON válido.", "raw_text": texto_ia}
+
+            # Devolver la respuesta al frontend
+            return JsonResponse({
+                'status': 'success',
+                'resultado_ia': resultado_ia_json
+            })
+        
+        
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Payload JSON inválido'}, status=400)
+        except APIError as e:
+            return JsonResponse({'error': f'Error de la API de IA: {str(e)}'}, status=500)
+        except Exception as e:
+            return JsonResponse({'error': f'Un error inesperado ocurrió: {str(e)}'}, status=500)

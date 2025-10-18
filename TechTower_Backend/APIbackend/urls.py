@@ -18,5 +18,6 @@ urlpatterns = [
     path('products/delete/<int:IdProducto>', views.ProductDelete.as_view(), name='product-delete'),
     # Carrito de Compras
     path('cart/', views.CartView.as_view(), name='cart-view'),
-    path('ia/compatibilidad/', views.AsistenteIAView.as_view(), name='compatibilidad-ia'), 
+    path('ia/compatibilidad/', views.AsistenteIAViewCompatible.as_view(), name='compatibilidad-ia'),
+    path('ia/presupuesto/', views.AsistenteIAViewPresupuesto.as_view(), name='generar_presupuesto_ia'), 
 ]
