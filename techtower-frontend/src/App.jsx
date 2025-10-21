@@ -19,6 +19,7 @@ import MasVendidos  from './components/MasVendidos.jsx'
 import Carrito from './Carrito.jsx'
 import axios from 'axios';
 import { Crud } from './Crud.jsx'
+import PcBuilder from './PcBuilder.jsx';
 
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -73,6 +74,7 @@ export function App() {
       <Route path="/componentes" element={<Componentes />} />
       <Route path="/conectividad" element={<ConectividadRedes />} />
       <Route path="/audiovideo" element={<AudioVideo />} />
+      <Route path="/PcBuilder" element={<PcBuilder />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/ofertas" element={<Ofertas />} />

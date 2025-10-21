@@ -116,6 +116,7 @@ export function Navbar() {
                     <li className="category-item"><Link to="/Componentes">Componentes</Link></li>
                     <li className="category-item"><Link to="/Conectividad">Conectividad y Redes</Link></li>
                     <li className="category-item"><Link to="/AudioVideo">Equipos de Audio y Video</Link></li>
+                    <li className="category-item"><Link to="/PcBuilder">Armado de Pc</Link></li>
                 </ul>
             </nav>
         </>
