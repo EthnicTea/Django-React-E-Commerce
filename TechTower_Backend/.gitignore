@@ -1,3 +1,7 @@
 # Archivos de Python
 __pycache__/
 *.pyc
+
+venv/
+.venv/
+.env
