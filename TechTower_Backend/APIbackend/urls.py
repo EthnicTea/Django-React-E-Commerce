@@ -20,4 +20,6 @@ urlpatterns = [
     path('cart/', views.CartView.as_view(), name='cart-view'),
     path('ia/compatibilidad/', views.AsistenteIAViewCompatible.as_view(), name='compatibilidad-ia'),
     path('ia/presupuesto/', views.AsistenteIAViewPresupuesto.as_view(), name='generar_presupuesto_ia'), 
+
+    # Api de pago
 ]
