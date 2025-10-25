@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import get_csrf_token
+from .views import get_csrf_token, webhook_mp
 
 appname = "APIbackend"
 
@@ -21,5 +21,11 @@ urlpatterns = [
     path('ia/compatibilidad/', views.AsistenteIAViewCompatible.as_view(), name='compatibilidad-ia'),
     path('ia/presupuesto/', views.AsistenteIAViewPresupuesto.as_view(), name='generar_presupuesto_ia'), 
 
-    # Api de Mercado Pago
+    # ENDPOINT PARA INICIAR EL PAGO (Llamada desde React)
+    path('mp/crear/', views.CrearPreferenciaMP.as_view(), name='mp_crear_preferencia'),
+    
+    # ENDPOINT DE NOTIFICACIÓN (Llamada desde Mercado Pago)
+    path('mp/webhook/', webhook_mp, name='mp_webhook'),
+    
+    # NOTA: Los paths /pago/exito y /pago/fallo/ son URLs de React, no de Django!!!!!!
 ]

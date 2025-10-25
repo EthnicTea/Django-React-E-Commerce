@@ -1,9 +1,10 @@
+from datetime import datetime
 import os
 import json
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model, login, logout
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
 from django.urls import reverse
 from django.conf import settings
@@ -20,6 +21,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from google import genai
 from google.genai.errors import APIError
+
+import mercadopago
 
 from .models import Producto, Carrito, ItemCarrito, Producto
 from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer, ProductSerializer, CarritoSerializer, ItemCarritoSerializer
@@ -350,3 +353,126 @@ class AsistenteIAViewPresupuesto(APIView):
             return JsonResponse({'error': f'Error de la API de IA: {str(e)}'}, status=500)
         except Exception as e:
             return JsonResponse({'error': f'Un error inesperado ocurrió: {str(e)}'}, status=500)
+        
+# ================== MercadoPago ==================
+
+sdk = mercadopago.SDK(settings.MP_ACCESS_TOKEN) 
+
+class CrearPreferenciaMP(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            # items_carrito = data.get('items', [])
+
+            carrito_id = data.get('carrito_id')
+            
+            if not carrito_id:
+                return JsonResponse({'error': 'No se encontró la id del carrito.'}, status=400)
+
+            # items_mp_format = items_carrito # Depuración: usar los datos tal cual vienen del frontend
+
+            items_carrito_db = ItemCarrito.objects.filter(carrito__id=carrito_id)
+
+            if not items_carrito_db.exists():
+                return JsonResponse({'error': 'El carrito está vacío o no existe.'}, status=400)
+            
+            # 1. Mapeo de ítems y consulta a la DB
+            items_mp_format = []
+            for item in items_carrito_db:
+                producto = item.producto # Asume que ItemCarrito tiene una FK a Producto
+                
+                # Mapeamos los datos de la DB al formato {title, quantity, unit_price}
+                items_mp_format.append({
+                    "title": getattr(producto, 'nombre_producto', 'Producto Genérico'),
+                    "quantity": item.cantidad, # Asume que ItemCarrito tiene el campo 'cantidad'
+                    # Usamos el precio que prefieras de tu modelo
+                    "unit_price": float(getattr(producto, 'precio_transferencia', 0)) 
+                })
+
+            # 2. Definición de la URL de base
+            base_url = "http://localhost:5173/" # El dominio de React
+            
+            URL_NGROK_BASE = "https://unpatented-jerald-darlingly.ngrok-free.dev"
+
+            # 3. Creación del objeto de preferencia
+
+            external_reference_id = f"ORDER-{carrito_id}-{datetime.now().timestamp()}"
+            preference_data = {
+                "items": items_mp_format,
+                "external_reference": external_reference_id,
+                "back_urls": {
+                    "success": f"{base_url}http://localhost:5173//pago/exito", 
+                    "failure": f"{base_url}http://localhost:5173//pago/fallo",
+                    "pending": f"{base_url}http://localhost:5173//pago/pendiente"
+                },
+                #"auto_return": "approved",
+                "notification_url": f"{URL_NGROK_BASE}/api/mp/webhook" # Usar http/https sin duplicar
+            }
+            
+            # 4. LLAMADA AL SDK (AQUÍ DEBE IR DESPUÉS DE LA DEFINICIÓN)
+            preference_response = sdk.preference().create(preference_data)
+
+            print("Respuesta Completa de MP:", preference_response) # Depuración completa!
+
+            if 'status' in preference_response and preference_response['status'] >= 400:
+                # Si es un error de API, el mensaje real estará DENTRO de la clave 'response'
+                error_details = preference_response.get('response', {})
+                
+                # Intenta obtener el mensaje de error directamente desde la respuesta interna
+                error_message = error_details.get('message', 'Error desconocido de Mercado Pago (Revisar logs).')
+                
+                # Devuelve un error más claro y el código de estado HTTP 400
+                return JsonResponse({"error": f"Error de Mercado Pago (Status {preference_response['status']}): {error_message}"}, status=400)
+                        
+            preference = preference_response["response"]
+            
+            # Devolver el punto de inicio de pago al frontend (React)
+            return JsonResponse({"init_point": preference["init_point"]})
+        
+        except Carrito.DoesNotExist:
+            return JsonResponse({'error': f'El carrito {carrito_id} no existe.'}, status=404)
+        except Exception as e: # Captura errores del SDK o de conexión
+            # Imprime el error en la terminal
+            print(f"ERROR MP SDK: {str(e)}") 
+            # Devuelve una respuesta 500 al cliente con el mensaje de error
+            return JsonResponse({"error": f"Error al crear la preferencia. {str(e)}"}, status=500)
+
+@csrf_exempt
+def webhook_mp(request):
+    # El token CSRF debe ser ignorado porque la llamada no viene de un navegador
+    if request.method == 'POST':
+        try:
+            # MP envía una notificación POST con los datos de la transacción
+            data = json.loads(request.body)
+            
+            # 1. OBTENER EL ID DEL PAGO
+            # Ejemplo: data = {'id': '12345', 'topic': 'payment', 'resource': '...'}
+            topic = data.get('topic')
+            resource_id = data.get('id')
+            
+            if topic == 'payment' and resource_id:
+                # 2. CONSULTAR A MP PARA OBTENER EL ESTADO REAL
+                payment_info = sdk.payment().get(resource_id)
+                payment_status = payment_info['response']['status']
+                external_reference = payment_info['response']['external_reference'] # ID de tu orden
+                
+                # 3. ACTUALIZAR LA BASE DE DATOS
+                if payment_status == 'approved':
+                    # Lógica para marcar tu orden como PAGADA en la DB
+                    print(f"Pago APROBADO para la orden: {external_reference}")
+                elif payment_status in ('pending', 'in_process'):
+                    # Lógica para marcar la orden como PENDIENTE
+                    print(f"Pago PENDIENTE para la orden: {external_reference}")
+                else: # rejected, cancelled, etc.
+                    # Lógica para marcar la orden como FALLIDA
+                    print(f"Pago RECHAZADO para la orden: {external_reference}")
+
+                # 4. RESPONDER CON 200 OK
+                # ¡Es CRÍTICO que la respuesta sea 200 para que MP no reintente!
+                return HttpResponse(status=200)
+
+        except Exception as e:
+            print(f"Error procesando Webhook: {str(e)}")
+            return HttpResponse(status=500)
+    
+    return HttpResponse(status=405) # Método no permitido
