@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import './Conectividad-Redes.css';
-import Items2 from './components/Items2.jsx';
-import Filtro from './components/Filtro.jsx';
 
-const Gaming = () => {
-    const [filters, setFilters] = useState({ brand: '', category: '' });
+const ConectividadRedes = () => {
+    const [selectedBrand, setSelectedBrand] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     // Lista de productos
     const products = [
@@ -18,41 +17,80 @@ const Gaming = () => {
         { id: 38, name: 'Adaptador de red USB Wi-Fi 6 con 2 antenas AX1800 TP-Link Archer TX20U,Tecnología MU-MIMO', brand: 'TP-LINK', category: 'Adaptador', price: '$16.280 Transferencia', price2: '$17.023 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/os9gvbbr_77803a78_thumbnail_512.jpg' },
         { id: 39, name: 'Adaptador de red Wifi TP-Link TL-WN851ND PCI Express Inalámbrico N a 300 Mbps', brand: 'TP-LINK', category: 'Adaptador', price: '$12.990 Transferencia', price2: '$13.580 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/4wtbz00y_ab9a9e26_thumbnail_512.jpg' },
         { id: 40, name: 'Adaptador Mini PCI TP-Link TL-WN360G 54Mbps Wireless Mini PCI Adapter', brand: 'TP-LINK', category: 'Adaptador', price: '$3.880 Transferencia', price2: '$4.062 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/gdmj1kd3_52ad7f53_thumbnail_512.jpg' },
-        // Añadir más productos con sus propiedades
     ];
 
-    const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
+    const brands = ['TRIPP LITE', 'XTECH', 'TP-LINK', 'STARTECH.COM'];
+    const categories = ['Conector', 'Access Point', 'Adaptador'];
+
+    const handleBrandChange = (e) => {
+        setSelectedBrand(e.target.value);
+    };
+
+    const handleCategoryChange = (e) => {
+        setSelectedCategory(e.target.value);
     };
 
     const filteredProducts = products.filter((product) => {
         return (
-            (filters.brand === '' || product.brand === filters.brand) &&
-            (filters.category === '' || product.category === filters.category)
+            (selectedBrand === '' || product.brand === selectedBrand) &&
+            (selectedCategory === '' || product.category === selectedCategory)
         );
     });
 
     return (
-        <section className="gaming-section">
-            <h1 className="gaming-title">Explora el Rincon de las Conexiones</h1>
-            <p className="gaming-description">Encuentra todo lo que necesitas para mejorar o agregar Conexiones: desde Cables de Alimentación hasta todo tipo de usb's.</p>
+        <div className="conectividad-container">
+            <h2 className="conectividad-title">Explora el Rincón de las Conexiones</h2>
+            <p className="conectividad-description">
+                Encuentra todo lo que necesitas para mejorar o agregar Conexiones: desde Cables de Alimentación hasta todo tipo de USB's.
+            </p>
             
             {/* Filtro de productos */}
-            <Filtro onFilter={handleFilterChange} />
+            <div className="filter-bar-modern">
+                <div className="filter-group-modern">
+                    <label htmlFor="brand-filter-conectividad">Marca:</label>
+                    <select id="brand-filter-conectividad" value={selectedBrand} onChange={handleBrandChange}>
+                        <option value="">Todas las marcas</option>
+                        {brands.map((brand) => (
+                            <option key={brand} value={brand}>
+                                {brand}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="filter-group-modern">
+                    <label htmlFor="category-filter-conectividad">Categoría:</label>
+                    <select id="category-filter-conectividad" value={selectedCategory} onChange={handleCategoryChange}>
+                        <option value="">Todas las categorías</option>
+                        {categories.map((category) => (
+                            <option key={category} value={category}>
+                                {category}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
 
-            <div className="gaming-products">
-                {filteredProducts.map((product) => (
-                    <Items2 
-                        key={product.id} 
-                        name={product.name}
-                        price={product.price}
-                        price2={product.price2}
-                        image={product.image}
-                    />
+            <div className="conectividad-products">
+                {filteredProducts.map((p) => (
+                    <div key={p.id} className="card-conectividad">
+                        <div className="imagen-container">
+                            <img src={p.image} alt={p.name} className="imagen-conectividad" />
+                        </div>
+                        <h3 className="nombre-conectividad">{p.name}</h3>
+                        <p className="marca-conectividad">{p.brand}</p>
+                        <p className="precio-conectividad">
+                            <span className="precio-transferencia">{p.price}</span>
+                            <span className="precio-normal">{p.price2}</span>
+                        </p>
+                        <div className="botones-conectividad">
+                            <button className="btn-agregar">Agregar</button>
+                            <button className="btn-ver">Ver</button>
+                        </div>
+                    </div>
                 ))}
             </div>
-        </section>
+        </div>
     );
 };
 
-export default Gaming;
+export default ConectividadRedes;

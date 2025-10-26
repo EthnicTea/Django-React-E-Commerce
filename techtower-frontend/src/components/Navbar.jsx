@@ -52,7 +52,9 @@ export function Navbar() {
 
                 <div className="navbar-main">
                     <div className="navbar-logo">
-                        <Link to="/">TechTower</Link>
+                        <Link to="/">
+                            <span className="tech-highlight">Tech</span>Tower
+                        </Link>
                     </div>
 
                     <div className="navbar-search">
@@ -122,4 +124,3 @@ export function Navbar() {
         </>
     );
 }
-    

@@ -1,13 +1,14 @@
 /* Estilos generales de la primera navbar */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 *{
     margin: 0;
     padding: 0;
     font-family: "Outfit", sans-serif;
     font-style: normal;
-  }
+}
 
 html, body {
     background-color: #dee4ee;
@@ -48,10 +49,17 @@ html, body {
     padding: 10px;
 }
 
+/* ESTILOS DEL LOGO TECHTOWER */
 .navbar-logo a {
-    font-size: 24px;
-    color: #ffffff;
-    text-decoration: none;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    color: #ffffff !important; /* Color blanco para "Tower" */
+}
+
+.tech-highlight {
+    color: #00bcd4 !important; /* Cian para "Tech" */
 }
 
 .navbar-search {
@@ -93,9 +101,9 @@ html, body {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    padding: 10px; /* Ampliar relleno interno */
-    margin-right: 5px; /* Separar ligeramente de otros elementos */
-    border-radius: 2px; /* Estilo más visual */
+    padding: 10px;
+    margin-right: 5px;
+    border-radius: 2px;
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
@@ -154,7 +162,7 @@ html, body {
 
 .dropdown-content span:hover,
 .dropdown-content button:hover {
-    background-color: #ddd; /* Resalta con un fondo más claro */
+    background-color: #ddd;
 }
 
 .navbar-link-user {
@@ -164,7 +172,7 @@ html, body {
 
 /* Botón de logout con estilos */
 .navbar-link-user[role="logout"] {
-    color: #cc1717; /* Color especial para logout */
+    color: #cc1717;
     font-weight: bold;
     border-top: 1px solid #444;
 }
@@ -183,7 +191,6 @@ html, body {
 .navbar-hamburger {
     display: none;
 }
-
 
 /* Segunda navbar: categorías */
 .navbar-categories {
@@ -232,6 +239,7 @@ html, body {
     .dropdown-content {
         left: 0;
     }
+    
     .navbar-search {
         width: 100%;
     }

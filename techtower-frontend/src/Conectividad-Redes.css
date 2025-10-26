@@ -1,65 +1,214 @@
-.gaming-section {
-    padding: 2rem;
-    background-color: #1a1a1d;
-    color: #ffffff;
-    text-align: center;
+/* CONTENEDOR PRINCIPAL CONECTIVIDAD */
+.conectividad-container {
+  background-color: #f8f9fb !important;
+  min-height: 100vh;
+  padding: 50px 80px !important;
 }
 
-.gaming-title {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: #e94560;
+.conectividad-container .conectividad-title {
+  text-align: center !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: #007bff !important;
+  margin-bottom: 15px !important;
 }
 
-.gaming-description {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
+.conectividad-container .conectividad-description {
+  text-align: center !important;
+  font-size: 1.1rem !important;
+  color: #666 !important;
+  margin-bottom: 35px !important;
+  max-width: 700px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.gaming-products {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
+/* BARRA DE FILTROS MODERNA */
+.conectividad-container .filter-bar-modern {
+  background-color: #ffffff !important;
+  border-radius: 18px !important;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1) !important;
+  padding: 25px 30px !important;
+  margin-bottom: 40px !important;
+  display: flex !important;
+  gap: 25px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  border: 2px solid #e8f0fe !important;
 }
 
-.product-card {
-    background-color: #2b2b2e;
-    padding: 1rem;
-    border-radius: 8px;
-    width: 200px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.conectividad-container .filter-group-modern {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  min-width: 220px !important;
 }
 
-.product-image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
+.conectividad-container .filter-group-modern label {
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  color: #111111 !important;
+  text-align: left !important;
 }
 
-.product-name {
-    font-size: 1.1rem;
-    color: #e94560;
-    margin-top: 1rem;
+.conectividad-container .filter-group-modern select {
+  padding: 12px 16px !important;
+  border: 2px solid #e0e0e0 !important;
+  border-radius: 12px !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+  background-color: #f8f9fb !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  outline: none !important;
 }
 
-.product-price {
-    font-size: 1rem;
-    color: #c9c9c9;
-    margin: 0.5rem 0;
+.conectividad-container .filter-group-modern select:hover {
+  border-color: #007bff !important;
+  background-color: #ffffff !important;
 }
 
-.product-button {
-    background-color: #e94560;
-    color: #ffffff;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.conectividad-container .filter-group-modern select:focus {
+  border-color: #007bff !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1) !important;
 }
 
-.product-button:hover {
-    background-color: #c23747;
+/* GRID ESTABLE */
+.conectividad-container .conectividad-products {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 30px !important;
+  justify-items: center !important;
+}
+
+/* CARD PRODUCTO */
+.conectividad-container .card-conectividad {
+  background-color: #ffffff !important;
+  border-radius: 18px !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
+  width: 100% !important;
+  max-width: 320px !important;
+  text-align: center !important;
+  padding: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transition: all 0.25s ease !important;
+  border: 2px solid transparent !important;
+}
+
+.conectividad-container .card-conectividad:hover {
+  border-color: #007bff !important;
+  transform: translateY(-5px) !important;
+}
+
+/* IMAGEN */
+.conectividad-container .imagen-container {
+  width: 100% !important;
+  height: 180px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.conectividad-container .imagen-conectividad {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* TEXTO */
+.conectividad-container .nombre-conectividad {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #111111 !important;
+  margin-top: 10px !important;
+}
+
+.conectividad-container .marca-conectividad {
+  font-size: 0.85rem !important;
+  color: #007bff !important;
+  font-weight: 500 !important;
+  margin-bottom: 6px !important;
+}
+
+.conectividad-container .precio-conectividad {
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 10px 0 !important;
+}
+
+.conectividad-container .precio-transferencia {
+  color: #007bff !important;
+  font-weight: 700 !important;
+}
+
+.conectividad-container .precio-normal {
+  color: #888 !important;
+  font-size: 0.85rem !important;
+}
+
+/* BOTONES */
+.conectividad-container .botones-conectividad {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+}
+
+.conectividad-container .btn-agregar,
+.conectividad-container .btn-ver {
+  flex: 1 !important;
+  border-radius: 12px !important;
+  border: none !important;
+  padding: 8px 12px !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.conectividad-container .btn-agregar {
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+.conectividad-container .btn-agregar:hover {
+  background-color: #005bd1 !important;
+}
+
+.conectividad-container .btn-ver {
+  background-color: #f0f2f5 !important;
+  color: #111 !important;
+}
+
+.conectividad-container .btn-ver:hover {
+  background-color: #e4e6eb !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .conectividad-container {
+    padding: 30px 20px !important;
+  }
+  
+  .conectividad-container .conectividad-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .conectividad-container .conectividad-description {
+    font-size: 1rem !important;
+  }
+  
+  .conectividad-container .filter-bar-modern {
+    padding: 20px !important;
+    gap: 15px !important;
+  }
+  
+  .conectividad-container .filter-group-modern {
+    min-width: 100% !important;
+  }
 }

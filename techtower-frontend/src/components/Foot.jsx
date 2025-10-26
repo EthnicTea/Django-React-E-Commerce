@@ -31,7 +31,7 @@ export function Foot() {
 
             {/* Información final */}
             <div className="fm-footer-finalfooter">
-                <p className="fm-footer-finalfooter-p">© 2024 | TechTower.cl Todos los derechos reservados | Desarrollado por el equipo maravilla dinamita alpha lobo</p>
+                <p className="fm-footer-finalfooter-p">© 2024 | TechTower.cl Todos los derechos reservados</p>
             </div>  
         </div>
     );
