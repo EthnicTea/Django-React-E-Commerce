@@ -350,3 +350,6 @@ class AsistenteIAViewPresupuesto(APIView):
             return JsonResponse({'error': f'Error de la API de IA: {str(e)}'}, status=500)
         except Exception as e:
             return JsonResponse({'error': f'Un error inesperado ocurrió: {str(e)}'}, status=500)
+        
+# =================== Webpay ===================
+
