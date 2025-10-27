@@ -1,0 +1,81 @@
+/* Contenedor principal del perfil */
+.profile-container {
+    max-width: 600px;
+    margin: 40px auto; /* Centra el formulario en la página */
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Sombra suave */
+    font-family: Arial, sans-serif;
+}
+
+.profile-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+/* El formulario en sí */
+.profile-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cada grupo de (label + input) */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block; /* Hace que el label ocupe su propia línea */
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Efecto visual al hacer clic en un input */
+.form-group input:focus {
+    outline: none;
+    border-color: #007bff; /* Un azul "tech" */
+    box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+/* Estilo para el input de email que no se puede editar */
+.form-group input.disabled-input {
+    background-color: #f4f4f4;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* Botón de Guardar */
+.save-button {
+    background-color: #00bcd4;
+    color: white;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+    background: #00acc1; 
+    box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3);
+    transform: translateY(-1px);
+}

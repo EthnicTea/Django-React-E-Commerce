@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Register.css';
 import axios from 'axios';
 
@@ -303,7 +304,7 @@ export function Register() {
         </form>
         
         <p className="login-link">
-          <a href="#">¿Ya tienes cuenta? Inicia sesión aquí</a>
+          <Link to="/login">¿Ya tienes una cuenta? Inicia sesión aquí</Link>
         </p>
         
       </div>

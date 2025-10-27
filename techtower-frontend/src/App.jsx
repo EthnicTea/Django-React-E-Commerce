@@ -20,6 +20,7 @@ import Carrito from './Carrito.jsx'
 import axios from 'axios';
 import { Crud } from './Crud.jsx'
 import PcBuilder from './PcBuilder.jsx';
+import PerfilUsuario from './PerfilUsuario.jsx';
 
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -81,6 +82,7 @@ export function App() {
       <Route path="/terminos" element={<Terminos />} />
       <Route path="/masvendidos" element={<MasVendidos />} />
       <Route path="/carrito" element={<Carrito />} />
+      <Route path="/PerfilUsuario" element={<PerfilUsuario />} />
       <Route path="/crud" element={isStaff ? <Crud /> : <Navigate to="/" />} /> {/* {<Crud />} */}
     </Routes>
     <footer>

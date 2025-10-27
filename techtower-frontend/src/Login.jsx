@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { loginUser } from "./App.jsx"; // Manteniendo tu importación
 import axios from 'axios';
 import "./Login.css"; // Esta es la línea que fallaba por la ausencia del archivo.
@@ -81,7 +82,7 @@ export function Login() {
         {/* Enlaces secundarios */}
         <div className="secondary-links">
             <p><a href="#">¿Olvidaste tu Contraseña?</a></p>
-            <p><a href="#">¿No tienes cuenta? ¡Regístrate!</a></p>
+            <p><Link to="/register">¿No tienes cuenta? ¡Regístrate!</Link></p>
         </div>
       </div>
     </div>
