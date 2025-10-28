@@ -48,6 +48,7 @@ export function Navbar() {
                         ¡Recuerda que siempre será gratis el retiro de los productos! Además de la variedad de productos con despacho gratis, vea más&nbsp;
                         <Link to="/terminos">Aquí</Link>
                         {/* <Link to="/PerfilUsuario">Aquí</Link> */}
+                        {/* <Link to="/Pasarela">Aquí</Link> */}
                     </span>
                 </div>
 

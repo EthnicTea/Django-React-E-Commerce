@@ -21,7 +21,7 @@ export function Foot() {
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%28square%29.png/600px-Facebook_logo_%28square%29.png" alt="Facebook" className="social-icon" />
                     </a>
                     <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                        <img src="https://seeklogo.com/images/T/twitter-x-logo-101C7D2420-seeklogo.com.png" alt="Twitter" className="social-icon" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/300px-X_logo_2023.svg.png" alt="Twitter" className="social-icon" />
                     </a>
                     <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Instagram_logo_2022.svg/600px-Instagram_logo_2022.svg.png" alt="Instagram" className="social-icon" />
