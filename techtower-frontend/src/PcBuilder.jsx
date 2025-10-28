@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './PcBuilder.css';
 
 const PRODUCT_DATABASE = {
     cpu: [
