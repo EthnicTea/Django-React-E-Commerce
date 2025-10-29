@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import get_csrf_token, webhook_mp
+from .views import mercadopago_webhook, create_preference_from_db
 
 appname = "APIbackend"
 
@@ -27,5 +28,13 @@ urlpatterns = [
     # ENDPOINT DE NOTIFICACIÓN (Llamada desde Mercado Pago)
     path('mp/webhook/', webhook_mp, name='mp_webhook'),
     
+    # Mercado pago
+    # 1. La ruta de checkout que crea la ORDEN
+    path('checkout/create/', views.checkout_create_order, name='checkout_create_order'),
+    
+    # 2. La ruta de la API de Mercado Pago que espera el ID
+    path('payments/create/<int:orden_id>/', views.create_preference_from_db, name='create_preference'),
     # NOTA: Los paths /pago/exito y /pago/fallo/ son URLs de React, no de Django!!!!!!
+
+    path('api/webhooks/mercadopago', mercadopago_webhook, name='mercadopago_webhook'),
 ]

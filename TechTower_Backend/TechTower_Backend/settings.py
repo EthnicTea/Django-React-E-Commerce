@@ -15,6 +15,12 @@ SECRET_KEY = 'django-insecure-tv%g_dmzi$ag&0m0guqbb**32fhn)0@fu136@wm1da7#^=-+y6
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") 
 MP_ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN")
 
+# Access Token de PRUEBA para el backend (USO SECRETO)
+MERCADO_PAGO_ACCESS_TOKEN = "APP_USR-8788110356339220-102820-1fb55e24d9457cde677b275274f4be67-2953519178"
+
+# Configuración del país para moneda (ej. Chile - CLP)
+MERCADO_PAGO_PAIS = "CHL"
+
 # SECURITY WARNING: don't run with debug turned on in production!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 DEBUG = True
 
