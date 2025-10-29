@@ -61,10 +61,11 @@ class Producto(models.Model):
     producto_id = models.AutoField(primary_key=True)
     nombre_producto = models.CharField(max_length=200)
     marca_producto = models.CharField(max_length=100)
-    categoria_producto = models.CharField(max_length=50)
+    categoria_producto = models.CharField(max_length=50) # Gaming, Componentes, Computación, etc. (basado en la página)
     descripcion_producto = models.TextField()
     precio_transferencia = models.IntegerField()
     precio_otro = models.IntegerField()
+    # tipo_producto = ejemplo, CPU, RAM, etc
     stock_producto = models.IntegerField()
     imagen = models.URLField(null=True, blank=True)
 

@@ -15,7 +15,7 @@ urlpatterns = [
     path('products/', views.ProductList.as_view(), name='product-list'),
     path('products/<int:id>', views.ProductDetail.as_view(), name='product-detail'),
     path('products/update/<int:IdProducto>', views.ProductUpdate.as_view(), name='product-update'),
-    path('products/delete/<int:IdProducto>', views.ProductDelete.as_view(), name='product-delete'),
+    path('products/delete/<int:producto_id>', views.ProductDelete.as_view(), name='product-delete'),
     # Carrito de Compras
     path('cart/', views.CartView.as_view(), name='cart-view'),
     path('ia/compatibilidad/', views.AsistenteIAViewCompatible.as_view(), name='compatibilidad-ia'),

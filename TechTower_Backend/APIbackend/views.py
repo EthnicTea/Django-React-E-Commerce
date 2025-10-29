@@ -128,6 +128,21 @@ class ProductList(ListAPIView):
     permission_classes = [permissions.AllowAny] # Cualquiera puede ver la lista de productos    
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
+    
+    def get_queryset(self):
+        queryset = Producto.objects.all()
+        
+        # 2. Leemos el parámetro 'categoria' de la URL (ej: /api/products/?categoria=Gaming)
+        categoria_nombre = self.request.query_params.get('categoria_producto', None)
+        
+        # 3. Si el parámetro existe, filtramos el queryset
+        if categoria_nombre is not None:
+            # Usamos __ (doble guion bajo) para filtrar por el 'nombre'
+            # del modelo relacionado 'categoria_producto'.
+            # 'iexact' ignora mayúsculas/minúsculas.
+            queryset = queryset.filter(categoria_producto__nombre_categoria__iexact=categoria_nombre)
+            
+        return queryset
 
 # Detalle de un producto específico
 class ProductDetail(RetrieveAPIView):
@@ -147,7 +162,8 @@ class ProductUpdate(UpdateAPIView):
         serializer.save()
 
 class ProductDelete(DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden ver la lista de productos
+    # permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden ver la lista de productos
+    permission_classes = [permissions.AllowAny]
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'producto_id'

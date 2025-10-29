@@ -32,6 +32,7 @@ export function Navbar() {
                         <Link to="/terminos">Aquí</Link>
                         {/* <Link to="/PerfilUsuario">Aquí</Link> */}
                         {/* <Link to="/Pasarela">Aquí</Link> */}
+                        {/* <Link to="/crud">Aquí</Link> */}
                     </span>
                 </div>
 
