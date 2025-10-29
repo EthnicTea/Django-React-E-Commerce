@@ -1,38 +1,21 @@
+import React from 'react';
 import './Navbar.css';
 import { BsFillCartFill } from "react-icons/bs";
 import { FiUser } from "react-icons/fi";
 import { FiMenu } from "react-icons/fi";
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-axios.defaults.withCredentials = true;
+import { useAuth } from '../services/AuthContext.jsx';
+import { useState } from 'react';
 
 export function Navbar() {
-    const [userEmail, setUserEmail] = useState(null);
-    const [isStaff, setIsStaff] = useState(false);
-  
-    useEffect(() => {
-      const email = localStorage.getItem('userEmail');
-      const staffStatus = localStorage.getItem('isStaff') === 'true';
-  
-      setUserEmail(email);
-      setIsStaff(staffStatus);
-    }, []);
-  
-    const handleLogout = async () => {
-      try {
-        await axios.post('/api/logout');
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('isStaff');
-        setUserEmail(null);
-        setIsStaff(false);
-        window.location.href = '/';
-      } catch (error) {
-        console.error('Error en el logout:', error);
-      }
-    };
 
+// --- LÓGICA con "context" ---
+    // Se obtiene el estado y las funciones de nuestro AuthContext
+    // 'user' tendrá los datos como {email, is_staff, ...}
+    // 'logoutAction' es la función que borra el token
+    const { authToken, user, logoutAction } = useAuth();
+    
+    // El estado del dropdown se mantiene igual
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -81,15 +64,35 @@ export function Navbar() {
                                 <FiUser className='icon-user'/>
                             </button>
                             <div className={`dropdown-content ${isDropdownOpen ? 'open' : ''}`}>
-                                {userEmail ? (
+                                
+                                {/* * En lugar de 'userEmail', ahora preguntamos 
+                                 * si existe 'authToken' 
+                                 */}
+                                {authToken ? (
+                                    // 1. SI ESTÁ LOGEADO
                                     <>
-                                        <span className="navbar-link-user">Bienvenido, {userEmail}</span>
-                                        <button onClick={handleLogout} className='navbar-link-user' role="logout">Cerrar Sesión</button>
-                                        {isStaff && (
+                                        {/* * Usamos el objeto 'user' del Context.
+                                         * Hacemos una comprobación por si 'user'
+                                         * aún no se ha cargado.
+                                         */}
+                                        <span className="navbar-link-user">
+                                            Bienvenido, {user ? user.email : 'Cargando...'}
+                                        </span>
+                                        
+                                        {/* * Usamos 'logoutAction' del Context 
+                                         * en lugar de 'handleLogout'
+                                         */}
+                                        <button onClick={logoutAction} className='navbar-link-user' role="logout">Cerrar Sesión</button>
+                                        
+                                        {/* * Verificamos si es Staff desde el objeto 'user'
+                                         * (Asegúrate que tu API devuelva 'is_staff' o 'isStaff')
+                                         */}
+                                        {user && (user.is_staff || user.isStaff) && (
                                             <Link to="/crud" className="navbar-link">Administrar Productos</Link>
                                         )}
                                     </>
                                 ) : (
+                                    // 2. SI NO ESTÁ LOGEADO
                                     <>
                                         <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
                                         <Link to="/register" className='navbar-link'>Registrarse</Link>

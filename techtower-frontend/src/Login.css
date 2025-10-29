@@ -91,7 +91,7 @@
 }
 
 .controls {
-    width: 100%;
+    width: 92% !important;
     border: 1px solid var(--color-border); /* Borde claro */
     border-radius: 8px;
     padding: 12px 14px;
