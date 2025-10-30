@@ -1,7 +1,7 @@
 from django.forms import ValidationError
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
-from .models import Producto, Carrito, ItemCarrito
+from .models import Producto, Carrito, ItemCarrito, Orden, OrdenProducto
 
 UserModel = get_user_model()
 
@@ -53,10 +53,14 @@ class ProductEditSerializer(serializers.ModelSerializer):
 
 # Serializadores para el carrito de compras
 
+class ProductoSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producto
+        # Define los campos que el carrito necesita
+        fields = ['producto_id', 'nombre_producto', 'imagen', 'precio_transferencia', 'precio_otro']
+
 class ItemCarritoSerializer(serializers.ModelSerializer):
-    # Esto asegura que la respuesta de la API incluya la información del producto
-    # en lugar de solo su ID.
-    producto = serializers.PrimaryKeyRelatedField(queryset=Producto.objects.all())
+    producto = ProductoSimpleSerializer(read_only=True) 
 
     class Meta:
         model = ItemCarrito
@@ -64,11 +68,31 @@ class ItemCarritoSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 class CarritoSerializer(serializers.ModelSerializer):
-    # Aquí anidamos el serializador del ItemCarrito.
-    # El 'many=True' es crucial porque un carrito puede tener muchos items.
     items = ItemCarritoSerializer(many=True, read_only=True)
     
     class Meta:
         model = Carrito
         fields = ['id', 'usuario', 'items', 'activo', 'creado_en']
         read_only_fields = ['id', 'usuario', 'activo', 'creado_en']
+
+# Serializers para las ordenes -_-
+
+class OrdenProductoSimpleSerializer(serializers.ModelSerializer):
+    """ Muestra el producto y cantidad dentro de una orden """
+    # Usamos el ProductoSimpleSerializer que ya teníamos (o uno similar)
+    producto = ProductoSimpleSerializer(read_only=True) 
+    
+    class Meta:
+        model = OrdenProducto
+        fields = ['producto', 'cantidad']
+
+class OrdenSerializer(serializers.ModelSerializer):
+    """ Serializer principal para la Orden """
+    # 'items' es el related_name que DEBERÍAS poner en tu
+    # ForeignKey de OrdenProducto a Orden. 
+    # Si no lo pusiste, el 'source' por defecto es 'ordenproducto_set'
+    items = OrdenProductoSimpleSerializer(many=True, read_only=True, source='ordenproducto_set')
+
+    class Meta:
+        model = Orden
+        fields = ['orden_id', 'fecha_orden', 'estado_orden', 'total_orden', 'items']

@@ -3,6 +3,7 @@ import json
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model, login, logout
+from django.db.models import F
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.urls import reverse
@@ -10,6 +11,7 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -21,8 +23,17 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from google import genai
 from google.genai.errors import APIError
 
-from .models import Producto, Carrito, ItemCarrito, Producto
-from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer, ProductSerializer, CarritoSerializer, ItemCarritoSerializer
+from .models import Producto, Carrito, ItemCarrito, Producto, Orden, OrdenProducto, Pago
+from .serializers import (
+    UserLoginSerializer,
+    UserRegisterSerializer,
+    UserSerializer,
+    ProductSerializer,
+    CarritoSerializer,
+    ItemCarritoSerializer,
+    OrdenSerializer,
+    OrdenProductoSimpleSerializer
+)
 
 from .validations import custom_validation # No es util
 
@@ -214,7 +225,7 @@ class CartView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        """ Añadir un producto al carrito. """
+        """ Añadir un producto al carrito (CON VALIDACIÓN DE STOCK). """
         cart = self.get_or_create_cart(request.user)
         producto_id = request.data.get('producto')
         cantidad = request.data.get('cantidad', 1)
@@ -224,6 +235,9 @@ class CartView(APIView):
         except Producto.DoesNotExist:
             return Response({"error": "El producto no existe."}, status=status.HTTP_404_NOT_FOUND)
 
+        if cantidad > producto.stock_producto:
+            return Response({"error": f"Stock insuficiente. Solo quedan {producto.stock_producto} unidades."}, status=status.HTTP_400_BAD_REQUEST)
+
         item, created = ItemCarrito.objects.get_or_create(
             carrito=cart,
             producto=producto,
@@ -231,28 +245,33 @@ class CartView(APIView):
         )
 
         if not created:
-            item.cantidad += cantidad
+            nueva_cantidad = item.cantidad + cantidad
+            if nueva_cantidad > producto.stock_producto:
+                return Response({"error": f"Stock insuficiente. Ya tienes {item.cantidad} y solo quedan {producto.stock_producto}."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            item.cantidad = nueva_cantidad
             item.save()
 
         serializer = CarritoSerializer(cart)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def patch(self, request):
-        """ Actualizar la cantidad de un producto en el carrito. """
+        """ Actualizar la cantidad (CON VALIDACIÓN DE STOCK). """
         cart = self.get_or_create_cart(request.user)
         item_id = request.data.get('item_id')
         cantidad = request.data.get('cantidad')
-
-        if not item_id or cantidad is None:
-            return Response({"error": "Se requiere 'item_id' y 'cantidad'"}, status=status.HTTP_400_BAD_REQUEST)
-
+        
         try:
             item = ItemCarrito.objects.get(id=item_id, carrito=cart)
         except ItemCarrito.DoesNotExist:
             return Response({"error": "El ítem no existe en este carrito."}, status=status.HTTP_404_NOT_FOUND)
 
+        if cantidad > item.producto.stock_producto:
+             return Response({"error": f"Stock insuficiente. Solo quedan {item.producto.stock_producto} unidades."}, status=status.HTTP_400_BAD_REQUEST)
+
         if cantidad <= 0:
             item.delete()
+            # (No necesitas serializar aquí, solo devolver la confirmación)
             return Response({"message": "Producto eliminado del carrito."}, status=status.HTTP_200_OK)
         
         item.cantidad = cantidad
@@ -396,3 +415,71 @@ class AsistenteIAViewPresupuesto(APIView):
             return JsonResponse({'error': f'Error de la API de IA: {str(e)}'}, status=500)
         except Exception as e:
             return JsonResponse({'error': f'Un error inesperado ocurrió: {str(e)}'}, status=500)
+        
+# ================== LÓGICA DE CHECKOUT ====================
+class CreateOrderView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        """
+        Crea una nueva Orden a partir del Carrito del usuario.
+        Se asume que esta vista es llamada DESPUÉS de una simulación
+        de pago exitosa en el frontend.
+        """
+        try:
+            # 1. Obtener el carrito y los items del usuario
+            cart = Carrito.objects.get(usuario=request.user)
+            items = ItemCarrito.objects.filter(carrito=cart)
+
+            if not items.exists():
+                return Response({"error": "Tu carrito está vacío."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # 2. RE-VALIDAR STOCK Y CALCULAR TOTAL (¡Crítico! No confiar en el frontend)
+            total = 0
+            for item in items:
+                if item.cantidad > item.producto.stock_producto:
+                    return Response({"error": f"Stock insuficiente para {item.producto.nombre_producto}. Solo quedan {item.producto.stock_producto}."}, status=status.HTTP_400_BAD_REQUEST)
+                # Usamos el precio de transferencia (o el que decidas)
+                total += item.producto.precio_transferencia * item.cantidad
+
+            # 3. CREAR LA ORDEN
+            # (Usamos los campos que me dijiste que tenías)
+            new_order = Orden.objects.create(
+                usuario_orden=request.user,
+                estado_orden='aprobado', # Aprobado porque el mock-payment fue exitoso
+                total_orden=total,
+                fecha_orden=timezone.now() # Asegúrate de importar timezone
+            )
+
+            # 4. TRANSFERIR ITEMS DEL CARRITO A LA ORDEN
+            for item in items:
+                OrdenProducto.objects.create(
+                    orden=new_order,
+                    producto=item.producto,
+                    cantidad=item.cantidad
+                )
+                
+                # 5. (Opcional pero recomendado) Actualizar el stock del producto
+                producto_actual = item.producto
+                producto_actual.stock_producto -= item.cantidad
+                producto_actual.save()
+
+            # --- 5. ¡NUEVO! CREAR EL PAGO SIMULADO ---
+            Pago.objects.create(
+                orden=new_order,  # Vincula el pago a la orden recién creada
+                metodo_pago="Tarjeta Débito", # Opción hardcodeada para este mock!!
+                monto_pago=new_order.total_orden # Usamos el total de la orden
+                # fecha_pago se añade automáticamente por auto_now_add=True
+            )
+
+            # 6. VACIAR EL CARRITO
+            items.delete()
+
+            # 7. Devolver la orden recién creada
+            serializer = OrdenSerializer(new_order)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Carrito.DoesNotExist:
+            return Response({"error": "No se encontró un carrito para este usuario."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": f"Un error inesperado ocurrió: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

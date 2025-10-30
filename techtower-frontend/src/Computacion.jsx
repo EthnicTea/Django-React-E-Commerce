@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import "./Computacion.css";
-import { useEffect } from "react";
+import { useCart } from './services/useCart';
 
 export default function Computacion() {
   const [products, setProducts] = useState([]);
   const [brands, setBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState('');
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { addToCart, loadingCart } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -88,8 +89,16 @@ export default function Computacion() {
               <span className="precio-normal">${p.precio_otro.toLocaleString('es-CL')}</span>
             </p>
             <div className="botones">
-              <button className="btn-agregar">Agregar</button>
-              <button className="btn-ver">Ver</button>
+              <button 
+                className="btn-agregar"
+                // Llama a la función del hook con el ID del producto
+                onClick={() => addToCart(p.producto_id)}
+                // Deshabilita el botón si ya está agregando algo
+                disabled={loadingCart} 
+                >
+                {loadingCart ? 'Agregando...' : 'Agregar'}
+            </button>
+            <button className="btn-ver">Ver</button>
             </div>
           </div>
         ))}

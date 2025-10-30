@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './Gaming.css';
+import { useCart } from './services/useCart';
 
 const Gaming = () => {
-    const [products, setProducts] = useState([]); // Para los productos de la API
-    const [brands, setBrands] = useState([]);     // Esto es para las marcas dinámicas, se mostraran en el dropdown!
+    const [products, setProducts] = useState([]);
+    const [brands, setBrands] = useState([]);
     const [selectedBrand, setSelectedBrand] = useState('');
-    
-    // Estados de Carga de los productos...
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const { addToCart, loadingCart } = useCart();
 
     // fetch de los productos!
     useEffect(() => {
@@ -29,7 +30,7 @@ const Gaming = () => {
                 setBrands(marcasUnicas.sort());
 
             } catch (err) {
-                console.error("Error al hacer fetch:", err);
+                console.error("Error al hacer fetch(￣ε(#￣):", err);
                 setError(err.message);
             } finally {
                 setLoading(false);
@@ -96,7 +97,15 @@ const Gaming = () => {
                             <span className="precio-normal">${p.precio_otro.toLocaleString('es-CL')} Otro medio de pago</span>
                         </p>
                         <div className="botones-gaming">
-                            <button className="btn-agregar">Agregar</button>
+                            <button 
+                                className="btn-agregar"
+                                // Llama a la función del hook con el ID del producto
+                                onClick={() => addToCart(p.producto_id)}
+                                // Deshabilita el botón si ya está agregando algo
+                                disabled={loadingCart} 
+                            >
+                                {loadingCart ? 'Agregando...' : 'Agregar'}
+                            </button>
                             <button className="btn-ver">Ver</button>
                         </div>
                     </div>

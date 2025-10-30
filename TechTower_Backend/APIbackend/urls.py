@@ -17,8 +17,12 @@ urlpatterns = [
     path('products/bulk_create/', views.ProductBulkCreate.as_view(), name='product-bulk-create'),
     # Carrito de Compras
     path('cart/', views.CartView.as_view(), name='cart-view'),
+    # Asistente IA
     path('ia/compatibilidad/', views.AsistenteIAViewCompatible.as_view(), name='compatibilidad-ia'),
     path('ia/presupuesto/', views.AsistenteIAViewPresupuesto.as_view(), name='generar_presupuesto_ia'), 
 
-    # Api de pago
+    # Api de pago, ya no hay api de pago, se simula
+
+    # Checkout y creación de orden
+    path('checkout/create_order/', views.CreateOrderView.as_view(), name='create-order'),
 ]

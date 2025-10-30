@@ -1,66 +1,95 @@
 import React, { useState } from 'react';
-import './Pasarela.css'; // Importamos la hoja de estilos
-// Importa tus imágenes si las necesitas (ej: logo de Webpay, logos de tarjetas)
+import './Pasarela.css';
 import webpayLogo from './assets/logo-webpay.png'; 
-// import onepayLogo from './assets/onepay-logo.png';
+import { useAuth } from './services/AuthContext'; 
+import { useNavigate, useLocation } from 'react-router-dom'; 
 
-function Pasarela({ totalAmount, onPaymentSuccess, onPaymentCancel }) {
-    // Estado para el número de tarjeta (simulado)
+function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
+    
     const [cardNumber, setCardNumber] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
     const [cvv, setCvv] = useState('');
-    const [cardHolder, setCardHolder] = useState(''); // Nombre del titular
+    const [cardHolder, setCardHolder] = useState('');
+    
+    const [isLoading, setIsLoading] = useState(false); 
+    
+    const { authToken } = useAuth(); 
+    const navigate = useNavigate(); 
+    const location = useLocation();
+    const totalAmount = location.state?.totalAPagar || 0; // Si no hay monto, 0
 
-    // Manejador para el botón "Continuar"
-    const handleContinuePayment = (e) => {
+    const handleContinuePayment = async (e) => {
         e.preventDefault();
+        setIsLoading(true); 
 
-        // Validaciones básicas simuladas
         if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
             alert('Por favor, ingresa un número de tarjeta válido de 16 dígitos.');
-            return;
-        }
-        if (!expiryDate.match(/^\d{2}\/\d{2}$/)) {
-            alert('Por favor, ingresa una fecha de vencimiento válida (MM/AA).');
-            return;
-        }
-        if (cvv.length !== 3 || !/^\d+$/.test(cvv)) {
-            alert('Por favor, ingresa un CVV válido de 3 dígitos.');
+            setIsLoading(false);
             return;
         }
         if (cardHolder.trim() === '') {
             alert('Por favor, ingresa el nombre del titular de la tarjeta.');
+            setIsLoading(false);
             return;
         }
+        
+        try {
+            if (!authToken) {
+                alert("Tu sesión ha expirado. Por favor, inicia sesión de nuevo.");
+                navigate('/login');
+                return;
+            }
 
-        // SIMULACIÓN DE PAGO EXITOSO O FALLIDO
-        // Retraso de "carga"
-        setTimeout(() => {
-            const isSuccess = Math.random() > 0.1; // 90% de éxito, 10% de fallo
+            const response = await fetch('http://127.0.0.1:8000/api/checkout/create_order/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+            });
 
-            if (isSuccess) {
-                alert('¡Pago Aprobado! Simulando redirección...');
-                // Llamamos a la función que nos pasaron para manejar el éxito
+            const data = await response.json();
+
+            if (response.ok) { 
+                alert('¡Pago Aprobado! Tu orden ha sido creada.');
+                
+                // Llamamos a la función onPaymentSuccess (si existe)
                 if (onPaymentSuccess) {
-                    onPaymentSuccess({ status: 'approved', transactionId: 'MOCK_TXN_12345' });
+                    onPaymentSuccess({ status: 'approved', ordenData: data });
                 }
-                // Redirigir a la página principal
-                window.location.href = '/'; // Cambia la URL según sea necesario
+                
+                // Redirigir a la página de gracias por tu compra (aun no existe), por ahora se irá a la home
+                navigate(`/`); 
+                //navigate(`/gracias-por-tu-compra/${data.orden_id}`); 
+    
             } else {
-                alert('Pago Rechazado. Simulando redirección...');
-                // Llamamos a la función para manejar el fallo
+                // MANEJAR ERRORES DEL BACKEND (ej. Sin Stock)
+                alert(`Error al procesar el pago: ${data.error || 'Intenta de nuevo.'}`);
                 if (onPaymentCancel) {
-                    onPaymentCancel({ status: 'rejected', reason: 'Simulación de fallo' });
+                    onPaymentCancel({ status: 'rejected', reason: data.error });
                 }
             }
-        }, 1500); // Simula 1.5 segundos de procesamiento
+
+        } catch (err) {
+            // MANEJAR ERRORES DE RED
+            console.error("Error de red en el pago:", err);
+            alert("Error de conexión. No se pudo procesar el pago.");
+            if (onPaymentCancel) {
+                onPaymentCancel({ status: 'rejected', reason: 'Error de red' });
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleCancel = () => {
         if (onPaymentCancel) {
             onPaymentCancel({ status: 'cancelled' });
         }
+        // Opcional: redirigir al carrito
+        // navigate('/carrito');
     };
+    
 
     return (
         <div className="webpay-mock-container">
@@ -112,7 +141,7 @@ function Pasarela({ totalAmount, onPaymentSuccess, onPaymentCancel }) {
                             <label className="input-label">Ingresa los datos de tu tarjeta:</label>
                             
                             <div className="mock-card-display">
-                                {/* Simula la visualización de la tarjeta ingresada */}
+                                {/* Simulación !!! */}
                                 <div className="card-number-mock">{cardNumber.padEnd(16, 'X').replace(/(.{4})/g, '$1 ').trim()}</div>
                                 <div className="expiry-cvv-mock">
                                     <span>{expiryDate.padEnd(5, 'X')}</span>
@@ -168,8 +197,12 @@ function Pasarela({ totalAmount, onPaymentSuccess, onPaymentCancel }) {
                                 </div>
                             </div>
 
-                            <button type="submit" className="continue-button">
-                                Continuar
+                            <button 
+                                type="submit" 
+                                className="continue-button"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Procesando...' : 'Continuar'}
                             </button>
                         </form>
                     </div>
