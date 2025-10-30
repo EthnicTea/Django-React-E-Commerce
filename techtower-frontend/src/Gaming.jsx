@@ -1,56 +1,56 @@
-import React, { useState, useEffect } from 'react'; // <-- 1. Importamos useEffect
+import React, { useState, useEffect } from 'react';
 import './Gaming.css';
 
 const Gaming = () => {
+    const [products, setProducts] = useState([]); // Para los productos de la API
+    const [brands, setBrands] = useState([]);     // Esto es para las marcas dinámicas, se mostraran en el dropdown!
     const [selectedBrand, setSelectedBrand] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
+    
+    // Estados de Carga de los productos...
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const [products, setProducts] = useState([]); 
-    const [loading, setLoading] = useState(true); 
-    const [error, setError] = useState(null);     
-
-    // Filtros hardcodeados
-    const brands = ['Corsair', 'Razer', 'HyperX', 'Redragon'];
-    const categories = ['Silla', 'Teclado', 'Microfono', 'Mouse', 'Audifonos'];
-
-    // Fetch
+    // fetch de los productos!
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                // Endpoint
-                const response = await fetch('http://127.0.0.1:8000/api/products/?categoria=Gaming');
+                // Se traen solo los productos de la categoría que se necesita... muy importante!
+                const response = await fetch('http://127.0.0.1:8000/api/products/?categoria=Streaming y Gaming');
 
                 if (!response.ok) {
                     throw new Error(`Error HTTP: ${response.status}`);
                 }
 
                 const data = await response.json();
-                setProducts(data); 
+                setProducts(data);
+                
+                // Se generan las marcas de forma automática!
+                const marcasUnicas = [...new Set(data.map(p => p.marca_producto))];
+                setBrands(marcasUnicas.sort());
 
             } catch (err) {
-                setError(err.message); 
+                console.error("Error al hacer fetch:", err);
+                setError(err.message);
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         };
 
         fetchProducts(); 
-    }, []);
+    }, []); // El array vacío [] asegura que se ejecute solo una vez (?)
+
     
-    // --- Lógica de Filtros ---
+    const handleBrandChange = (e) => {
+        setSelectedBrand(e.target.value);
+    };
+
     const filteredProducts = products.filter((product) => {
-        // **IMPORTANTE:** Esto asumía que product.brand era un string ('Corsair').
-        // Si tu API devuelve un objeto (ej: product.marca_producto.nombre_marca),
-        // tendrás que ajustar esta lógica de filtro más adelante.
-        // Por ahora, lo dejamos para que veas el patrón. -atte gemini
-        return (
-            (selectedBrand === '' || product.brand === selectedBrand) &&
-            (selectedCategory === '' || product.category === selectedCategory)
-        );
+        // Aqui se filtra por marca, ya que la categoría ya está fija en Gaming
+        return (selectedBrand === '' || product.marca_producto === selectedBrand);
     });
 
     if (loading) {
-        return <div className="gaming-container"><h2>Cargando productos...</h2></div>;
+        return <div className="gaming-container"><h2>Cargando productos de Gaming...</h2></div>;
     }
 
     if (error) {
@@ -63,18 +63,14 @@ const Gaming = () => {
             <p className="gaming-description">
                 Encuentra todo lo que necesitas para mejorar tu experiencia gaming: desde Sillas hasta los últimos Teclados.
             </p>
-            
-            {/* 
-            Lógica de la barra de filtros se rompió con el fetch.
-            Se debe crear un nuevo endpoint que se encargue de traer esos datos
-            */}
-
 
             <div className="filter-bar-modern">
-                {/*<div className="filter-group-modern">
+                <div className="filter-group-modern">
                     <label htmlFor="brand-filter-gaming">Marca:</label>
                     <select id="brand-filter-gaming" value={selectedBrand} onChange={handleBrandChange}>
                         <option value="">Todas las marcas</option>
+                        
+                        {/* bum! dropdown dinámico papu */}
                         {brands.map((brand) => (
                             <option key={brand} value={brand}>
                                 {brand}
@@ -82,36 +78,20 @@ const Gaming = () => {
                         ))}
                     </select>
                 </div>
-                <div className="filter-group-modern">
-                    <label htmlFor="category-filter-gaming">Categoría:</label>
-                    <select id="category-filter-gaming" value={selectedCategory} onChange={handleCategoryChange}>
-                        <option value="">Todas las categorías</option>
-                        {categories.map((category) => (
-                            <option key={category} value={category}>
-                                {category}
-                            </option>
-                        ))}
-                    </select>
-                </div> /*}
+
+                {/* De momento solo serán filtrados por marca, al menos aliviana la carga inicial*/}
+                
             </div>
 
             <div className="gaming-products">
-                {/* ¡Aquí usamos los datos de la API! */}
-                {filteredProducts.map((p) => (
-                    <div key={p.producto_id} className="card-gaming"> {/* <-- Usamos el ID real de la DB */}
+                {filteredProducts.map((p) => ( 
+                    <div key={p.producto_id} className="card-gaming"> {/* Ouyea! aquí se muestran los productos*/}
                         <div className="imagen-container">
-                            {/* <-- Usamos el campo 'imagen' de la DB */}
                             <img src={p.imagen} alt={p.nombre_producto} className="imagen-gaming" />
                         </div>
-                        {/* <-- Usamos 'nombre_producto' */}
                         <h3 className="nombre-gaming">{p.nombre_producto}</h3>
-                        
-                        {/* <-- Usamos 'marca_producto' (Asumiendo que es un string, 
-                                si es un objeto sería p.marca_producto.nombre_marca) */}
-                        <p className="marca-gaming">{p.marca_producto}</p> 
-                        
+                        <p className="marca-gaming">{p.marca_producto}</p>
                         <p className="precio-gaming">
-                            {/* <-- Usamos 'precio_transferencia' y 'precio_otro' */}
                             <span className="precio-transferencia">${p.precio_transferencia.toLocaleString('es-CL')} Transferencia</span>
                             <span className="precio-normal">${p.precio_otro.toLocaleString('es-CL')} Otro medio de pago</span>
                         </p>

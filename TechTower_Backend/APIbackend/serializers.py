@@ -45,19 +45,6 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
         fields = '__all__'
-    
-    def create(self, data):
-        product_obj = Producto.objects.create(
-            nombre_producto=data['nombre_producto'],
-            marca_producto=data['marca_producto'],
-            categoria_producto=data['categoria_producto'],
-            descripcion_producto=data['descripcion_producto'],
-            precio_transferencia=data['precio_transferencia'],
-            precio_otro=data['precio_otro'],
-            stock_producto=data['stock_producto'],
-            imagen=data['imagen'],
-        )
-        return product_obj
 
 class ProductEditSerializer(serializers.ModelSerializer):
     class Meta:

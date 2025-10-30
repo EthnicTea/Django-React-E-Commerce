@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -132,15 +132,10 @@ class ProductList(ListAPIView):
     def get_queryset(self):
         queryset = Producto.objects.all()
         
-        # 2. Leemos el parámetro 'categoria' de la URL (ej: /api/products/?categoria=Gaming)
-        categoria_nombre = self.request.query_params.get('categoria_producto', None)
+        categoria_nombre = self.request.query_params.get('categoria', None)
         
-        # 3. Si el parámetro existe, filtramos el queryset
         if categoria_nombre is not None:
-            # Usamos __ (doble guion bajo) para filtrar por el 'nombre'
-            # del modelo relacionado 'categoria_producto'.
-            # 'iexact' ignora mayúsculas/minúsculas.
-            queryset = queryset.filter(categoria_producto__nombre_categoria__iexact=categoria_nombre)
+            queryset = queryset.filter(categoria__nombre_categoria__iexact=categoria_nombre)
             
         return queryset
 
@@ -151,22 +146,57 @@ class ProductDetail(RetrieveAPIView):
     serializer_class = ProductSerializer
     lookup_field = 'producto_id'
 
-class ProductUpdate(UpdateAPIView):
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden ver la lista de productos
+class ProductDetailUpdateDelete(RetrieveUpdateDestroyAPIView): # El nombre es largo pero claro
+    permission_classes = [permissions.AllowAny] # [IsAdminUser]
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'producto_id'
 
-    def perform_update(self, serializer):
-        # Lógica adicional
-        serializer.save()
+# Vista para creación masiva de productos (via JSON  y solo para testing)
+class ProductBulkCreate(APIView):
+    permission_classes = [permissions.AllowAny] # Solo testing, comentar esta vista en producción
 
-class ProductDelete(DestroyAPIView):
-    # permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden ver la lista de productos
-    permission_classes = [permissions.AllowAny]
-    queryset = Producto.objects.all()
-    serializer_class = ProductSerializer
-    lookup_field = 'producto_id'
+    def post(self, request, *args, **kwargs):
+        products_data = request.data
+        
+        if not isinstance(products_data, list):
+            return Response({"error": "Los datos deben ser una lista"}, status=status.HTTP_400_BAD_REQUEST)
+
+        created_products = []
+        errors = []
+
+        # Ciclo en el diccionario de productos
+        for product_data in products_data:
+            serializer = ProductSerializer(data=product_data)
+            
+            if serializer.is_valid():
+                try:
+                    product_instance = serializer.save() 
+                    created_products.append(serializer.data)
+                except Exception as e:
+                    errors.append({
+                        "input_data": product_data,
+                        "error": str(e)
+                    })
+            else:
+                # Si falla...
+                errors.append({
+                    "input_data": product_data, 
+                    "error": serializer.errors
+                })
+        # Depuración!
+        if errors:
+            return Response({
+                "message": f"Completed with errors. {len(created_products)} products created.",
+                "created": created_products,
+                "errors": errors
+            }, status=status.HTTP_207_MULTI_STATUS)
+
+        # Si todo resulta...
+        return Response({
+            "message": f"Successfully created {len(created_products)} products.",
+            "created": created_products
+        }, status=status.HTTP_201_CREATED) 
 
 # ================= Carrito de Compras ==================
 class CartView(APIView):

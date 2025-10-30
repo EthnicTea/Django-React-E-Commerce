@@ -55,18 +55,35 @@ class UsuarioApp(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+class Categoria(models.Model):
+    """ Categoria Navbar """
+    categoria_id = models.AutoField(primary_key=True)
+    nombre_categoria = models.CharField(max_length=100, unique=True)
+    
+    def __str__(self):
+        return self.nombre_categoria
+
+class TipoProducto(models.Model):
+    """ Modelo para los productos como tal. Ejemplo: CPU, GPU, RAM, etc. """
+    tipo_id = models.AutoField(primary_key=True)
+    nombre_tipo = models.CharField(max_length=100, unique=True)
+    info_adicional = models.TextField(blank=True, null=True) # Info relevante como especificaciones generales
+    
+    def __str__(self):
+        return self.nombre_tipo
 
 # Quizás agregar una tabla de "ficha técnica" todos los datos específicos
 class Producto(models.Model):
     producto_id = models.AutoField(primary_key=True)
     nombre_producto = models.CharField(max_length=200)
     marca_producto = models.CharField(max_length=100)
-    categoria_producto = models.CharField(max_length=50) # Gaming, Componentes, Computación, etc. (basado en la página)
     descripcion_producto = models.TextField()
     precio_transferencia = models.IntegerField()
     precio_otro = models.IntegerField()
-    # tipo_producto = ejemplo, CPU, RAM, etc
     stock_producto = models.IntegerField()
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
+    tipo = models.ForeignKey(TipoProducto, on_delete=models.SET_NULL, null=True)
     imagen = models.URLField(null=True, blank=True)
 
     def __str__(self):

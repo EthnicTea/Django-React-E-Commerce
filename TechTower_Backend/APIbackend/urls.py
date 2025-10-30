@@ -13,9 +13,8 @@ urlpatterns = [
     # Productos
     path('products/create', views.ProductCreate.as_view(), name='product-create'),
     path('products/', views.ProductList.as_view(), name='product-list'),
-    path('products/<int:id>', views.ProductDetail.as_view(), name='product-detail'),
-    path('products/update/<int:IdProducto>', views.ProductUpdate.as_view(), name='product-update'),
-    path('products/delete/<int:producto_id>', views.ProductDelete.as_view(), name='product-delete'),
+    path('products/<int:producto_id>/', views.ProductDetailUpdateDelete.as_view(), name='product-detail-edit'),
+    path('products/bulk_create/', views.ProductBulkCreate.as_view(), name='product-bulk-create'),
     # Carrito de Compras
     path('cart/', views.CartView.as_view(), name='cart-view'),
     path('ia/compatibilidad/', views.AsistenteIAViewCompatible.as_view(), name='compatibilidad-ia'),
