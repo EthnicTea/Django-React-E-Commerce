@@ -27,8 +27,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import google.generativeai as genai
 import json
 
-from google import genai
-from google.genai.errors import APIError
 
 from .models import Producto, Carrito, ItemCarrito, Producto, Orden, OrdenProducto, Pago
 from .serializers import (

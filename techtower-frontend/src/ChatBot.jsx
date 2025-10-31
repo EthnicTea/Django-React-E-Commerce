@@ -16,7 +16,7 @@ const UserAvatar = () => (
 async function getBotResponse(userMessage) {
     try {
         // Llama a tu endpoint de Django
-        const response = await fetch('/api/chat/', { // Ajusta esta URL si es necesario
+        const response = await fetch('http://127.0.0.1:8000/api/chat/', { // <-- ESTA ES LA CORRECCIÓN
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

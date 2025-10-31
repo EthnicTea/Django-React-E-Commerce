@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import get_csrf_token
+from rest_framework.routers import DefaultRouter
 
 appname = "APIbackend"
 
@@ -20,6 +21,7 @@ urlpatterns = [
     # Asistente IA
     path('ia/compatibilidad/', views.AsistenteIAViewCompatible.as_view(), name='compatibilidad-ia'),
     path('ia/presupuesto/', views.AsistenteIAViewPresupuesto.as_view(), name='generar_presupuesto_ia'), 
+    path('chat/', views.ChatbotAPIView.as_view(), name='chatbot_api'),
 
     # Api de pago, ya no hay api de pago, se simula
 
