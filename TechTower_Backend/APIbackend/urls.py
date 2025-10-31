@@ -21,7 +21,8 @@ urlpatterns = [
     # Asistente IA
     path('ia/compatibilidad/', views.AsistenteIAViewCompatible.as_view(), name='compatibilidad-ia'),
     path('ia/presupuesto/', views.AsistenteIAViewPresupuesto.as_view(), name='generar_presupuesto_ia'), 
-    path('chat/', views.ChatbotAPIView.as_view(), name='chatbot_api'),
+    # path...('ia/chat..)
+    # path('chat/', views.ChatbotAPIView.as_view(), name='chatbot_api'),
 
     # Api de pago, ya no hay api de pago, se simula
 

@@ -20,13 +20,8 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
-
-
-
-import google.generativeai as genai
-import json
-
+from google import genai
+from google.genai.errors import APIError
 
 from .models import Producto, Carrito, ItemCarrito, Producto, Orden, OrdenProducto, Pago
 from .serializers import (
@@ -41,18 +36,6 @@ from .serializers import (
 )
 
 from .validations import custom_validation # No es util
-
-'''
-    NOTAS:
-    Cambiar el sistema de autenticación a token-based en el futuro.
-    Por ahora, se usa session-based auth para simplicidad.
-
-    Se agregó el uso de JWT tokens para autenticación.
-    Pero no se quitó el sistema de session-based auth.
-
-    Añadir QueryParameters para filtrar productos por categoría, marca, etc.
-    Puede ser útil para el frontend.
-'''
 
 def get_csrf_token(request):
     token = get_token(request)  # Obtén el token CSRF
@@ -489,94 +472,94 @@ class CreateOrderView(APIView):
         except Exception as e:
             return Response({"error": f"Un error inesperado ocurrió: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-        # ================== Ia EME ====================
-        # Configura la API de Gemini con tu clave
-try:
-    genai.configure(api_key=settings.GEMINI_API_KEY)
-except AttributeError:
-    # Manejo de error si la clave no está configurada
-    print("ADVERTENCIA: GEMINI_API_KEY no está configurada. El Chatbot no funcionará.")
+# # ================== Ia EME ====================
+# # Configura la API de Gemini con tu clave
+# try:
+#     genai.configure(api_key=settings.GEMINI_API_KEY)
+# except AttributeError:
+#     # Manejo de error si la clave no está configurada
+#     print("ADVERTENCIA: GEMINI_API_KEY no está configurada. El Chatbot no funcionará.")
 
 
-class ChatbotAPIView(APIView):
-    """
-    Endpoint de API para el chatbot de Gemini.
-    """
+# class ChatbotAPIView(APIView):
+#     """
+#     Endpoint de API para el chatbot de Gemini.
+#     """
     
-    # Configuración del modelo (ajusta 'gemini-pro' si usas otro)
-    model = genai.GenerativeModel(
-        'gemini-pro',
-        # ¡Clave! Forzamos a Gemini a responder en formato JSON
-        generation_config={"response_mime_type": "application/json"}
-    )
+#     # Configuración del modelo (ajusta 'gemini-pro' si usas otro)
+#     model = genai.GenerativeModel(
+#         'gemini-pro',
+#         # ¡Clave! Forzamos a Gemini a responder en formato JSON
+#         generation_config={"response_mime_type": "application/json"}
+#     )
     
-    # El historial del chat se mantiene en memoria del servidor
-    # Para producción, deberías guardar esto en la sesión del usuario o DB
-    if 'chat_history' not in globals():
-        global chat_history
-        chat_history = []
+#     # El historial del chat se mantiene en memoria del servidor
+#     # Para producción, deberías guardar esto en la sesión del usuario o DB
+#     if 'chat_history' not in globals():
+#         global chat_history
+#         chat_history = []
 
-    def post(self, request, *args, **kwargs):
-        user_message = request.data.get('message')
-        if not user_message:
-            return Response({"error": "No se proporcionó ningún mensaje."}, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request, *args, **kwargs):
+#         user_message = request.data.get('message')
+#         if not user_message:
+#             return Response({"error": "No se proporcionó ningún mensaje."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 🧠 ¡El Prompt Engineering es clave!
-        # Aquí le das la personalidad, instrucciones y el formato de salida.
-        system_prompt = """
-        Eres "Peki", un asistente virtual experto en hardware para la tienda "TechTower".
-        Tu objetivo es ayudar a los usuarios a armar una PC según sus necesidades (gaming, diseño, oficina).
+#         # 🧠 ¡El Prompt Engineering es clave!
+#         # Aquí le das la personalidad, instrucciones y el formato de salida.
+#         system_prompt = """
+#         Eres "Peki", un asistente virtual experto en hardware para la tienda "TechTower".
+#         Tu objetivo es ayudar a los usuarios a armar una PC según sus necesidades (gaming, diseño, oficina).
         
-        Debes responder SIEMPRE en formato JSON. El JSON debe tener la siguiente estructura:
-        {
-          "text": "Tu respuesta amable y conversacional aquí.",
-          "action": "null | setComponent",
-          "payload": {
-            "type": "cpu | motherboard | gpu | ram | ssd | psu",
-            "id": "ID_DEL_PRODUCTO (ej: 'cpu1', 'gpu2')"
-          }
-        }
+#         Debes responder SIEMPRE en formato JSON. El JSON debe tener la siguiente estructura:
+#         {
+#           "text": "Tu respuesta amable y conversacional aquí.",
+#           "action": "null | setComponent",
+#           "payload": {
+#             "type": "cpu | motherboard | gpu | ram | ssd | psu",
+#             "id": "ID_DEL_PRODUCTO (ej: 'cpu1', 'gpu2')"
+#           }
+#         }
         
-        - "text" es la respuesta que verá el usuario.
-        - "action" es la acción que el frontend debe ejecutar.
-        - Si recomiendas un componente específico, usa "action": "setComponent" y llena el "payload" con el tipo y el ID del producto.
-        - Si solo estás saludando o respondiendo una pregunta general, usa "action": "null".
+#         - "text" es la respuesta que verá el usuario.
+#         - "action" es la acción que el frontend debe ejecutar.
+#         - Si recomiendas un componente específico, usa "action": "setComponent" y llena el "payload" con el tipo y el ID del producto.
+#         - Si solo estás saludando o respondiendo una pregunta general, usa "action": "null".
         
-        Ejemplo de conversación:
-        Usuario: "Quiero una PC para gaming"
-        Tu JSON: {
-          "text": "¡Entendido! Para gaming te recomiendo empezar con un buen procesador. Te he seleccionado un AMD Ryzen 7 7800X3D.",
-          "action": "setComponent",
-          "payload": { "type": "cpu", "id": "cpu3" }
-        }
+#         Ejemplo de conversación:
+#         Usuario: "Quiero una PC para gaming"
+#         Tu JSON: {
+#           "text": "¡Entendido! Para gaming te recomiendo empezar con un buen procesador. Te he seleccionado un AMD Ryzen 7 7800X3D.",
+#           "action": "setComponent",
+#           "payload": { "type": "cpu", "id": "cpu3" }
+#         }
         
-        Usuario: "Gracias"
-        Tu JSON: {
-          "text": "¿Hay algo más en lo que te pueda ayudar?",
-          "action": "null",
-          "payload": null
-        }
+#         Usuario: "Gracias"
+#         Tu JSON: {
+#           "text": "¿Hay algo más en lo que te pueda ayudar?",
+#           "action": "null",
+#           "payload": null
+#         }
         
-        Aquí está el historial de la conversación:
-        """
+#         Aquí está el historial de la conversación:
+#         """
         
-        # Preparamos el mensaje para la IA
-        full_prompt = system_prompt + "\n".join(self.chat_history) + "\nUsuario: " + user_message
+#         # Preparamos el mensaje para la IA
+#         full_prompt = system_prompt + "\n".join(self.chat_history) + "\nUsuario: " + user_message
 
-        try:
-            # Envía el prompt a Gemini
-            response = self.model.generate_content(full_prompt)
+#         try:
+#             # Envía el prompt a Gemini
+#             response = self.model.generate_content(full_prompt)
             
-            # Añade el turno actual al historial
-            self.chat_history.append("Usuario: " + user_message)
-            self.chat_history.append("IA: " + response.text)
+#             # Añade el turno actual al historial
+#             self.chat_history.append("Usuario: " + user_message)
+#             self.chat_history.append("IA: " + response.text)
             
-            # Decodifica la respuesta JSON de Gemini
-            bot_response_json = json.loads(response.text)
+#             # Decodifica la respuesta JSON de Gemini
+#             bot_response_json = json.loads(response.text)
             
-            # Devuelve el JSON a React
-            return Response(bot_response_json, status=status.HTTP_200_OK)
+#             # Devuelve el JSON a React
+#             return Response(bot_response_json, status=status.HTTP_200_OK)
 
-        except Exception as e:
-            # Manejo de errores de la API de Gemini
-            return Response({"error": f"Error al contactar la IA: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#         except Exception as e:
+#             # Manejo de errores de la API de Gemini
+#             return Response({"error": f"Error al contactar la IA: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
