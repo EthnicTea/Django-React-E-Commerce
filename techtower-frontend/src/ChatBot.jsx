@@ -13,54 +13,49 @@ const UserAvatar = () => (
     </svg>
 );
 
-const getBotResponse = (userMessage, onBotAction) => {
-    const message = userMessage.toLowerCase();
-    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+async function getBotResponse(userMessage) {
+    try {
+        // Llama a tu endpoint de Django
+        const response = await fetch('/api/chat/', { // Ajusta esta URL si es necesario
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Si usas CSRF, necesitarás añadir el token aquí
+            },
+            body: JSON.stringify({ message: userMessage })
+        });
 
-    if (message.includes('hola') || message.includes('ayuda')) {
+        if (!response.ok) {
+            // Maneja errores del servidor
+            const errorData = await response.json();
+            return {
+                from: 'bot',
+                text: `Error del servidor: ${errorData.error || 'No se pudo conectar.'}`,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+        }
+
+        // Obtiene la respuesta JSON de Django (que vino de Gemini)
+        const data = await response.json();
+        
+        // Devuelve el objeto de mensaje, incluyendo la acción
         return {
             from: 'bot',
-            text: "¡Hola! Soy Peki, tu asistente virtual. ¿En qué te puedo ayudar?",
-            timestamp: timestamp,
-            options: null
+            text: data.text, // El texto para mostrar
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            action: data.action,     // La acción a ejecutar (ej: "setComponent")
+            payload: data.payload   // Los datos para la acción (ej: {type: 'cpu', id: 'cpu3'})
         };
-    }
 
-    if (message.includes('olvidé mi contraseña') || message.includes('password')) {
+    } catch (error) {
+        // Maneja errores de red
         return {
             from: 'bot',
-            text: "Entiendo lo que necesitas. ¿Quieres que enviemos un enlace a tu email para reestablecer tu contraseña?",
-            timestamp: timestamp,
-            options: [
-                { text: 'YES', action: 'reset_password_yes' },
-                { text: 'NO', action: 'reset_password_no' }
-            ]
+            text: `Error de red: No se pudo conectar al servidor. ¿Está Django corriendo?`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
     }
-    if (message === 'reset_password_yes') {
-         return { from: 'bot', text: "¡Perfecto! Revisa tu correo electrónico (bandeja de entrada y spam) en los próximos minutos.", timestamp: timestamp };
-    }
-    if (message === 'reset_password_no') {
-         return { from: 'bot', text: "Entendido. ¿Hay algo más en lo que te pueda ayudar?", timestamp: timestamp };
-    }
-    if (message.includes('gaming') || message.includes('gamer')) {
-        onBotAction('cpu', 'cpu3');
-        onBotAction('gpu', 'gpu1');
-        onBotAction('ram', 'ram2');
-        return { from: 'bot', text: "¡Listo! Te he seleccionado una configuración 'gamer' de alta gama. Revisa el formulario.", timestamp: timestamp };
-    }
-    if (message.includes('limpiar')) {
-        onBotAction('cpu', null);
-        onBotAction('motherboard', null);
-        return { from: 'bot', text: "He limpiado la selección. ¿Empezamos de nuevo?", timestamp: timestamp };
-    }
-    return {
-        from: 'bot',
-        text: "No entendí esa solicitud. Prueba pidiendo una configuración para 'gaming' o 'diseño'.",
-        timestamp: timestamp,
-        options: null
-    };
-};
+}
 function Chatbot({ onBotAction }) {
     const [isOpen, setIsOpen] = useState(false);
     const [input, setInput] = useState('');
@@ -87,12 +82,27 @@ function Chatbot({ onBotAction }) {
             text: textToSend,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
+        
         setMessages(prev => [...prev, userMsg]);
         setInput('');
-        setTimeout(() => {
-            const botMsg = getBotResponse(textToSend, onBotAction);
-            setMessages(prev => [...prev, botMsg]);
-        }, 500);
+
+        // 1. Obtiene la respuesta de la API (que ahora es un objeto)
+        const botMsg = await getBotResponse(textToSend);
+        
+        // 2. Añade la parte de TEXTO del bot al chat
+        setMessages(prev => [...prev, {
+            from: 'bot',
+            text: botMsg.text,
+            timestamp: botMsg.timestamp,
+            // (La lógica de 'options' se puede manejar aquí si Gemini la devuelve)
+        }]);
+
+        // 3. ¡EJECUTA LA ACCIÓN!
+        // Si la IA devolvió una acción (ej: "setComponent")...
+        if (botMsg.action && botMsg.action === "setComponent" && botMsg.payload) {
+            // ...llama a la función 'onBotAction' que te pasó PcBuilder.jsx
+            onBotAction(botMsg.payload.type, botMsg.payload.id);
+        }
     };
 
     const handleOptionClick = (option) => {

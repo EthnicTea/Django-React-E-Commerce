@@ -9,7 +9,7 @@ load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 # SECURITY WARNING: keep the secret key used in production secret!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SECRET_KEY = 'django-insecure-tv%g_dmzi$ag&0m0guqbb**32fhn)0@fu136@wm1da7#^=-+y6'
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") 
