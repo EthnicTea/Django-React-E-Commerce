@@ -1,86 +1,182 @@
-.form-login {
-  width: 400px;
-  height: auto;
-  background: #4e4d4d;
-  margin: auto;
-  margin-top: 80px;
-  margin-bottom: 80px;
-  box-shadow: 7px 13px 37px #000;
-  padding: 20px 30px;
-  border-top: 4px solid #017bab;
-  color: white;
-  text-align: center;
+/* 1. VARIABLES Y CONFIGURACIÓN BASE */
+/* ---------------------------------- */
+
+/* Fuente base: Poppins (la que ya usabas) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+    /* Color de Marca: Cian Eléctrico */
+    --color-primary: #00bcd4; 
+    /* Color de Acento (opcional) */
+    --color-secondary: #2196f3; 
+    
+    /* Colores Base */
+    --color-text-dark: #333;
+    --color-background-light: #f7f9fc; /* Fondo claro y moderno */
+    --color-white: #ffffff;
+    --color-shadow: rgba(0, 0, 0, 0.15);
+    --color-border: #e0e0e0;
 }
 
-.form-login h5 {
-  margin: 0;
-  margin-bottom: 30px;
-  border-bottom: 1px solid;
-  font-size: 20px;
-  padding-bottom: 10px;
+/* 2. DISEÑO DE PÁGINA Y CONTENEDOR */
+/* ---------------------------------- */
+
+.login-page {
+    /* Fondo más limpio, ya no el gradiente oscuro */
+    background-color: var(--color-background-light); 
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px; /* Padding para móviles */
+}
+
+.form-login {
+    width: 100%;
+    max-width: 400px; /* Ancho cómodo */
+    /* Tarjeta limpia, esquinas redondeadas, fondo blanco */
+    background: var(--color-white); 
+    border-radius: 12px; 
+    /* Sombra profesional */
+    box-shadow: 0 10px 40px var(--color-shadow); 
+    padding: 40px 30px;
+    color: var(--color-text-dark); /* Texto oscuro para mejor contraste */
+    text-align: center;
+    /* Eliminamos el blur y la transición oscura, buscamos ligereza */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+/* Leve efecto hover */
+.form-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+/* Título de Marca (NUEVO) */
+.brand-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: var(--color-text-dark);
+}
+
+.brand-highlight {
+    color: var(--color-primary); /* El cian da el toque tecnológico */
+}
+
+/* Título de la Sesión */
+.login-heading { /* Cambié h5 por login-heading para no depender de la etiqueta */
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    letter-spacing: 0; /* Quitamos el letter-spacing para mayor limpieza */
+}
+
+/* 3. ESTILOS DE INPUTS Y LABELS */
+/* ---------------------------------- */
+
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--color-text-dark);
+    font-size: 0.9rem;
 }
 
 .controls {
-  width: 100%;
-  border: 1px solid #017bab;
-  margin-bottom: 15px;
-  padding: 11px 10px;
-  background: #252323;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  box-sizing: border-box;
+    width: 92% !important;
+    border: 1px solid var(--color-border); /* Borde claro */
+    border-radius: 8px;
+    padding: 12px 14px;
+    background: var(--color-white); 
+    color: var(--color-text-dark); 
+    font-size: 15px;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
+
+.controls::placeholder {
+    color: #999;
+}
+
+/* Efecto focus moderno y vibrante */
+.controls:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.15); /* Sombra sutil del color primario */
+}
+
+
+/* 4. ESTILOS DEL BOTÓN (CTA) */
+/* ---------------------------------- */
 
 .buttons {
-  width: 100%;
-  height: 40px;
-  background: #017bab;
-  border: none;
-  color: white;
-  margin-bottom: 16px;
-  border-radius: 2px;
-  cursor: pointer;
+    width: 100%;
+    padding: 14px; /* Un poco más de padding para que se vea más sólido */
+    /* Color de marca SÓLIDO para máximo impacto */
+    background: var(--color-primary); 
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.1s;
+    margin-top: 15px;
 }
 
-.form-login p {
-  margin: 10px 0;
+.buttons:hover {
+    /* Oscurecimiento al 90% para el hover */
+    background: #00acc1; 
+    box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3);
+    transform: translateY(-1px);
+}
+
+/* 5. ENLACES SECUNDARIOS Y ERROR */
+/* ---------------------------------- */
+
+.secondary-links {
+    margin-top: 15px;
+}
+
+.secondary-links p {
+    margin: 8px 0;
+    font-size: 14px;
 }
 
 .form-login a {
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
+    color: var(--color-primary); 
+    text-decoration: none;
+    transition: color 0.3s;
 }
 
 .form-login a:hover {
-  color: #017bab;
-  transition: 0.3s;
+    color: var(--color-secondary); /* Usa el color secundario (azul) para el hover */
+    text-decoration: underline;
 }
 
-/* Media queries para pantallas pequeñas */
-@media (max-width: 600px) {
-  .form-login {
-    width: 90%;
-    padding: 20px;
-  }
-
-  .buttons {
-    width: 100%;
-  }
-}
-
-@media (max-width: 400px) {
-  .form-login h5 {
-    font-size: 18px;
-  }
-
-  .controls {
-    font-size: 12px;
-  }
-
-  .buttons {
-    height: 35px;
+.error {
+    background-color: rgba(255, 77, 77, 0.1);
+    border-left: 4px solid #ff5252;
+    color: #ff5252;
+    padding: 10px;
+    margin-top: 20px; /* Más margen para separarlo del botón */
+    border-radius: 6px;
     font-size: 14px;
-  }
+    text-align: left;
+}
+
+/* Responsive (manteniendo tu media query) */
+@media (max-width: 480px) {
+    .form-login {
+        width: 100%; /* Ocupa todo el ancho disponible */
+        padding: 30px 20px;
+    }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import './MasVendidos.css';
 
 const BestSellers = () => {
-  // Aquí puedes agregar tus productos más vendidos
+  // Productos hardcodeados
   const bestSellingProducts = [
     { id: 12, name: 'Teclado Mecánico Razer RGB', brand: 'Razer', category: 'Teclado', price: '$80.000 Transferencia', price2: '$100.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/vqczuwsv_e8307d49_thumbnail_512.png' },
     { id: 1, name: 'Monitor Plano ASUS VA24EHF Eye Care', brand: 'Asus', category: 'Monitor', price: '$99.990 Transferencia', price2: '$105.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/q0txzqxy_c4b644f0_thumbnail_512.png' },

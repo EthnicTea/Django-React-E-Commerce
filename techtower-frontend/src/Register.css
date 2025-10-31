@@ -1,91 +1,215 @@
-.form {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 50px;
-  margin-top: 50px;
+/* 1. VARIABLES Y CONFIGURACIÓN BASE (Igual que Login.css) */
+/* ---------------------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+    --color-primary: #00bcd4; /* Cian Eléctrico */
+    --color-secondary: #2196f3; 
+    
+    --color-text-dark: #333;
+    --color-background-light: #f7f9fc; /* Fondo claro y moderno */
+    --color-white: #ffffff;
+    --color-shadow: rgba(0, 0, 0, 0.15);
+    --color-border: #e0e0e0;
+    
+    --color-success: #4CAF50;
+    --color-error: #F44336;
 }
 
-.form-register, .form-direction {
-  width: 600px;
-  background: #4e4d4d;
-  box-shadow: 7px 13px 37px #000;
-  padding: 20px 30px;
-  margin-bottom: 100px;
-  border-top: 4px solid #017bab;
-  color: white;
-  text-align: center;
+/* 2. DISEÑO DE PÁGINA Y CONTENEDOR */
+/* ---------------------------------- */
+
+.register-page {
+    /* Fondo limpio y moderno */
+    background-color: var(--color-background-light); 
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centrar verticalmente en pantallas largas */
+    min-height: 100vh;
+    padding: 40px 20px; /* Padding para scroll si es necesario */
 }
 
-.form-register h5, .form-direction h5 {
-  margin: 0;
-  margin-bottom: 30px;
-  border-bottom: 1px solid;
-  font-size: 20px;
-  padding-bottom: 10px;
+.form-register {
+    width: 100%;
+    max-width: 650px; /* Más ancho para contener más campos */
+    
+    /* Tarjeta limpia, igual que login */
+    background: var(--color-white); 
+    border-radius: 12px; 
+    box-shadow: 0 10px 40px var(--color-shadow); 
+    padding: 40px;
+    color: var(--color-text-dark); 
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
 
+/* Título de Marca (TechTower) */
+.brand-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--color-text-dark);
+}
+
+.brand-highlight {
+    color: var(--color-primary); /* Cian */
+}
+
+/* Título de la Sección de Registro */
+.register-heading { 
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: var(--color-text-dark);
+}
+
+/* Títulos de Subsección (Datos Personales, Dirección) */
+.section-heading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-primary); /* Resalta la sección con el color primario */
+    margin-top: 30px;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+}
+
+/* 3. ESTILOS DE FORMULARIO CON GRID */
+/* ---------------------------------- */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas por defecto */
+    gap: 20px;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 0; /* Margin manejado por el gap de la grid */
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--color-text-dark);
+    font-size: 0.9rem;
+}
+
+/* Hace que el Teléfono y otros campos usen el ancho completo si es necesario */
+.input-group.full-width {
+    grid-column: span 2; 
+}
+
+/* 4. CONTROLES (INPUTS, SELECTS) - IGUAL QUE EN LOGIN */
+/* ---------------------------------- */
+
+/* Applies to both input and select elements with class 'controls' */
 .controls {
-  width: 100%;
-  border: 1px solid #017bab;
-  margin-bottom: 15px;
-  padding: 11px 10px;
-  background: #252323;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  box-sizing: border-box;
+    width: 100%;
+    border: 1px solid var(--color-border); 
+    border-radius: 8px;
+    padding: 12px 14px;
+    background: var(--color-white); 
+    color: var(--color-text-dark); 
+    font-size: 15px;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    -webkit-appearance: none; /* Estilo uniforme para selects */
+    appearance: none; /* Estilo uniforme para selects */
 }
+
+.controls::placeholder {
+    color: #999;
+}
+
+/* Efecto focus moderno y vibrante */
+.controls:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.15); 
+}
+
+
+/* 5. ESTILOS DEL BOTÓN (CTA) - IGUAL QUE EN LOGIN */
+/* ---------------------------------- */
 
 .buttons {
-  width: 100%;
-  height: 40px;
-  background: #017bab;
-  border: none;
-  color: white;
-  margin-bottom: 16px;
-  border-radius: 2px;
-  cursor: pointer;
-}
-
-.form-register p, .form-direction p {
-  margin: 10px 0;
-}
-
-.form-register a, .form-direction a {
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.form-register a:hover, .form-direction a:hover {
-  color: #017bab;
-  transition: 0.3s;
-}
-
-/* Media queries para pantallas pequeñas */
-@media (max-width: 600px) {
-  .form-register, .form-direction {
-    width: 90%;
-    padding: 20px;
-  }
-
-  .buttons {
     width: 100%;
-  }
+    padding: 14px;
+    background: var(--color-primary); 
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.1s;
+    margin-top: 30px;
 }
 
-@media (max-width: 400px) {
-  .form-register h5, .form-direction h5 {
-    font-size: 18px;
-  }
+.buttons:hover {
+    background: #00acc1; 
+    box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3);
+    transform: translateY(-1px);
+}
 
-  .controls {
-    font-size: 12px;
-  }
+/* 6. MENSAJES DE FEEDBACK Y ENLACES */
+/* ---------------------------------- */
 
-  .buttons {
-    height: 35px;
+.form-message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: left;
+    opacity: 0.95;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.form-message.error {
+    background-color: rgba(244, 67, 54, 0.1); /* Red claro */
+    border-left: 5px solid var(--color-error);
+    color: var(--color-error);
+}
+
+.form-message.success {
+    background-color: rgba(76, 175, 80, 0.1); /* Green claro */
+    border-left: 5px solid var(--color-success);
+    color: var(--color-success);
+}
+
+.login-link {
+    margin-top: 25px;
     font-size: 14px;
-  }
+}
+
+.form-register a {
+    color: var(--color-primary); 
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.form-register a:hover {
+    color: var(--color-secondary); 
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    /* En tabletas y móviles, la cuadrícula pasa a una sola columna */
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .input-group.full-width {
+        grid-column: span 1; 
+    }
+    
+    .form-register {
+        padding: 30px 20px;
+    }
 }

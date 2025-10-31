@@ -6,7 +6,6 @@ import TechTower from '../assets/techtower.png';
 export function Hero() {
     return (
         <div className="hero-flex-border">
-            <img src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/137.png" alt="" className='porygonimg' />
             {/* Parte izquierda del componente */}
             <div className="inner-full-hero-border">
                 <div className="inner-text-black">
