@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PcBuilder.css';
+import Chatbot from './ChatBot';
 
 const PRODUCT_DATABASE = {
     cpu: [
@@ -84,27 +85,29 @@ function PcBuilder() {
 
     }, [selectedCpu, selectedMobo, selectedGpu, selectedRam, selectedSsd, selectedPsu]);
 
-    const handleSelectChange = (e) => {
-        const { name, value } = e.target; 
-
-        if (value === "") {
-            if (name === 'cpu') setSelectedCpu(null);
-            if (name === 'motherboard') setSelectedMobo(null);
-            if (name === 'gpu') setSelectedGpu(null);
-            if (name === 'ram') setSelectedRam(null);
-            if (name === 'ssd') setSelectedSsd(null);
-            if (name === 'psu') setSelectedPsu(null);
+    const setComponent = (type, productId) => {
+        if (!productId) {
+            if (type === 'cpu') setSelectedCpu(null);
+            if (type === 'motherboard') setSelectedMobo(null);
+            if (type === 'gpu') setSelectedGpu(null);
+            if (type === 'ram') setSelectedRam(null);
+            if (type === 'ssd') setSelectedSsd(null);
+            if (type === 'psu') setSelectedPsu(null);
             return;
         }
 
-        const product = PRODUCT_DATABASE[name].find(item => item.id === value);
-
-        if (name === 'cpu') setSelectedCpu(product);
-        if (name === 'motherboard') setSelectedMobo(product);
-        if (name === 'gpu') setSelectedGpu(product);
-        if (name === 'ram') setSelectedRam(product);
-        if (name === 'ssd') setSelectedSsd(product);
-        if (name === 'psu') setSelectedPsu(product);
+        const product = PRODUCT_DATABASE[type].find(item => item.id === productId);
+        if (!product) return;
+        if (type === 'cpu') setSelectedCpu(product);
+        if (type === 'motherboard') setSelectedMobo(product);
+        if (type === 'gpu') setSelectedGpu(product);
+        if (type === 'ram') setSelectedRam(product);
+        if (type === 'ssd') setSelectedSsd(product);
+        if (type === 'psu') setSelectedPsu(product);
+    };
+    const handleSelectChange = (e) => {
+        const { name, value } = e.target; 
+        setComponent(name, value || null);
     };
 
     return (
@@ -123,7 +126,7 @@ function PcBuilder() {
                     
                     <div className="form-group">
                         <label htmlFor="cpu">Procesador (CPU)</label>
-                        <select id="cpu" name="cpu" onChange={handleSelectChange}>
+                        <select id="cpu" name="cpu" onChange={handleSelectChange} value={selectedCpu?.id || ''}>
                             <option value="">— seleccionar CPU —</option>
                             {PRODUCT_DATABASE.cpu.map(item => (
                                 <option key={item.id} value={item.id}>
@@ -135,7 +138,7 @@ function PcBuilder() {
 
                     <div className="form-group">
                         <label htmlFor="motherboard">Placa Madre (Motherboard)</label>
-                        <select id="motherboard" name="motherboard" onChange={handleSelectChange}>
+                        <select id="motherboard" name="motherboard" onChange={handleSelectChange} value={selectedMobo?.id || ''}>
                             <option value="">— seleccionar placa —</option>
                             {PRODUCT_DATABASE.motherboard.map(item => (
                                 <option key={item.id} value={item.id}>
@@ -147,7 +150,7 @@ function PcBuilder() {
 
                     <div className="form-group">
                         <label htmlFor="gpu">Tarjeta Gráfica (GPU)</label>
-                        <select id="gpu" name="gpu" onChange={handleSelectChange}>
+                        <select id="gpu" name="gpu" onChange={handleSelectChange} value={selectedGpu?.id || ''}>
                             <option value="">— seleccionar GPU —</option>
                             {PRODUCT_DATABASE.gpu.map(item => (
                                 <option key={item.id} value={item.id}>
@@ -159,7 +162,7 @@ function PcBuilder() {
                     
                     <div className="form-group">
                         <label htmlFor="ram">Memoria RAM</label>
-                        <select id="ram" name="ram" onChange={handleSelectChange}>
+                        <select id="ram" name="ram" onChange={handleSelectChange} value={selectedRam?.id || ''}>
                             <option value="">— seleccionar RAM —</option>
                             {PRODUCT_DATABASE.ram.map(item => (
                                 <option key={item.id} value={item.id}>
@@ -171,7 +174,7 @@ function PcBuilder() {
                     
                     <div className="form-group">
                         <label htmlFor="ssd">Almacenamiento</label>
-                        <select id="ssd" name="ssd" onChange={handleSelectChange}>
+                        <select id="ssd" name="ssd" onChange={handleSelectChange} value={selectedSsd?.id || ''}>
                             <option value="">— seleccionar SSD —</option>
                             {PRODUCT_DATABASE.ssd.map(item => (
                                 <option key={item.id} value={item.id}>
@@ -183,7 +186,7 @@ function PcBuilder() {
 
                     <div className="form-group">
                         <label htmlFor="psu">Fuente (PSU) sugerida</label>
-                        <select id="psu" name="psu" onChange={handleSelectChange}>
+                        <select id="psu" name="psu" onChange={handleSelectChange} value={selectedPsu?.id || ''}>
                             <option value="">— seleccionar PSU —</option>
                             {PRODUCT_DATABASE.psu.map(item => (
                                 <option key={item.id} value={item.id}>
@@ -258,6 +261,8 @@ function PcBuilder() {
                 </aside>
 
             </main>
+            <Chatbot onBotAction={setComponent} />
+            
         </div>
     );
 }
