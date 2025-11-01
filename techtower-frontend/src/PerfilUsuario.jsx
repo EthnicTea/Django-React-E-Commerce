@@ -1,35 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PerfilUsuario.css';
-
-const CHILE_GEODATA = [ // grr
-  { region: 'Arica y Parinacota', comunas: ['Arica', 'Camarones', 'Putre', 'General Lagos'] },
-  { region: 'Tarapacá', comunas: ['Iquique', 'Alto Hospicio', 'Pozo Almonte', 'Camiña', 'Colchane', 'Huara', 'Pica'] },
-  { region: 'Antofagasta', comunas: ['Antofagasta', 'Mejillones', 'Sierra Gorda', 'Taltal', 'Calama', 'Ollagüe', 'San Pedro de Atacama', 'Tocopilla', 'María Elena'] },
-  { region: 'Atacama', comunas: ['Copiapó', 'Caldera', 'Tierra Amarilla', 'Chañaral', 'Diego de Almagro', 'Vallenar', 'Alto del Carmen', 'Freirina', 'Huasco'] },
-  { region: 'Coquimbo', comunas: ['La Serena', 'Coquimbo', 'Andacollo', 'La Higuera', 'Paiguano', 'Vicuña', 'Ovalle', 'Combarbalá', 'Monte Patria', 'Punitaqui', 'Río Hurtado', 'Illapel', 'Canela', 'Los Vilos', 'Salamanca'] },
-  { region: 'Valparaíso', comunas: ['Valparaíso', 'Casablanca', 'Concón', 'Juan Fernández', 'Puchuncaví', 'Quintero', 'Viña del Mar', 'Isla de Pascua', 'Quilpué', 'Villa Alemana', 'Limache', 'Olmué', 'San Antonio', 'Algarrobo', 'Cartagena', 'El Quisco', 'El Tabo', 'Santo Domingo', 'San Felipe', 'Catemu', 'Llay-Llay', 'Panquehue', 'Putaendo', 'Santa María', 'Los Andes', 'Calle Larga', 'Rinconada', 'San Esteban', 'La Ligua', 'Cabildo', 'Papudo', 'Petorca', 'Zapallar'] },
-  { region: 'Metropolitana', comunas: ['Cerrillos', 'Cerro Navia', 'Conchalí', 'El Bosque', 'Estación Central', 'Huechuraba', 'Independencia', 'La Cisterna', 'La Florida', 'La Granja', 'La Pintana', 'La Reina', 'Las Condes', 'Lo Barnechea', 'Lo Espejo', 'Lo Prado', 'Macul', 'Maipú', 'Ñuñoa', 'Pedro Aguirre Cerda', 'Peñalolén', 'Providencia', 'Pudahuel', 'Quilicura', 'Quinta Normal', 'Recoleta', 'Renca', 'San Joaquín', 'San Miguel', 'San Ramón', 'Santiago', 'Vitacura', 'Puente Alto', 'Pirque', 'San José de Maipo', 'Colina', 'Lampa', 'Tiltil', 'San Bernardo', 'Buin', 'Calera de Tango', 'Paine', 'Melipilla', 'Alhué', 'Curacaví', 'María Pinto', 'San Pedro', 'Talagante', 'El Monte', 'Isla de Maipo', 'Padre Hurtado', 'Peñaflor'] },
-  { region: 'O\'Higgins', comunas: ['Rancagua', 'Codegua', 'Coinco', 'Coltauco', 'Doñihue', 'Graneros', 'Las Cabras', 'Machalí', 'Malloa', 'Mostazal', 'Olivar', 'Peumo', 'Pichidegua', 'Quinta de Tilcoco', 'Rengo', 'Requínoa', 'San Vicente', 'Pichilemu', 'La Estrella', 'Litueche', 'Marchigüe', 'Navidad', 'Paredones', 'San Fernando', 'Chépica', 'Chimbarongo', 'Lolol', 'Nancagua', 'Palmilla', 'Peralillo', 'Placilla', 'Pumanque', 'Santa Cruz'] },
-  { region: 'Maule', comunas: ['Talca', 'Constitución', 'Curepto', 'Empedrado', 'Maule', 'Pelarco', 'Pencahue', 'Río Claro', 'San Clemente', 'San Rafael', 'Cauquenes', 'Chanco', 'Pelluhue', 'Curicó', 'Hualañé', 'Licantén', 'Molina', 'Rauco', 'Romeral', 'Sagrada Familia', 'Teno', 'Vichuquén', 'Linares', 'Colbún', 'Longaví', 'Parral', 'Retiro', 'San Javier', 'Villa Alegre', 'Yerbas Buenas'] },
-  { region: 'Ñuble', comunas: ['Cobquecura', 'Coelemu', 'Ninhue', 'Portezuelo', 'Quirihue', 'Ránquil', 'Treguaco', 'Bulnes', 'Chillán Viejo', 'Chillán', 'El Carmen', 'Pemuco', 'Pinto', 'Quillón', 'San Ignacio', 'Yungay', 'San Carlos', 'Coihueco', 'San Fabián', 'San Nicolás'] },
-  { region: 'Biobío', comunas: ['Concepción', 'Coronel', 'Chiguayante', 'Florida', 'Hualqui', 'Lota', 'Penco', 'San Pedro de la Paz', 'Santa Juana', 'Talcahuano', 'Tomé', 'Hualpén', 'Lebu', 'Arauco', 'Cañete', 'Contulmo', 'Curanilahue', 'Los Álamos', 'Tirúa', 'Los Ángeles', 'Antuco', 'Cabrero', 'Laja', 'Mulchén', 'Nacimiento', 'Negrete', 'Quilaco', 'Quilleco', 'San Rosendo', 'Santa Bárbara', 'Tucapel', 'Yumbel', 'Alto Biobío'] },
-  { region: 'Araucanía', comunas: ['Temuco', 'Carahue', 'Cholchol', 'Cunco', 'Curarrehue', 'Freire', 'Galvarino', 'Gorbea', 'Lautaro', 'Loncoche', 'Melipeuco', 'Nueva Imperial', 'Padre Las Casas', 'Perquenco', 'Pitrufquén', 'Pucón', 'Saavedra', 'Teodoro Schmidt', 'Toltén', 'Vilcún', 'Villarrica', 'Angol', 'Collipulli', 'Curacautín', 'Ercilla', 'Lonquimay', 'Los Sauces', 'Lumaco', 'Purén', 'Renaico', 'Traiguén', 'Victoria'] },
-  { region: 'Los Ríos', comunas: ['Valdivia', 'Corral', 'Lanco', 'Los Lagos', 'Máfil', 'Mariquina', 'Paillaco', 'Panguipulli', 'La Unión', 'Futrono', 'Lago Ranco', 'Río Bueno'] },
-  { region: 'Los Lagos', comunas: ['Puerto Montt', 'Calbuco', 'Cochamó', 'Fresia', 'Frutillar', 'Los Muermos', 'Llanquihue', 'Maullín', 'Puerto Varas', 'Osorno', 'Puerto Octay', 'Purranque', 'Puyehue', 'Río Negro', 'San Juan de la Costa', 'San Pablo', 'Chaitén', 'Futaleufú', 'Hualaihué', 'Palena', 'Castro', 'Ancud', 'Chonchi', 'Curaco de Vélez', 'Dalcahue', 'Puqueldón', 'Queilén', 'Quellón', 'Quemchi', 'Quinchao'] },
-  { region: 'Aysén', comunas: ['Coyhaique', 'Lago Verde', 'Aysén', 'Cisnes', 'Guaitecas', 'Chile Chico', 'Río Ibáñez', 'Cochrane', 'O\'Higgins', 'Tortel'] },
-  { region: 'Magallanes', comunas: ['Punta Arenas', 'Laguna Blanca', 'Río Verde', 'San Gregorio', 'Cabo de Hornos', 'Antártica', 'Porvenir', 'Primavera', 'Timaukel', 'Natales', 'Torres del Paine'] }
-];
+import { CHILE_GEODATA } from './services/geodata.jsx'; // Asumiendo que moviste el archivo
+import { useAuth } from './services/AuthContext.jsx'; // ¡Para traer los datos reales!
+import { useNavigate } from 'react-router-dom';
 
 function PerfilUsuario() {
+    const { user, authToken, logoutAction } = useAuth();
+    const navigate = useNavigate();
 
+    console.log("PerfilUsuario RENDERIZADO. El objeto 'user' es:", user); // Debugging!!
+
+    // --- Estados del Formulario ---
+    const [profileData, setProfileData] = useState({
+        email: '',
+        nombre: '',
+        apellido: '',
+        telefono: '',
+        direccion: '',
+        region: '',
+        comuna: '',
+        departamento: ''
+    });
+    
+    // --- Estados de los Selects (Tu lógica) ---
     const [selectedRegion, setSelectedRegion] = useState('');
     const [availableComunas, setAvailableComunas] = useState([]);
     const [selectedComuna, setSelectedComuna] = useState('');
 
+    // --- Estado de la Zona de Peligro ---
+    const [passwordConfirm, setPasswordConfirm] = useState('');
+
+    // --- ¡NUEVO! Cargar datos reales al iniciar ---
+    useEffect(() => {
+        console.log("PerfilUsuario useEffect SE DISPARÓ."); // Debugging!!!!
+        if (user) {
+            console.log("PerfilUsuario useEffect: ¡'user' existe! Llenando formulario..."); // Más debugging...
+            setProfileData({
+                email: user.email || '',
+                nombre: user.nombre || '',
+                apellido: user.apellido || '',
+                telefono: user.telefono || '',
+                direccion: user.direccion || '',
+                region: user.region || '',
+                comuna: user.comuna || '',
+                departamento: user.data_departamento || ''
+            });
+
+            // Pre-seleccionamos los dropdowns si los datos existen
+            if (user.region) {
+                setSelectedRegion(user.region);
+                const geoData = CHILE_GEODATA.find(data => data.region === user.region);
+                setAvailableComunas(geoData ? geoData.comunas : []);
+                setSelectedComuna(user.comuna || '');
+            }
+        } else {
+            console.log("PerfilUsuario useEffect: 'user' NO existe aún."); // Y MÁS Debugging...
+        }
+    }, [user]); // Este efecto se ejecuta cada vez que el 'user' (del context) se cargue
+
+    
+    // --- Tus Handlers (Manejadores) ---
     const handleRegionChange = (e) => {
         const region = e.target.value;
         setSelectedRegion(region);
-        setSelectedComuna(''); // Resetear comuna al cambiar la región
+        setSelectedComuna('');
+        // Sincroniza también el estado principal del formulario
+        setProfileData(prev => ({ ...prev, region: region, comuna: '' }));
         
         if (region) {
             const selectedGeoData = CHILE_GEODATA.find(data => data.region === region);
@@ -39,149 +75,187 @@ function PerfilUsuario() {
         }
     };
 
-
-    const [profileData, setProfileData] = useState({ // Hace falta traer los datos reales del usuario
-        email: 'correo@ejemplo.com',
-        nombre: 'Test',
-        apellido: '123',
-        telefono: '+56912345678',
-        direccion: 'Av. Siempre Viva 742',
-        region: 'Metropolitana',
-        comuna: 'Recoleta',
-        departamento: 'Departamento 5A'
-    });
+    const handleComunaChange = (e) => {
+        const comuna = e.target.value;
+        setSelectedComuna(comuna);
+        // Sincroniza el estado principal
+        setProfileData(prev => ({ ...prev, comuna: comuna }));
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProfileData(prevData => ({
-            ...prevData, // Mantenemos los datos que no cambiaron
-            [name]: value  // Actualizamos el campo que sí cambió
+            ...prevData,
+            [name]: value
         }));
     };
 
-    const handleSubmit = (e) => {
+    // --- Lógica de Submit  ---
+    // Explicación:
+    // async y await: Hacen que la función espere a que la llamada fetch termine antes de continuar.
+    // luego con patch por que ya existe un endpoint que maneje usuarios (POST) y otro para actualizar (PATCH).
+    // envia el authToken, que es necesario para autenticar la solicitud.
+    // envia el body del formulario... y listo
+    const handleSubmit = async (e) => { 
+    e.preventDefault();
+
+    if (!authToken) {
+        alert("Tu sesión ha expirado. Por favor, inicia sesión de nuevo.");
+        return;
+    }
+    const { email, departamento, ...Perfil } = profileData;
+
+    const datosParaActualizar = {
+            ...Perfil, // nombre, apellido, etc.
+            "data_departamento": departamento // No saben CUANTO me costó saber por que cresta no se enviaba el departamento...
+        };
+    console.log('Datos del perfil a ENVIAR:', datosParaActualizar);
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/user/', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            },
+            body: JSON.stringify(datosParaActualizar)
+        });
+
+        if (response.ok) {
+            const updatedUserData = await response.json();
+            console.log('Perfil actualizado en el backend:', updatedUserData);
+            alert('¡Perfil actualizado exitosamente!');
+            
+            // Opcional: aquí se podría actualizar el 'user' en tu AuthContext 
+            // pero se actualizará solo al recargar la página de todos modos, eso creo.
+
+        } else {
+            // Validaciones, etc etc...
+            const errorData = await response.json();
+            console.error('Error al actualizar:', errorData);
+            alert(`Error al guardar los cambios: ${JSON.stringify(errorData)}`);
+        }
+    } catch (err) {
+        console.error('Error de red:', err);
+        alert('Error de conexión. No se pudo guardar el perfil.');
+    }
+};
+
+    const handleDeleteAccount = (e) => {
         e.preventDefault();
-        console.log('Datos del perfil a enviar:', profileData); // Debug en consola, luego se usará fetch
-        alert('Perfil actualizado (revisa la consola)');
+        if (passwordConfirm === '') {
+            alert('Por favor, ingresa tu contraseña para confirmar.');
+            return;
+        }
+
+        if (window.confirm('¿Estás SEGURO de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+            // 2. Aquí llamarías al endpoint (DELETE /api/user/delete)
+            // enviando { password: passwordConfirm } en el body.
+            console.log('Enviando petición de borrado con contraseña:', passwordConfirm);
+            
+            // Si es exitoso (simulación):
+            alert('Cuenta eliminada (simulado). Serás redirigido.');
+            logoutAction(); // Cierra la sesión
+            navigate('/'); // Envía al inicio
+        }
     };
 
     return (
         <div className="profile-container">
-            <h2>Editar Perfil</h2>
+            
             <form onSubmit={handleSubmit} className="profile-form">
-                
-                <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input 
-                        type="email" 
-                        id="email"
-                        name="email" 
-                        value={profileData.email} 
-                        readOnly 
-                        className="disabled-input"
-                    />
-                </div>
+                <h2>Tu perfil</h2>
+                <p className='p-datos'>Aquí puedes editar tus datos de envio</p>
+                <fieldset>
+                    <legend>Información Personal</legend>
+                    <div className="form-group">
+                        <label htmlFor="email">Tu correo</label>
+                        <input 
+                            type="email" 
+                            id="email"
+                            name="email" 
+                            value={profileData.email} 
+                            readOnly 
+                            className="disabled-input"
+                        />
+                    </div>
+                    
+                    {/* (Tus campos: nombre, apellido, telefono) */}
+                    <div className="form-group">
+                        <label htmlFor="nombre">Nombre</label>
+                        <input name="nombre" value={profileData.nombre} onChange={handleChange} placeholder='John'/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="apellido">Apellido</label>
+                        <input name="apellido" value={profileData.apellido} onChange={handleChange} placeholder='Doe'/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="telefono">Teléfono</label>
+                        <input name="telefono" value={profileData.telefono} onChange={handleChange} placeholder='+569...'/>
+                    </div>
+                </fieldset>
 
-                <div className="form-group">
-                    <label htmlFor="nombre">Nombre</label>
-                    <input 
-                        type="text" 
-                        id="nombre"
-                        name="nombre" 
-                        value={profileData.nombre} 
-                        onChange={handleChange} 
-                        placeholder='John'
-                    />
-                </div>
+                <fieldset>
+                    <legend>Dirección de Envío</legend>
+                    {/* (Tus campos de dirección) */}
+                    <div className="form-group">
+                        <label htmlFor="direccion">Dirección</label>
+                        <input name="direccion" value={profileData.direccion} onChange={handleChange} placeholder='Pasaje el manzano 123'/>
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="region">Región</label>
+                        <select id="region" value={selectedRegion} onChange={handleRegionChange}>
+                            <option value="">Seleccionar Región</option>
+                            {CHILE_GEODATA.map((data) => (
+                                <option key={data.region} value={data.region}>
+                                    {data.region}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <div className="form-group">
-                    <label htmlFor="apellido">Apellido</label>
-                    <input 
-                        type="text" 
-                        id="apellido"
-                        name="apellido" 
-                        value={profileData.apellido} 
-                        onChange={handleChange}
-                        placeholder='Doe' 
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="telefono">Teléfono</label>
-                    <input 
-                        type="tel" 
-                        id="telefono"
-                        name="telefono" 
-                        value={profileData.telefono} 
-                        onChange={handleChange}
-                        placeholder='+569...' 
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="direccion">Dirección</label>
-                    <input 
-                        type="text" 
-                        id="direccion"
-                        name="direccion" 
-                        value={profileData.direccion} 
-                        onChange={handleChange}
-                        placeholder='Pasaje el manzano 123' 
-                    />
-                </div>
-                
-                <div className="form-group">
-                    <label htmlFor="region">Región</label>
-                    <select
-                        id="region"
-                        className="controls"
-                        value={selectedRegion}
-                        onChange={handleRegionChange}
-                    >
-                        <option value="">Seleccionar Región</option>
-                        {CHILE_GEODATA.map((data) => (
-                            <option key={data.region} value={data.region}>
-                                {data.region}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="comuna">Comuna:</label>
-                    <select
-                        id="comuna"
-                        className="controls"
-                        value={selectedComuna}
-                        onChange={(e) => setSelectedComuna(e.target.value)}
-                        disabled={!selectedRegion}
-                    >
-                        <option value="">Seleccionar Comuna</option>
-                        {availableComunas.map((comuna) => (
-                            <option key={comuna} value={comuna}>
-                                {comuna}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="departamento">Departamento/Oficina (Opcional):</label>
-                    <input
-                        id="departamento"
-                        className="controls"
-                        type="text"
-                        placeholder="N° de Departamento/Oficina"
-                        value={profileData.departamento} 
-                        onChange={handleChange} 
-                    />
-                </div>
+                    <div className="form-group">
+                        <label htmlFor="comuna">Comuna</label>
+                        <select id="comuna" value={selectedComuna} onChange={handleComunaChange} disabled={!selectedRegion}>
+                            <option value="">Seleccionar Comuna</option>
+                            {availableComunas.map((comuna) => (
+                                <option key={comuna} value={comuna}>
+                                    {comuna}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="departamento">Departamento (Opcional)</label>
+                        <input name="departamento" value={profileData.departamento} onChange={handleChange} placeholder='N° de Departamento/Oficina'/>
+                    </div>
+                </fieldset>
 
                 <button type="submit" className="save-button">
                     Guardar Cambios
                 </button>
-
             </form>
+            <div className="danger-zone">
+                <h2>Eliminar Cuenta</h2>
+                <p>Esta acción es permanente y eliminará todos tus datos, historial de pedidos y carrito.</p>
+                <form onSubmit={handleDeleteAccount} className="delete-form">
+                    <div className="form-group">
+                        <label htmlFor="passwordConfirm">Ingresa tu contraseña para confirmar</label>
+                        <input 
+                            type="password"
+                            id="passwordConfirm"
+                            value={passwordConfirm}
+                            onChange={(e) => setPasswordConfirm(e.target.value)}
+                            placeholder="Tu contraseña"
+                        />
+                    </div>
+                    <button type="submit" className="delete-button">
+                        Eliminar mi cuenta permanentemente
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

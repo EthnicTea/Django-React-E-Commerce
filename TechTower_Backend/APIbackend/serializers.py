@@ -40,6 +40,36 @@ class UserSerializer(serializers.ModelSerializer):
         model = UserModel
         fields = ('email', 'rut', 'nombre', 'apellido', 'telefono', 'region', 'comuna', 'direccion', 'data_departamento', 'is_staff')
 
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer para actualizar los campos de perfil del usuario.
+    No incluye email ni contraseña.
+    """
+    class Meta:
+        model = UserModel
+        
+        # Lista solo los campos que el usuario PUEDE cambiar
+        fields = (
+            "email", # SOLO PARA MOSTRAR EN EL FRONTEND
+            'nombre', 
+            'apellido', 
+            'telefono', 
+            'direccion', 
+            'region', 
+            'comuna', 
+            'data_departamento'
+        )
+        
+        # Ninguno es obligatorio en la actualización
+        extra_kwargs = {
+            'nombre': {'required': False},
+            'apellido': {'required': False},
+            'telefono': {'required': False},
+            'direccion': {'required': False},
+            'region': {'required': False},
+            'comuna': {'required': False},
+            'data_departamento': {'required': False},
+        }
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:

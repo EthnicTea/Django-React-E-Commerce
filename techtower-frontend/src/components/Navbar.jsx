@@ -30,7 +30,6 @@ export function Navbar() {
                     <span>
                         ¡Recuerda que siempre será gratis el retiro de los productos! Además de la variedad de productos con despacho gratis, vea más&nbsp;
                         <Link to="/terminos">Aquí</Link>
-                        {/* <Link to="/PerfilUsuario">Aquí</Link> */}
                         {/* <Link to="/Pasarela">Aquí</Link> */}
                         {/* <Link to="/crud">Aquí</Link> */}
                     </span>
@@ -65,41 +64,36 @@ export function Navbar() {
                                 <FiUser className='icon-user'/>
                             </button>
                             <div className={`dropdown-content ${isDropdownOpen ? 'open' : ''}`}>
+                            
+                            {authToken ? (
+                                // --- 1. SI ESTÁ LOGEADO ---
+                                <>
+                                    {/* (a) Saludo (igual que antes) */}
+                                    <span className="navbar-link-user">
+                                        Bienvenido, {user ? user.email : 'Cargando...'}
+                                    </span>
+                                    
+                                    {/* (b) Lógica de Roles */}
+                                    {user && (user.is_staff || user.isStaff) ? (
+                                        // SI ES EMPLEADO (is_staff = true)
+                                        <Link to="/panel-empleado" className="navbar-link">Panel de Empleado</Link>
+                                    ) : (
+                                        // SI ES CLIENTE NORMAL (is_staff = false)
+                                        <Link to="/MiCuenta" className="navbar-link">Mi Cuenta y Pedidos</Link>
+                                    )}
+
+                                    {/* (c) Botón de Logout (igual que antes) */}
+                                    <button onClick={logoutAction} className='navbar-link-user' role="logout">Cerrar Sesión</button>
+                                </>
                                 
-                                {/* * En lugar de 'userEmail', ahora preguntamos 
-                                 * si existe 'authToken' 
-                                 */}
-                                {authToken ? (
-                                    // 1. SI ESTÁ LOGEADO
-                                    <>
-                                        {/* * Usamos el objeto 'user' del Context.
-                                         * Hacemos una comprobación por si 'user'
-                                         * aún no se ha cargado.
-                                         */}
-                                        <span className="navbar-link-user">
-                                            Bienvenido, {user ? user.email : 'Cargando...'}
-                                        </span>
-                                        
-                                        {/* * Usamos 'logoutAction' del Context 
-                                         * en lugar de 'handleLogout'
-                                         */}
-                                        <button onClick={logoutAction} className='navbar-link-user' role="logout">Cerrar Sesión</button>
-                                        
-                                        {/* * Verificamos si es Staff desde el objeto 'user'
-                                         * (Asegúrate que tu API devuelva 'is_staff' o 'isStaff')
-                                         */}
-                                        {user && (user.is_staff || user.isStaff) && (
-                                            <Link to="/crud" className="navbar-link">Administrar Productos</Link>
-                                        )}
-                                    </>
-                                ) : (
-                                    // 2. SI NO ESTÁ LOGEADO
-                                    <>
-                                        <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
-                                        <Link to="/register" className='navbar-link'>Registrarse</Link>
-                                    </>
-                                )}
-                            </div>
+                            ) : (
+                                // --- 2. SI NO ESTÁ LOGEADO (igual que antes) ---
+                                <>
+                                    <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
+                                    <Link to="/register" className='navbar-link'>Registrarse</Link>
+                                </>
+                            )}
+                        </div>
                         </div>
                         <div className="navbar-icon">
                             <Link to="/carrito">

@@ -1,8 +1,7 @@
 import os
 import json
 
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth import authenticate, login, get_user_model, login, logout
 from django.db.models import F
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
@@ -12,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.contrib.auth.hashers import check_password
 
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -32,7 +32,8 @@ from .serializers import (
     CarritoSerializer,
     ItemCarritoSerializer,
     OrdenSerializer,
-    OrdenProductoSimpleSerializer
+    OrdenProductoSimpleSerializer,
+    UserProfileUpdateSerializer
 )
 
 from .validations import custom_validation # No es util
@@ -91,7 +92,6 @@ class UserLogin(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Metodo post para ejectutar el logout
-
 # No desloguea
 class UserLogout(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -104,8 +104,61 @@ class UserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        serializer = UserSerializer(request.user)
+        serializer = UserProfileUpdateSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+    
+    def patch(self, request):
+        """
+        Actualiza el perfil del usuario logeado.
+        """
+        user_instance = request.user 
+        
+        serializer = UserProfileUpdateSerializer(
+            instance=user_instance, 
+            data=request.data,      
+            partial=True            
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        """
+        Elimina la cuenta del usuario actual después de verificar la contraseña.
+        """
+        user = request.user
+        password = request.data.get('password')
+
+        if not password:
+            return Response(
+                {"error": "Se requiere la contraseña para eliminar la cuenta."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Verificamos que la contraseña sea correcta
+        if not check_password(password, user.password):
+            return Response(
+                {"error": "La contraseña es incorrecta."}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Si la contraseña es correcta, procedemos a eliminar el usuario
+        try:
+            user.delete()
+            return Response(
+                {"message": "Tu cuenta ha sido eliminada permanentemente."}, 
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"Hubo un error al eliminar la cuenta: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class ProductCreate(APIView):
     # permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden crear productos (is_staff=True)

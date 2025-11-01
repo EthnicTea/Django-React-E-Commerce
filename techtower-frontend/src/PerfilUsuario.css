@@ -1,12 +1,19 @@
 /* Contenedor principal del perfil */
 .profile-container {
     max-width: 600px;
-    margin: 40px auto; /* Centra el formulario en la página */
+    margin: 40px auto;
     padding: 30px;
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Sombra suave */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); 
     font-family: Arial, sans-serif;
+}
+
+.p-datos {
+    text-align: left;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1rem;
 }
 
 .profile-container h2 {
@@ -17,19 +24,17 @@
     padding-bottom: 15px;
 }
 
-/* El formulario en sí */
 .profile-form {
     display: flex;
     flex-direction: column;
 }
 
-/* Cada grupo de (label + input) */
 .form-group {
     margin-bottom: 20px;
 }
 
 .form-group label {
-    display: block; /* Hace que el label ocupe su propia línea */
+    display: block;
     margin-bottom: 8px;
     font-weight: bold;
     color: #555;
@@ -40,26 +45,40 @@
     padding: 12px 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+    box-sizing: border-box;
     font-size: 16px;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Efecto visual al hacer clic en un input */
+.form-group select {
+    width: 100%;
+    color: #000000;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #ffffff;
+    border-color: #b9b9b9;
+}
+
+.form-group select:hover { /* Hover en blanco por que no sé de donde viene el gris, si quitas este estilo lo entenderás*/
+    background-color: #ffffff;
+}
+
+
 .form-group input:focus {
     outline: none;
-    border-color: #007bff; /* Un azul "tech" */
+    border-color: #007bff;
     box-shadow: 0 0 5px rgba(0,123,255,0.3);
 }
 
-/* Estilo para el input de email que no se puede editar */
 .form-group input.disabled-input {
     background-color: #f4f4f4;
     color: #888;
     cursor: not-allowed;
 }
 
-/* Botón de Guardar */
 .save-button {
     background-color: #00bcd4;
     color: white;
@@ -78,4 +97,112 @@
     background: #00acc1; 
     box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3);
     transform: translateY(-1px);
+}
+
+/* Separación de las secciones del formulario */
+.profile-form fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+.profile-form legend {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    width: 100%;
+}
+
+/* --- Zona de Peligro --- */
+.danger-zone {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #ff4d4d; /* Borde rojo */
+    background-color: #fff6f6;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.danger-zone h2 {
+    color: #d93030;
+    margin-top: 0;
+}
+
+.danger-zone p {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+.delete-form .form-group {
+    margin-bottom: 15px;
+}
+
+.delete-form input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ffb3b3;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+.delete-form input[type="password"]:focus {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 5px rgba(255, 77, 77, 0.3);
+    outline: none;
+}
+
+.delete-button {
+    background-color: #d93030; /* Rojo */
+    color: white;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+    background-color: #b02020;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+/* El input de email deshabilitado */
+.form-group .disabled-input {
+    background-color: #f4f4f4;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* El <label> que va encima de cada campo */
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
 }
