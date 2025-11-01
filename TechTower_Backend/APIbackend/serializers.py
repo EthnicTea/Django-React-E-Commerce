@@ -57,7 +57,8 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
             'direccion', 
             'region', 
             'comuna', 
-            'data_departamento'
+            'data_departamento',
+            'is_staff',
         )
         
         # Ninguno es obligatorio en la actualización
@@ -69,6 +70,7 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
             'region': {'required': False},
             'comuna': {'required': False},
             'data_departamento': {'required': False},
+            'is_staff': {'required': False},
         }
 
 class ProductSerializer(serializers.ModelSerializer):
