@@ -194,7 +194,7 @@ html, body {
 
 /* Segunda navbar: categorías */
 .navbar-categories {
-    background-color: #406ce4;
+    background-color: #007bff;
     padding: 10px;
     text-align: center;
     width: 100%;
@@ -220,7 +220,7 @@ html, body {
 }
 
 .category-item a:hover {
-    background-color: #2f52b3;
+    background-color: #0866cc;
     border-radius: 4px;
     transition: 0.3s;
 }

@@ -71,6 +71,7 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
             'comuna': {'required': False},
             'data_departamento': {'required': False},
             'is_staff': {'required': False},
+            'is_staff': {'required': False},
         }
 
 class ProductSerializer(serializers.ModelSerializer):
