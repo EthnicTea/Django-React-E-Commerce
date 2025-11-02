@@ -76,7 +76,7 @@ export function Navbar() {
                                     {/* (b) Lógica de Roles */}
                                     {user && (user.is_staff || user.isStaff) ? (
                                         // SI ES EMPLEADO (is_staff = true)
-                                        <Link to="/panel-empleado" className="navbar-link">Panel de Empleado</Link>
+                                        <Link to="/PanelEmpleado" className="navbar-link">Panel de Empleado</Link>
                                     ) : (
                                         // SI ES CLIENTE NORMAL (is_staff = false)
                                         <Link to="/MiCuenta" className="navbar-link">Mi Cuenta y Pedidos</Link>

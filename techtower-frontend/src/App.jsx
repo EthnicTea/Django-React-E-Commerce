@@ -23,12 +23,14 @@ import PcBuilder from './PcBuilder.jsx';
 import PerfilUsuario from './PerfilUsuario.jsx';
 import Pasarela from './Pasarela.jsx';
 import MiCuenta from './MiCuenta.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+import PanelEmpleado from './PanelEmpleado.jsx';
 
+// Configuración global de Axios, quizá hay que rehubicarla.
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 axios.defaults.withCredentials = true;
-
 const isStaff = localStorage.getItem('isStaff') === 'true';
 
 const client = axios.create({
@@ -61,17 +63,7 @@ export function App() {
       <Navbar />
     </header>
     <Routes>
-      <Route 
-        path="/" 
-        element={
-          <>
-            <Hero />
-            <div className="items-container">
-              <MasVendidos />
-            </div>
-          </>
-        } 
-      />
+      <Route path="/" element={<> <Hero /> <div className="items-container"> <MasVendidos /> </div> </> } />
       <Route path="/computacion" element={<Computacion />} />
       <Route path="/gaming" element={<Gaming />} />
       <Route path="/componentes" element={<Componentes />} />
@@ -85,9 +77,17 @@ export function App() {
       <Route path="/masvendidos" element={<MasVendidos />} />
       <Route path="/carrito" element={<Carrito />} />
       <Route path="/PerfilUsuario" element={<PerfilUsuario />} />
-      <Route path="/crud" element={isStaff ? <Crud /> : <Navigate to="/" />} /> {/* {<Crud />} */}
       <Route path="/Pasarela" element={<Pasarela />} />
       <Route path="/MiCuenta" element={<MiCuenta />} />
+
+      {/* Estas rutas deben estar protegidas */}
+      {/* <Route path="/crud" element={isStaff ? <Crud /> : <Navigate to="/" />} /> {<Crud />}
+      <Route path="/PanelEmpleado" element={isStaff ? <PanelEmpleado /> : <Navigate to="/" />} /> */}
+      {/* --- Rutas protegidas --- */}
+      <Route element={<ProtectedRoute />}>
+          <Route path="/PanelEmpleado" element={<PanelEmpleado />} /> 
+          <Route path="/crud" element={<Crud />} />
+      </Route>
     </Routes>
     <footer>
       <Foot />
