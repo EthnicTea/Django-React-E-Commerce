@@ -1,66 +1,80 @@
-.container{
-    width: 600px;
-    background: #007BFF;
-    padding: 30px;
-    margin: auto;
-    margin-top: 50px;
-    border-radius: 4px;
-    font-family: 'calibri';
-    color: white;
-    margin-bottom: 50px;
-    box-shadow: 7px 13px 37px #000;
+.add-product-form-container, .edit-product-container {
+  padding: 10px;
 }
 
-.container h2{
-    font-size: 22px;
-    margin-bottom: 20px;
-    text-align: center;
+.add-product-form-container h2, .edit-product-container h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 25px;
 }
 
-.crudspan {
-    text-align: center;
+/* Formulario */
+.form-box-crud, .edit-product-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 30px; 
 }
 
-.crudinput{
-    width: 100%;
-    background: #fff;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 16px;
-    border: 1px solid white;
-    font-size: 18px;
-    box-sizing: border-box;
-    color: black;
-    box-shadow: 5px 5px 10px #000;
+.form-box-crud .crudspan,
+.edit-product-form label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
 }
 
-.submitproduct{
-    width: 100%;
-    background: #04AA6D;
-    border: none;
-    padding: 12px;
-    color: black;
-    margin: 16px 0;
-    font-size: 16px;
-    box-shadow: 5px 5px 10px #000;
-    border-radius: 2px;
-    cursor: pointer;
+.form-box-crud .crudinput,
+.edit-product-form input[type="text"],
+.edit-product-form input[type="number"],
+.edit-product-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box; /* Clave para el padding */
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-.submitproduct:hover{
-    background-color: #0b6444;
-    color: white;
-    transition: 0.3s;
+.form-box-crud .crudinput:focus,
+.edit-product-form input:focus,
+.edit-product-form textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
-.success-message{
-    text-align: center;
-    font-size: 24px;
-    color: rgb(255, 255, 255);
+/* Hacer que el botón ocupe ambas columnas */
+.submitproduct, .save-button {
+  grid-column: 1 / -1; /* Ocupa todo el ancho */
+  background-color: #28a745; /* Verde para "Guardar" o "Crear" */
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
 }
 
-.error-message{
-    text-align: center;
-    font-size: 22px;
-    color: rgb(255, 255, 255);
+.submitproduct:hover, .save-button:hover {
+  background-color: #218838;
+}
+
+/* Mensajes de éxito y error */
+.success-message {
+  grid-column: 1 / -1;
+  color: #218838;
+  font-weight: 600;
+  text-align: center;
+}
+.error-message {
+  grid-column: 1 / -1;
+  color: #dc3545;
+  font-weight: 600;
+  text-align: center;
 }

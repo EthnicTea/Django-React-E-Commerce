@@ -1,44 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import api from "../services/axiosConfig";
 import "./ListProduct.css";
-// import EditProduct from "./components/EditProduct.jsx";
 
-export default function ListProduct() {
+// Recibimos la prop 'onEditProduct' del padre (Crud.jsx)
+export default function ListProduct({ onEditProduct }) {
     
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
 
-    const handleDeleteClick = (IdProducto) => {
-        // Confirmación antes de borrar
-        const isConfirmed = window.confirm('¿Estás seguro de que quieres eliminar este producto?');
-        
-        if (isConfirmed) {
-          handleDelete(IdProducto);
-        }
-      };
-
-    const handleDelete = async (IdProducto) => {
+    // Función para cargar los productos
+    const fetchProducts = async () => {
         try {
-            await api.delete(`/products/delete/${IdProducto}`);
-            setProducts(products.filter(product => product.IdProducto !== IdProducto));
+            const response = await api.get("/products/"); // Usamos la URL base
+            setProducts(response.data);
         } catch (err) {
-            console.error("Error al eliminar el producto", err);
+            setError("Hubo un error al obtener los productos.");
+            console.error(err);
         }
     };
 
+    // Cargar productos al montar el componente
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await api.get("/products");
-                setProducts(response.data);
-            } catch (err) {
-                setError("Hubo un error al obtener los productos.");
-                console.error(err);
-            }
-        };
-
         fetchProducts();
     }, []);
+    
+    // Función para manejar el clic de borrado
+    const handleDeleteClick = async (productId) => {
+        const isConfirmed = window.confirm('¿Estás seguro de que quieres eliminar este producto?');
+        
+        if (isConfirmed) {
+            try {
+                // Usamos la URL correcta del API (ej: /api/products/17/)
+                await api.delete(`/products/${productId}/`);
+                // Recargamos la lista para mostrar los cambios
+                fetchProducts(); 
+            } catch (err) {
+                console.error("Error al eliminar el producto", err);
+                setError("No se pudo eliminar el producto.");
+            }
+        }
+    };
     
     return (
         <div className="list-products">
@@ -49,25 +50,29 @@ export default function ListProduct() {
                 <table className="product-table">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Nombre</th>
                             <th>Marca</th>
-                            <th>Categoría</th>
-                            <th>Precio (Transferencia)</th>
+                            <th>Categoría (ID)</th>
+                            <th>Precio (Transf.)</th>
                             <th>Stock</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {products.map((product) => (
-                            <tr key={product.IdProducto}>
-                                <td>{product.NomProducto}</td>
-                                <td>{product.MarcaProducto}</td>
-                                <td>{product.Categoria}</td>
-                                <td>{product.PrecioTransferencia}</td>
-                                <td>{product.Stock}</td>
+                            // ¡Usamos los nombres de campo correctos de la BD!
+                            <tr key={product.producto_id}>
+                                <td>{product.producto_id}</td>
+                                <td>{product.nombre_producto}</td>
+                                <td>{product.marca_producto}</td>
+                                <td>{product.categoria}</td> {/* Esto mostrará el ID de la categoría */}
+                                <td>${product.precio_transferencia.toLocaleString('es-CL')}</td>
+                                <td>{product.stock_producto}</td>
                                 <td>
-                                    <button className="btn-edit" onClick={() => handleEditClick(product)}>Editar</button>
-                                    <button className="btn-delete" onClick={() => handleDeleteClick(product.IdProducto)}>Eliminar</button>
+                                    {/* ¡Conectamos onEditProduct con la prop del padre! */}
+                                    <button className="btn-edit" onClick={() => onEditProduct(product)}>Editar</button>
+                                    <button className="btn-delete" onClick={() => handleDeleteClick(product.producto_id)}>Eliminar</button>
                                 </td>
                             </tr>
                         ))}

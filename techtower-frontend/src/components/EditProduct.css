@@ -1,49 +1,84 @@
-.edit-product-container {
-    margin: 20px auto;
-    max-width: 600px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+/* ------------------------- */
+/* AddProduct.css / EditProduct.css */
+/* ------------------------- */
+
+.container, .edit-product-container {
+  padding: 10px;
 }
 
-.edit-product-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.container h2, .edit-product-container h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 25px;
 }
 
+/* Formulario */
+.form-box-crud, .edit-product-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Formulario en dos columnas */
+  gap: 20px 30px; /* Espacio vertical y horizontal */
+}
+
+.form-box-crud .crudspan,
 .edit-product-form label {
-    display: flex;
-    flex-direction: column;
-    font-weight: bold;
-    margin-bottom: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
 }
 
-.edit-product-form input,
+.form-box-crud .crudinput,
+.edit-product-form input[type="text"],
+.edit-product-form input[type="number"],
 .edit-product-form textarea {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box; /* Clave para el padding */
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-.edit-product-form textarea {
-    resize: vertical;
-    height: 100px;
+.form-box-crud .crudinput:focus,
+.edit-product-form input:focus,
+.edit-product-form textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
-.save-button {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+/* Hacer que el botón ocupe ambas columnas */
+.submitproduct, .save-button {
+  grid-column: 1 / -1; /* Ocupa todo el ancho */
+  background-color: #28a745; /* Verde para "Guardar" o "Crear" */
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
 }
 
-.save-button:hover {
-    background-color: #45a049;
+.submitproduct:hover, .save-button:hover {
+  background-color: #218838;
+}
+
+/* Mensajes de éxito y error */
+.success-message {
+  grid-column: 1 / -1;
+  color: #218838;
+  font-weight: 600;
+  text-align: center;
+}
+.error-message {
+  grid-column: 1 / -1;
+  color: #dc3545;
+  font-weight: 600;
+  text-align: center;
 }
