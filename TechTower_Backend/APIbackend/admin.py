@@ -1,11 +1,12 @@
 from django.contrib import admin
 from .models import UsuarioApp, Producto, Categoria, TipoProducto, Orden, OrdenProducto, Pago
 
-# @admin.register(UsuarioApp)  
-# class UsuarioAdmin(admin.ModelAdmin):
-#     list_display = ('user_id', 'email', 'is_staff')  
-#     search_fields = ('email',)  
-#     list_filter = ('is_staff',) 
+@admin.register(UsuarioApp)  
+class UsuarioAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'email', 'nombre', 'apellido', 'is_staff')
+    list_editable =   ('nombre', 'apellido')
+    search_fields = ('email',)  
+    list_filter = ('is_staff',) 
 
 # admin.site.register(Producto)
 # admin.site.register(Categoria)
@@ -16,7 +17,7 @@ class ProductoAdmin(admin.ModelAdmin):
     list_display = (
         'nombre_producto', 
         'categoria', 
-        'tipo',  # <-- El campo que queremos arreglar
+        'tipo', 
         'stock_producto', 
         'precio_transferencia'
     )

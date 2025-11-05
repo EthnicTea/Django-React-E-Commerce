@@ -10,7 +10,7 @@ export default function PanelEmpleado() {
         <div className="panel-container">
             <header className="panel-header">
                 <h1>Panel de Administración</h1>
-                <p>Bienvenido, {user ? user.email : 'Empleado'}.</p>
+                <p>Bienvenido, {user ? user.nombre : 'Empleado'}.</p>
             </header>
 
             <div className="panel-grid">
