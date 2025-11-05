@@ -2,38 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './PcBuilder.css';
 import Chatbot from './ChatBot';
 
-const PRODUCT_DATABASE = {
-    cpu: [
-        { id: 'cpu1', name: 'AMD Ryzen 5 5600X', price: 220, socket: 'AM4', watts: 150 },
-        { id: 'cpu2', name: 'Intel i5-13600K', price: 300, socket: 'LGA1700', watts: 200 },
-        { id: 'cpu3', name: 'AMD Ryzen 7 7800X3D', price: 450, socket: 'AM5', watts: 180 },
-    ],
-    motherboard: [
-        { id: 'mobo1', name: 'ASUS B550-F', price: 180, socket: 'AM4', ram: 'DDR4' },
-        { id: 'mobo2', name: 'Gigabyte Z790', price: 250, socket: 'LGA1700', ram: 'DDR5' },
-        { id: 'mobo3', name: 'MSI B650 Tomahawk', price: 220, socket: 'AM5', ram: 'DDR5' },
-    ],
-    gpu: [
-        { id: 'gpu1', name: 'NVIDIA RTX 4070', price: 600, watts: 250 },
-        { id: 'gpu2', name: 'AMD RX 6700XT', price: 350, watts: 230 },
-        { id: 'gpu3', name: 'NVIDIA RTX 4090', price: 1600, watts: 450 },
-    ],
-    ram: [
-        { id: 'ram1', name: '16GB (2x8) DDR4 3200', price: 60, type: 'DDR4', watts: 10 },
-        { id: 'ram2', name: '32GB (2x16) DDR5 6000', price: 120, type: 'DDR5', watts: 15 },
-    ],
-    ssd: [
-        { id: 'ssd1', name: 'SSD 500GB SATA', price: 40, watts: 5 },
-        { id: 'ssd2', name: 'SSD 1TB NVMe Gen4', price: 80, watts: 10 },
-    ],
-    psu: [
-        { id: 'psu1', name: '650W 80+ Gold', price: 100, watts: 650 },
-        { id: 'psu2', name: '850W 80+ Gold', price: 150, watts: 850 },
-        { id: 'psu3', name: '1000W 80+ Gold', price: 220, watts: 1000 },
-    ],
-};
-
 function PcBuilder() {
+
+    const [cpuProducts, setCpuProducts] = useState([]);
+    const [moboProducts, setMoboProducts] = useState([]);
+    const [gpuProducts, setGpuProducts] = useState([]);
+    const [ramProducts, setRamProducts] = useState([]);
+    const [ssdProducts, setSsdProducts] = useState([]);
+    const [psuProducts, setPsuProducts] = useState([]);
 
     const [selectedCpu, setSelectedCpu] = useState(null);
     const [selectedMobo, setSelectedMobo] = useState(null);
@@ -48,42 +24,69 @@ function PcBuilder() {
     const [compatibilityErrors, setCompatibilityErrors] = useState([]);
 
     useEffect(() => {
+        const fetchAllProducts = async () => {
+            try {
+                // TRAEMOS TODO SI TODO GRRR dame un gr!
+                const response = await fetch('http://127.0.0.1:8000/api/products/');
+                const data = await response.json();
+                // MISMOS PRODUCTOS DE LA TABLA TIPO PRODUCTO gr
+                setCpuProducts(data.filter(p => p.tipo === 1));
+                setMoboProducts(data.filter(p => p.tipo === 15));
+                setGpuProducts(data.filter(p => p.tipo === 5));
+                setRamProducts(data.filter(p => p.tipo === 2));
+                setSsdProducts(data.filter(p => p.tipo === 12));
+                setPsuProducts(data.filter(p => p.tipo === 13));
+                
+                console.log("Productos reales cargados:", data);
+            } catch (error) {
+                console.error("Error cargando productos reales:", error);
+            }
+        };
+        fetchAllProducts();
+    }, []);
+
+    useEffect(() => {
         let price = 0;
         let watts = 0;
         const errors = [];
-        if (selectedCpu) { price += selectedCpu.price; watts += selectedCpu.watts; }
-        if (selectedMobo) { price += selectedMobo.price; watts += 30; }
-        if (selectedGpu) { price += selectedGpu.price; watts += selectedGpu.watts; }
-        if (selectedRam) { price += selectedRam.price; watts += selectedRam.watts; }
-        if (selectedSsd) { price += selectedSsd.price; watts += selectedSsd.watts; }
-        if (selectedPsu) { price += selectedPsu.price; }
+        if (selectedCpu) { price += selectedCpu.precio_transferencia;} // watts += selectedCpu.watts; } // Esto no existe, añadir más adelante... :(
+        if (selectedMobo) { price += selectedMobo.precio_transferencia;} // watts += 30; }
+        if (selectedGpu) { price += selectedGpu.precio_transferencia;} // watts += selectedGpu.watts; }
+        if (selectedRam) { price += selectedRam.precio_transferencia;}// watts += selectedRam.watts; }
+        if (selectedSsd) { price += selectedSsd.precio_transferencia;} // watts += selectedSsd.watts; }
+        if (selectedPsu) { price += selectedPsu.precio_transferencia;} // }
 
-        if (selectedCpu && selectedMobo) {
-            if (selectedCpu.socket !== selectedMobo.socket) {
-                errors.push(`Compatibilidad: El CPU (${selectedCpu.socket}) no es compatible con la placa (${selectedMobo.socket}).`);
-            }
-        } else if (selectedCpu || selectedMobo) {
-            errors.push("Compatibilidad: Selecciona CPU y placa madre.");
-        }
-
-        if (selectedRam && selectedMobo) {
-            if (selectedRam.type !== selectedMobo.ram) {
-                errors.push(`Compatibilidad: La RAM (${selectedRam.type}) no es compatible con la placa (${selectedMobo.ram}).`);
-            }
-        }
-
-        const recommendedWatts = Math.ceil((watts * 1.3) / 50) * 50;
-        setPsuRecommendation(recommendedWatts);
-
-        if (selectedPsu && selectedPsu.watts < watts) {
-            errors.push(`Potencia: La fuente (${selectedPsu.watts}W) es insuficiente para el consumo total (${watts}W).`);
-        }
-        
         setTotalPrice(price);
-        setTotalWatts(watts);
-        setCompatibilityErrors(errors);
-
     }, [selectedCpu, selectedMobo, selectedGpu, selectedRam, selectedSsd, selectedPsu]);
+
+    // Arreglar esto en base a una ficha técnica u otro tipo de dato que complemente esta lógica.
+
+    //     if (selectedCpu && selectedMobo) {
+    //         if (selectedCpu.socket !== selectedMobo.socket) {
+    //             errors.push(`Compatibilidad: El CPU (${selectedCpu.socket}) no es compatible con la placa (${selectedMobo.socket}).`);
+    //         }
+    //     } else if (selectedCpu || selectedMobo) {
+    //         errors.push("Compatibilidad: Selecciona CPU y placa madre.");
+    //     }
+
+    //     if (selectedRam && selectedMobo) {
+    //         if (selectedRam.type !== selectedMobo.ram) {
+    //             errors.push(`Compatibilidad: La RAM (${selectedRam.type}) no es compatible con la placa (${selectedMobo.ram}).`);
+    //         }
+    //     }
+
+    //     const recommendedWatts = Math.ceil((watts * 1.3) / 50) * 50;
+    //     setPsuRecommendation(recommendedWatts);
+
+    //     if (selectedPsu && selectedPsu.watts < watts) {
+    //         errors.push(`Potencia: La fuente (${selectedPsu.watts}W) es insuficiente para el consumo total (${watts}W).`);
+    //     }
+        
+    //     setTotalPrice(price);
+    //     setTotalWatts(watts);
+    //     setCompatibilityErrors(errors);
+
+    // }, [selectedCpu, selectedMobo, selectedGpu, selectedRam, selectedSsd, selectedPsu]);
 
     const setComponent = (type, productId) => {
         if (!productId) {
@@ -96,7 +99,14 @@ function PcBuilder() {
             return;
         }
 
-        const product = PRODUCT_DATABASE[type].find(item => item.id === productId);
+        let product;
+        if (type === 'cpu') product = cpuProducts.find(item => item.producto_id == productId);
+        if (type === 'motherboard') product = moboProducts.find(item => item.producto_id == productId);
+        if (type === 'gpu') product = gpuProducts.find(item => item.producto_id == productId);
+        if (type === 'ram') product = ramProducts.find(item => item.producto_id == productId);
+        if (type === 'ssd') product = ssdProducts.find(item => item.producto_id == productId);
+        if (type === 'psu') product = psuProducts.find(item => item.producto_id == productId);
+
         if (!product) return;
         if (type === 'cpu') setSelectedCpu(product);
         if (type === 'motherboard') setSelectedMobo(product);
@@ -126,11 +136,11 @@ function PcBuilder() {
                     
                     <div className="form-group">
                         <label htmlFor="cpu">Procesador (CPU)</label>
-                        <select id="cpu" name="cpu" onChange={handleSelectChange} value={selectedCpu?.id || ''}>
+                        <select id="cpu" name="cpu" onChange={handleSelectChange} value={selectedCpu?.producto_id || ''}>
                             <option value="">— seleccionar CPU —</option>
-                            {PRODUCT_DATABASE.cpu.map(item => (
-                                <option key={item.id} value={item.id}>
-                                    {item.name} (${item.price})
+                            {cpuProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -138,11 +148,11 @@ function PcBuilder() {
 
                     <div className="form-group">
                         <label htmlFor="motherboard">Placa Madre (Motherboard)</label>
-                        <select id="motherboard" name="motherboard" onChange={handleSelectChange} value={selectedMobo?.id || ''}>
+                        <select id="motherboard" name="motherboard" onChange={handleSelectChange} value={selectedMobo?.producto_id || ''}>
                             <option value="">— seleccionar placa —</option>
-                            {PRODUCT_DATABASE.motherboard.map(item => (
-                                <option key={item.id} value={item.id}>
-                                    {item.name} (${item.price})
+                            {moboProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -150,11 +160,11 @@ function PcBuilder() {
 
                     <div className="form-group">
                         <label htmlFor="gpu">Tarjeta Gráfica (GPU)</label>
-                        <select id="gpu" name="gpu" onChange={handleSelectChange} value={selectedGpu?.id || ''}>
+                        <select id="gpu" name="gpu" onChange={handleSelectChange} value={selectedGpu?.producto_id || ''}>
                             <option value="">— seleccionar GPU —</option>
-                            {PRODUCT_DATABASE.gpu.map(item => (
-                                <option key={item.id} value={item.id}>
-                                    {item.name} (${item.price})
+                            {gpuProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -162,11 +172,11 @@ function PcBuilder() {
                     
                     <div className="form-group">
                         <label htmlFor="ram">Memoria RAM</label>
-                        <select id="ram" name="ram" onChange={handleSelectChange} value={selectedRam?.id || ''}>
+                        <select id="ram" name="ram" onChange={handleSelectChange} value={selectedRam?.producto_id || ''}>
                             <option value="">— seleccionar RAM —</option>
-                            {PRODUCT_DATABASE.ram.map(item => (
-                                <option key={item.id} value={item.id}>
-                                    {item.name} (${item.price})
+                            {ramProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -174,11 +184,11 @@ function PcBuilder() {
                     
                     <div className="form-group">
                         <label htmlFor="ssd">Almacenamiento</label>
-                        <select id="ssd" name="ssd" onChange={handleSelectChange} value={selectedSsd?.id || ''}>
+                        <select id="ssd" name="ssd" onChange={handleSelectChange} value={selectedSsd?.producto_id || ''}>
                             <option value="">— seleccionar SSD —</option>
-                            {PRODUCT_DATABASE.ssd.map(item => (
-                                <option key={item.id} value={item.id}>
-                                    {item.name} (${item.price})
+                            {ssdProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -186,11 +196,11 @@ function PcBuilder() {
 
                     <div className="form-group">
                         <label htmlFor="psu">Fuente (PSU) sugerida</label>
-                        <select id="psu" name="psu" onChange={handleSelectChange} value={selectedPsu?.id || ''}>
+                        <select id="psu" name="psu" onChange={handleSelectChange} value={selectedPsu?.producto_id || ''}>
                             <option value="">— seleccionar PSU —</option>
-                            {PRODUCT_DATABASE.psu.map(item => (
-                                <option key={item.id} value={item.id}>
-                                    {item.name} (${item.price})
+                            {psuProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -261,7 +271,17 @@ function PcBuilder() {
                 </aside>
 
             </main>
-            <Chatbot onBotAction={setComponent} />
+            <Chatbot 
+                onBotAction={setComponent} 
+                selectedComponents={{
+                    cpu: selectedCpu,
+                    mobo: selectedMobo,
+                    gpu: selectedGpu,
+                    ram: selectedRam,
+                    ssd: selectedSsd,
+                    psu: selectedPsu
+                }} 
+            />
             
         </div>
     );

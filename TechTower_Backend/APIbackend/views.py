@@ -416,11 +416,9 @@ class AsistenteIAViewPresupuesto(APIView):
                 .format(presupuesto, perfil_uso)
             )
             
-            # El User Prompt le da los datos para trabajar
             user_prompt = "Lista de productos disponibles: \n" + json.dumps(datos_productos, indent=2)
 
-            # Preparar la llamada a la IA (Descomentar para usar)
-            api_key = os.environ.get('API_KEY_IA')
+            api_key = settings.GEMINI_API_KEY
 
             client = genai.Client(api_key=api_key)
             response = client.models.generate_content(
