@@ -19,14 +19,18 @@ class ProductoAdmin(admin.ModelAdmin):
         'categoria', 
         'tipo', 
         'stock_producto', 
-        'precio_transferencia'
+        'precio_transferencia',
+        'watts',
+        'imagen'
     )
     
     # ¡LA MAGIA! Permite editar estos campos en la lista
     list_editable = (
         'categoria', 
         'tipo', 
-        'stock_producto'
+        'stock_producto',
+        'watts',
+        'imagen'
     )
     
     # Añade filtros para encontrar productos rápido

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './PcBuilder.css';
 import Chatbot from './ChatBot';
+import { useCart } from './services/useCart';
 
 function PcBuilder() {
 
@@ -10,6 +11,11 @@ function PcBuilder() {
     const [ramProducts, setRamProducts] = useState([]);
     const [ssdProducts, setSsdProducts] = useState([]);
     const [psuProducts, setPsuProducts] = useState([]);
+    const [gabineteProducts, setGabineteProducts] = useState([]);
+    const [osProducts, setOsProducts] = useState([]);
+    const [monitorProducts, setMonitorProducts] = useState([]);
+    const [mouseProducts, setMouseProducts] = useState([]);
+    const [softwareProducts, setSoftwareProducts] = useState([]);
 
     const [selectedCpu, setSelectedCpu] = useState(null);
     const [selectedMobo, setSelectedMobo] = useState(null);
@@ -17,11 +23,20 @@ function PcBuilder() {
     const [selectedRam, setSelectedRam] = useState(null);
     const [selectedSsd, setSelectedSsd] = useState(null);
     const [selectedPsu, setSelectedPsu] = useState(null);
+    const [selectedGabinete, setSelectedGabinete] = useState(null);
+    const [selectedOs, setSelectedOs] = useState(null);
+    const [selectedMonitor, setSelectedMonitor] = useState(null);
+    const [selectedMouse, setSelectedMouse] = useState(null);
+    const [selectedSoftware, setSelectedSoftware] = useState(null);
 
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalWatts, setTotalWatts] = useState(0);
     const [psuRecommendation, setPsuRecommendation] = useState(0);
-    const [compatibilityErrors, setCompatibilityErrors] = useState([]);
+    // const [compatibilityErrors, setCompatibilityErrors] = useState([]);
+
+    const ID_SERVICIO_ARMADO = 66;
+
+    const { addToCart, loadingCart } = useCart();
 
     useEffect(() => {
         const fetchAllProducts = async () => {
@@ -36,6 +51,11 @@ function PcBuilder() {
                 setRamProducts(data.filter(p => p.tipo === 2));
                 setSsdProducts(data.filter(p => p.tipo === 12));
                 setPsuProducts(data.filter(p => p.tipo === 13));
+                setGabineteProducts(data.filter(p => p.tipo === 14));
+                setMonitorProducts(data.filter(p => p.tipo === 3));
+                setMouseProducts(data.filter(p => p.tipo === 3));
+                setOsProducts(data.filter(p => p.tipo === 20)); // ID del tipo "Servicio"
+                setSoftwareProducts(data.filter(p => p.tipo === 19));
                 
                 console.log("Productos reales cargados:", data);
             } catch (error) {
@@ -49,17 +69,33 @@ function PcBuilder() {
         let price = 0;
         let watts = 0;
         const errors = [];
-        if (selectedCpu) { price += selectedCpu.precio_transferencia;} // watts += selectedCpu.watts; } // Esto no existe, añadir más adelante... :(
-        if (selectedMobo) { price += selectedMobo.precio_transferencia;} // watts += 30; }
-        if (selectedGpu) { price += selectedGpu.precio_transferencia;} // watts += selectedGpu.watts; }
-        if (selectedRam) { price += selectedRam.precio_transferencia;}// watts += selectedRam.watts; }
-        if (selectedSsd) { price += selectedSsd.precio_transferencia;} // watts += selectedSsd.watts; }
-        if (selectedPsu) { price += selectedPsu.precio_transferencia;} // }
+        if (selectedCpu) { price += selectedCpu.precio_transferencia; watts += selectedCpu.watts; }
+        if (selectedMobo) { price += selectedMobo.precio_transferencia; watts += 30; }
+        if (selectedGpu) { price += selectedGpu.precio_transferencia; watts += selectedGpu.watts; }
+        if (selectedRam) { price += selectedRam.precio_transferencia; watts += selectedRam.watts; }
+        if (selectedSsd) { price += selectedSsd.precio_transferencia; watts += selectedSsd.watts; }
+        if (selectedPsu) { price += selectedPsu.precio_transferencia;}
+        if (selectedGabinete) { price += selectedGabinete.precio_transferencia;}
+        if (selectedOs) { price += selectedOs.precio_transferencia;}
+        if (selectedMonitor) { price += selectedMonitor.precio_transferencia;}
+        if (selectedMouse) { price += selectedMouse.precio_transferencia;}
+        if (selectedSoftware) { price += selectedSoftware.precio_transferencia;}
+
+        const recommendedWatts = Math.ceil((watts * 1.3) / 50) * 50;
+        setPsuRecommendation(recommendedWatts);
+
+        if (selectedPsu && selectedPsu.watts < watts) {
+            errors.push(`Potencia: La fuente (${selectedPsu.watts}W) es insuficiente para el consumo total (${watts}W).`);
+        }
 
         setTotalPrice(price);
-    }, [selectedCpu, selectedMobo, selectedGpu, selectedRam, selectedSsd, selectedPsu]);
+        setTotalWatts(watts);
+    }, [selectedCpu, selectedMobo, selectedGpu, selectedRam, selectedSsd, 
+        selectedPsu, selectedGabinete, selectedOs, selectedMonitor, selectedMouse, selectedSoftware]);
 
     // Arreglar esto en base a una ficha técnica u otro tipo de dato que complemente esta lógica.
+
+    // Al menos se agregó la utilidad de ver el consumo
 
     //     if (selectedCpu && selectedMobo) {
     //         if (selectedCpu.socket !== selectedMobo.socket) {
@@ -96,6 +132,11 @@ function PcBuilder() {
             if (type === 'ram') setSelectedRam(null);
             if (type === 'ssd') setSelectedSsd(null);
             if (type === 'psu') setSelectedPsu(null);
+            if (type === 'gabinete') setSelectedGabinete(null);
+            if (type === 'os') setSelectedOs(null);
+            if (type === 'monitor') setSelectedMonitor(null);
+            if (type === 'mouse') setSelectedMouse(null);
+            if (type === 'software') setSelectedSoftware(null);
             return;
         }
 
@@ -106,6 +147,11 @@ function PcBuilder() {
         if (type === 'ram') product = ramProducts.find(item => item.producto_id == productId);
         if (type === 'ssd') product = ssdProducts.find(item => item.producto_id == productId);
         if (type === 'psu') product = psuProducts.find(item => item.producto_id == productId);
+        if (type === 'gabinete') product = gabineteProducts.find(item => item.producto_id == productId);
+        if (type === 'os') product = osProducts.find(item => item.producto_id == productId);
+        if (type === 'monitor') product = monitorProducts.find(item => item.producto_id == productId);
+        if (type === 'mouse') product = mouseProducts.find(item => item.producto_id == productId);
+        if (type === 'software') product = softwareProducts.find(item => item.producto_id == productId);
 
         if (!product) return;
         if (type === 'cpu') setSelectedCpu(product);
@@ -114,10 +160,37 @@ function PcBuilder() {
         if (type === 'ram') setSelectedRam(product);
         if (type === 'ssd') setSelectedSsd(product);
         if (type === 'psu') setSelectedPsu(product);
+        if (type === 'gabinete') setSelectedGabinete(product);
+        if (type === 'os') setSelectedOs(product);
+        if (type === 'monitor') setSelectedMonitor(product);
+        if (type === 'mouse') setSelectedMouse(product);
+        if (type === 'software') setSelectedSoftware(product);
     };
     const handleSelectChange = (e) => {
         const { name, value } = e.target; 
         setComponent(name, value || null);
+    };
+
+    const handleAddBuildToCart = () => {
+        const buildProducts = [
+            selectedCpu, selectedMobo, selectedGpu, selectedRam,
+            selectedSsd, selectedPsu, selectedGabinete, selectedOs,
+            selectedMonitor, selectedMouse, selectedSoftware
+        ].filter(p => p !== null);
+
+        if (!selectedCpu || !selectedMobo || !selectedRam || !selectedSsd || !selectedPsu || !selectedGabinete || !selectedOs) {
+            alert("Faltan componentes obligatorios. Por favor, revisa la lista.");
+            return;
+        }
+
+        alert(`Se añadirán ${buildProducts.length + 1} productos a tu carrito.`);
+        
+        buildProducts.forEach(product => {
+            addToCart(product.producto_id);
+        });
+        addToCart(ID_SERVICIO_ARMADO);      
+        // Redirigir
+        navigate('/carrito');
     };
 
     return (
@@ -206,20 +279,87 @@ function PcBuilder() {
                         </select>
                     </div>
 
-                    <div className={`compatibility-box ${compatibilityErrors.length === 0 ? 'hidden' : ''}`}>
+                    {/* --- COMPONENTES MANDATORIOS --- */}
+
+                    <div className="form-group mandatory">
+                        <label htmlFor="gabinete">Gabinete</label>
+                        <select id="gabinete" name="gabinete" onChange={handleSelectChange} value={selectedGabinete?.producto_id || ''}>
+                            <option value="">— seleccionar Gabinete —</option>
+                            {gabineteProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-group mandatory">
+                        <label htmlFor="os">Sistema Operativo (Servicio)</label>
+                        <select id="os" name="os" onChange={handleSelectChange} value={selectedOs?.producto_id || ''}>
+                            <option value="">— seleccionar S.O. —</option>
+                            {osProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* --- COMPONENTES OPCIONALES --- */}
+                    <h3 className="optional-title">Componentes Opcionales</h3>
+
+                    <div className="form-group">
+                        <label htmlFor="monitor">Monitor</label>
+                        <select id="monitor" name="monitor" onChange={handleSelectChange} value={selectedMonitor?.producto_id || ''}>
+                            <option value="">— seleccionar Monitor (Opcional) —</option>
+                            {monitorProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="mouse">Mouse</label>
+                        <select id="mouse" name="mouse" onChange={handleSelectChange} value={selectedMouse?.producto_id || ''}>
+                            <option value="">— seleccionar Mouse (Opcional) —</option>
+                            {mouseProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="software">Software Adicional (Office, etc.)</label>
+                        <select id="software" name="software" onChange={handleSelectChange} value={selectedSoftware?.producto_id || ''}>
+                            <option value="">— seleccionar Software (Opcional) —</option>
+                            {softwareProducts.map(item => (
+                                <option key={item.producto_id} value={item.producto_id}>
+                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* <div className={`compatibility-box ${compatibilityErrors.length === 0 ? 'hidden' : ''}`}>
                         {compatibilityErrors.map((error, index) => (
                             <p key={index}>{error}</p>
                         ))}
-                    </div>
+                    </div> */}
                      <div className="recommendation-box">
                         <p>Consumo total: <strong>{totalWatts}W</strong>. | Recomendación de PSU: <strong>{psuRecommendation}W</strong>.</p>
                     </div>
 
 
-                    <div className="form-actions">
+                    {/* Botones sin uso */}
+                    {/* <div className="form-actions">
                         <button className="btn btn-primary" onClick={() => alert("¡Actualizado!")}>Actualizar resumen</button>
                         <button className="btn btn-secondary" onClick={() => alert("Copiado al portapapeles")}>Copiar resumen</button>
-                    </div>
+                    </div> */}
+
                 </section>
 
                 <aside className="summary-card">
@@ -228,34 +368,68 @@ function PcBuilder() {
                     <div className="summary-list">
                         <div className="summary-item">
                             <span className="name">CPU</span>
-                            <span className="value">{selectedCpu?.name || '—'}</span>
-                            <span className="price">${selectedCpu?.price || 0}</span>
+                            <span className="value">{selectedCpu?.nombre_producto || '—'}</span>
+                            <span className="price">${selectedCpu?.precio_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">Motherboard</span>
-                            <span className="value">{selectedMobo?.name || '—'}</span>
-                            <span className="price">${selectedMobo?.price || 0}</span>
+                            <span className="value">{selectedMobo?.nombre_producto || '—'}</span>
+                            <span className="price">${selectedMobo?.precio_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">GPU</span>
-                            <span className="value">{selectedGpu?.name || '—'}</span>
-                            <span className="price">${selectedGpu?.price || 0}</span>
+                            <span className="value">{selectedGpu?.nombre_producto || '—'}</span>
+                            <span className="price">${selectedGpu?.precio_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">RAM</span>
-                            <span className="value">{selectedRam?.name || '—'}</span>
-                            <span className="price">${selectedRam?.price || 0}</span>
+                            <span className="value">{selectedRam?.nombre_producto || '—'}</span>
+                            <span className="price">${selectedRam?.precio_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">Almacenamiento</span>
-                            <span className="value">{selectedSsd?.name || '—'}</span>
-                            <span className="price">${selectedSsd?.price || 0}</span>
+                            <span className="value">{selectedSsd?.nombre_producto || '—'}</span>
+                            <span className="price">${selectedSsd?.precio_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">PSU sugerida</span>
-                            <span className="value">{selectedPsu?.name || '—'}</span>
-                            <span className="price">${selectedPsu?.price || 0}</span>
+                            <span className="value">{selectedPsu?.nombre_producto || '—'}</span>
+                            <span className="price">${selectedPsu?.precio_transferencia || 0}</span>
                         </div>
+
+                        <div className="summary-item">
+                            <span className="name">Gabinete</span>
+                            <span className="value">{selectedGabinete?.nombre_producto || '—'}</span>
+                            <span className="price">${(selectedGabinete?.precio_transferencia || 0).toLocaleString('es-CL')}</span>
+                        </div>
+                        <div className="summary-item">
+                            <span className="name">Sistema Operativo</span>
+                            <span className="value">{selectedOs?.nombre_producto || '—'}</span>
+                            <span className="price">${(selectedOs?.precio_transferencia || 0).toLocaleString('es-CL')}</span>
+                        </div>
+                        
+                        {/* Opcionales (solo se muestran si se seleccionan) */}
+                        {selectedMonitor && (
+                            <div className="summary-item optional">
+                                <span className="name">Monitor</span>
+                                <span className="value">{selectedMonitor.nombre_producto}</span>
+                                <span className="price">${selectedMonitor.precio_transferencia.toLocaleString('es-CL')}</span>
+                            </div>
+                        )}
+                        {selectedMouse && (
+                            <div className="summary-item optional">
+                                <span className="name">Mouse</span>
+                                <span className="value">{selectedMouse.nombre_producto}</span>
+                                <span className="price">${selectedMouse.precio_transferencia.toLocaleString('es-CL')}</span>
+                            </div>
+                        )}
+                        {selectedSoftware && (
+                            <div className="summary-item optional">
+                                <span className="name">Software</span>
+                                <span className="value">{selectedSoftware.nombre_producto}</span>
+                                <span className="price">${selectedSoftware.precio_transferencia.toLocaleString('es-CL')}</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="summary-total">
@@ -265,8 +439,14 @@ function PcBuilder() {
                     </div>
 
                     <div className="summary-actions">
-                        <button className="btn btn-primary">Añadir a carrito</button>
-                        <button className="btn btn-success">Guardar configuración</button>
+                        <button 
+                            className="btn btn-primary"
+                            onClick={handleAddBuildToCart}
+                            disabled={loadingCart} 
+                        >
+                            {loadingCart ? 'Añadiendo...' : 'Añadir a carrito'}
+                        </button>
+                        {/* <button className="btn btn-success">Guardar configuración</button> */}
                     </div>
                 </aside>
 
@@ -279,7 +459,8 @@ function PcBuilder() {
                     gpu: selectedGpu,
                     ram: selectedRam,
                     ssd: selectedSsd,
-                    psu: selectedPsu
+                    psu: selectedPsu,
+                    gab: selectedGabinete
                 }} 
             />
             

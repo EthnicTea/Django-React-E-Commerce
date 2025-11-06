@@ -85,6 +85,7 @@ class Producto(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
     tipo = models.ForeignKey(TipoProducto, on_delete=models.SET_NULL, null=True)
     imagen = models.URLField(null=True, blank=True)
+    watts = models.IntegerField(default=0, null=True, blank=True) # Es solo para el apartado de armados de PC, no todos tienen que tener este valor!
 
     def __str__(self):
         return self.nombre_producto

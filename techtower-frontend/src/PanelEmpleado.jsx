@@ -29,7 +29,7 @@ export default function PanelEmpleado() {
                     <p>Revisar el historial de pedidos pendientes y completados. (Próximamente)</p>
                 </Link>
                 
-                {/* (Puedes añadir más tarjetas aquí) */}
+                {/* Agregar más Funcionalides ???*/}
                 
             </div>
         </div>

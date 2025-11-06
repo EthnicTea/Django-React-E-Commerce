@@ -207,6 +207,13 @@ body {
   margin-top: 1.5rem;
 }
 
+.optional-title {
+    font-size: 1.2rem;
+    color: #555;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px dashed #ccc;
+}
 
 @media (max-width: 900px) {
 
