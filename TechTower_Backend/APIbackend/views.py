@@ -1,5 +1,6 @@
 import os
 import json
+import traceback
 
 from django.contrib.auth import authenticate, login, get_user_model, login, logout
 from django.db.models import F
@@ -21,6 +22,7 @@ from rest_framework import permissions, status
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from google import genai
+import google.generativeai as generativeai
 from google.genai.errors import APIError
 
 from .models import Producto, Carrito, ItemCarrito, Producto, Orden, OrdenProducto, Pago
@@ -339,21 +341,18 @@ class CartView(APIView):
 # ================== Google GenAI ==================
 
 # **¡Para producción, SE DEBE usar el método seguro de Django!**
+# También hay que intentar eliminar los comentariso de depuración
 class AsistenteIAViewCompatible(APIView):
 
     def post(self, request):
         try:
-            # Traer ID del Frontend
             componente_ids = request.data.get('ids', [])
 
             if not componente_ids:
                 return Response({"error": "No se proporcionaron IDs de componentes."}, status=400)
 
-            # Consulta DB
             productos_seleccionados = Producto.objects.filter(producto_id__in=componente_ids)
 
-            # Lista de strings con los detalles relevantes
-            # Evitar enviar datos sensibles
             datos_para_ia = []
             for p in productos_seleccionados:
                 datos_para_ia.append(
@@ -362,7 +361,6 @@ class AsistenteIAViewCompatible(APIView):
             
             datos_contexto = "\n".join(datos_para_ia)
 
-            # Prompt base, sujeto a cambios. Lo ideal es que el usuario envie el prompt entero.
             prompt = (
                 "Eres un experto en hardware, revisa la siguiente lista de componentes y evalúa su compatibilidad. "
                 "Si hay incompatibilidad, explica el motivo (ej: socket, potencia, o cuello de botella). " \
@@ -371,14 +369,12 @@ class AsistenteIAViewCompatible(APIView):
                 f"--- INICIO DATOS DB ---\n{datos_contexto}\n--- FIN DATOS DB ---\n"
             )
 
-            # Llamada a la API
             client = genai.Client(api_key=settings.GEMINI_API_KEY)
             response = client.models.generate_content(
                 model='gemini-2.5-flash',
                 contents=prompt
             )
 
-            # Recojer la respuesta
             return Response({"respuesta_ia": response.text})
 
         except Producto.DoesNotExist:
@@ -393,57 +389,78 @@ class AsistenteIAViewPresupuesto(APIView):
             return JsonResponse({'error': 'Solo se acepta método POST'}, status=405)
 
         try:
-            # Obtener datos del usuario
             data = json.loads(request.body)
             presupuesto = data.get('presupuesto')
-            perfil_uso = data.get('perfil', 'uso general') # Si el usuario no lo define, se asume
+            perfil_uso = data.get('perfil', 'uso general')
 
             if not presupuesto or not isinstance(presupuesto, (int, float)):
                 return JsonResponse({'error': 'Debe especificar un presupuesto válido'}, status=400)
 
-            # consulta a la base de datos 
-            datos_productos = list(Producto.objects.all().values())
+            productos_qs = Producto.objects.all()
+            datos_para_ia = []
+            for p in productos_qs:
+                tipo_nombre = "No especificado"
+                if p.tipo:
+                    tipo_nombre = p.tipo.nombre_tipo
+                
+                datos_para_ia.append(
+                    f"ID: {p.producto_id}, Nombre: {p.nombre_producto}, Marca: {p.marca_producto}, "
+                    f"Precio: {p.precio_transferencia}, Tipo: {tipo_nombre}"
+                )
             
-            # Formato del Prompt!
-            # "El System Prompt define el rol y las reglas de la IA"
+            # lista_productos_str = "\n".join(datos_para_ia)
+
+            user_prompt = "Lista de productos disponibles: \n" + "\n".join(datos_para_ia)
+            
+            # full_prompt = f"""
+            #     Eres un experto en armado de PC y asistente de la tienda Techtower.
+            #     Tu misión es seleccionar la MEJOR configuración de componentes posible que se ajuste al siguiente presupuesto y perfil:
+
+            #     - Presupuesto Máximo: ${presupuesto:,.0f} CLP
+            #     - Perfil de Uso: {perfil_uso}
+
+            #     Aquí está la lista de productos disponibles de la tienda (solo puedes usar estos productos):
+            #     --- INICIO LISTA DE PRODUCTOS ---
+            #     {lista_productos_str}
+            #     --- FIN LISTA DE PRODUCTOS ---
+
+            #     Tu respuesta DEBE ser un objeto JSON (y nada más que el JSON) con dos claves:
+            #     1. "seleccion_final": una lista de los IDs (solo los números de ID) de los productos que elegiste.
+            #     2. "justificacion": un párrafo explicando el por qué de tu elección, mencionando el equilibrio precio/rendimiento.
+            #     """
+
             system_prompt = (
                 "Eres un experto en armado de PC y asistente de la tienda Techtower. "
                 "Tu misión es seleccionar la MEJOR configuración de componentes posible "
-                "que se ajuste al presupuesto del cliente y su perfil de uso. "
-                "El presupuesto máximo es ${:,.0f} CLP. El uso principal es: {}. "
-                "Solo debes usar los productos listados en el JSON. "
-                "Tu respuesta DEBE ser un objeto JSON con dos claves: 'seleccion_final' (una lista de los IDs de los productos elegidos) y 'justificacion' (un párrafo explicando el por qué de la elección, mencionando el equilibrio precio/rendimiento)."
+                "que se ajuste al presupuesto de ${:,.0f} CLP y perfil de uso '{}'. "
+                "Usa SOLO los productos de la lista. "
+                "Escribe un párrafo de justificación explicando por qué elegiste esos componentes (mencionando sus IDs) y el equilibrio precio/rendimiento."
                 .format(presupuesto, perfil_uso)
             )
-            
-            user_prompt = "Lista de productos disponibles: \n" + json.dumps(datos_productos, indent=2)
 
             api_key = settings.GEMINI_API_KEY
+            if not api_key:
+                 return JsonResponse({'error': 'API Key no configurada.'}, status=500)
 
-            client = genai.Client(api_key=api_key)
-            response = client.models.generate_content(
-               model='gemini-2.5-flash',
-               contents=[system_prompt, user_prompt]
-            )
+            generativeai.configure(api_key=api_key)
+            # config = genai.GenerationConfig(response_mime_type="application/json")
+            model = generativeai.GenerativeModel('gemini-2.5-flash') #, generation_config=config
+            response = model.generate_content([system_prompt, user_prompt])
             
-            texto_ia = response.text
-            # Quitar el envoltorio de markdown 
-            if texto_ia.startswith("```json"):
-                texto_limpio = texto_ia.replace("```json\n", "").replace("\n```", "").strip()
-            else:
-                texto_limpio = texto_ia
-
-            # Convertir el string limpio en un objeto Python
-                try:
-                    resultado_ia_json = json.loads(texto_limpio)
-                except json.JSONDecodeError:
-                    # Si la IA no devolvió un JSON válido, manejamos el error
-                    resultado_ia_json = {"error": "La IA no devolvió un formato JSON válido.", "raw_text": texto_ia}
+            # texto_ia = response.text
+            # if texto_ia.startswith("```json"):
+            #     texto_limpio = texto_ia.replace("```json\n", "").replace("\n```", "").strip()
+            # else:
+            #     texto_limpio = texto_ia
+            #     try:
+            #         resultado_ia_json = json.loads(texto_limpio)
+            #     except json.JSONDecodeError:
+            #         resultado_ia_json = {"error": "La IA no devolvió un formato JSON válido.", "raw_text": texto_ia}
 
             # Devolver la respuesta al frontend
             return JsonResponse({
                 'status': 'success',
-                'resultado_ia': resultado_ia_json
+                'resultado_ia': response.text #resultado_ia_json
             })
         
         
@@ -453,7 +470,12 @@ class AsistenteIAViewPresupuesto(APIView):
         except APIError as e:
             return JsonResponse({'error': f'Error de la API de IA: {str(e)}'}, status=500)
         except Exception as e:
-            return JsonResponse({'error': f'Un error inesperado ocurrió: {str(e)}'}, status=500)
+            print("\n--- ERROR INTERNO DETALLADO (AsistenteIAViewPresupuesto) ---")
+            traceback.print_exc()
+            print("----------------------------------------------------------\n")
+
+            error_message = f"Error inesperado: {str(e)} (Revisa el log de Django para el traceback completo)"
+            return JsonResponse({'error': error_message}, status=500)
         
 # ================== LÓGICA DE CHECKOUT ====================
 class CreateOrderView(APIView):
