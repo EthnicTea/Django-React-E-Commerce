@@ -18,8 +18,9 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
-from rest_framework import permissions, status
+from rest_framework import permissions, status, filters
 from rest_framework_simplejwt.tokens import RefreshToken
+from django_filters.rest_framework import DjangoFilterBackend
 
 from google import genai
 import google.generativeai as generativeai
@@ -179,20 +180,33 @@ class ProductCreate(APIView):
         return Response({"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
       
 class ProductList(ListAPIView):
-    permission_classes = [permissions.AllowAny] # Cualquiera puede ver la lista de productos    
+    permission_classes = [permissions.AllowAny]
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
     
+    # filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+
+    # filterset_fields = ['categoria__nombre_categoria']
+
+    # search_fields = ['nombre_producto', 'marca_producto', 'descripcion_producto']
+
     def get_queryset(self):
         queryset = Producto.objects.all()
         
         categoria_nombre = self.request.query_params.get('categoria', None)
-        
         if categoria_nombre is not None:
             queryset = queryset.filter(categoria__nombre_categoria__iexact=categoria_nombre)
-            
-        return queryset
 
+        search_query = self.request.query_params.get('search', None)
+        if search_query is not None:
+            from django.db.models import Q
+            queryset = queryset.filter(
+                Q(nombre_producto__icontains=search_query) |
+                Q(marca_producto__icontains=search_query) |
+                Q(descripcion_producto__icontains=search_query)
+            )
+
+        return queryset
 # Detalle de un producto específico
 class ProductDetail(RetrieveAPIView):
     permission_classes = [permissions.AllowAny] # Cualquiera puede ver la lista de productos

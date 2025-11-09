@@ -43,6 +43,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
 }
 
 # El token vence en 30 minutos haciendo que se tenga que logear otra vez.
@@ -91,6 +94,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'APIbackend',
     'django_extensions',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

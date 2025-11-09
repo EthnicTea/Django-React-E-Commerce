@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Navbar.css';
 import { BsFillCartFill } from "react-icons/bs";
 import { FiUser } from "react-icons/fi";
 import { FiMenu } from "react-icons/fi";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../services/AuthContext.jsx';
-import { useState } from 'react';
 
 export function Navbar() {
 
@@ -13,10 +12,23 @@ export function Navbar() {
     // Se obtiene el estado y las funciones de nuestro AuthContext
     // 'user' tendrá los datos como {email, is_staff, ...}
     // 'logoutAction' es la función que borra el token
+    // Agregar que se "recarge" la página al deslogearse
     const { authToken, user, logoutAction } = useAuth();
     
     // El estado del dropdown se mantiene igual
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
+
+    const handleSearch = (e) => {
+        e.preventDefault(); // Evita que la página se recargue
+        if (searchTerm.trim()) {
+            // Redirige a la página de búsqueda con el query param
+            navigate(`/busqueda?q=${encodeURIComponent(searchTerm)}`);
+            setSearchTerm(''); // Limpia la barra (opcional)
+        }
+    };
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -43,11 +55,13 @@ export function Navbar() {
                     </div>
 
                     <div className="navbar-search">
-                        <form className="navbar-search-form">
+                        <form className="navbar-search-form" onSubmit={handleSearch}>
                             <input 
                                 type="text" 
                                 placeholder="Busca lo mejor para ti..." 
                                 className="navbar-search-input"
+                                value={searchTerm} // VALOR!
+                                onChange={(e) => setSearchTerm(e.target.value)} // Busca el cambio
                             />
                             <button type="submit" className="navbar-search-button">
                                 <svg stroke="currentColor" fill="none" viewBox="0 0 32 32" height="20" width="20">
