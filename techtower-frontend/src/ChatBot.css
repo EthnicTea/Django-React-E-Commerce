@@ -163,19 +163,19 @@
   letter-spacing: 0.5px;
 }
 
-.input-group {
+.input-group-chatbot {
   display: flex;
   gap: 5px;
   margin-bottom: 10px;
 }
-.input-group input {
+.input-group-chatbot input {
   flex: 2;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 0.9rem;
 }
-.input-group select {
+.input-group-chatbot select {
   flex: 1;
   padding: 10px;
   border: 1px solid #ccc;
@@ -392,19 +392,19 @@
   letter-spacing: 0.5px;
 }
 
-.input-group {
+.input-group-chatbot {
   display: flex;
   gap: 5px;
   margin-bottom: 10px;
 }
-.input-group input {
+.input-group-chatbot input {
   flex: 2;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 0.9rem;
 }
-.input-group select {
+.input-group-chatbot select {
   flex: 1;
   padding: 10px;
   border: 1px solid #ccc;

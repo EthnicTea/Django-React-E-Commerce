@@ -20,8 +20,9 @@ class ProductoAdmin(admin.ModelAdmin):
         'tipo', 
         'stock_producto', 
         'precio_transferencia',
-        'watts',
-        'imagen'
+        'es_destacado',
+        'imagen',
+        'watts'
     )
     
     # ¡LA MAGIA! Permite editar estos campos en la lista
@@ -29,8 +30,9 @@ class ProductoAdmin(admin.ModelAdmin):
         'categoria', 
         'tipo', 
         'stock_producto',
-        'watts',
-        'imagen'
+        'es_destacado',
+        'imagen',
+        'watts'
     )
     
     # Añade filtros para encontrar productos rápido

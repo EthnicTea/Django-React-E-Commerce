@@ -5,6 +5,7 @@ import { FiUser } from "react-icons/fi";
 import { FiMenu } from "react-icons/fi";
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../services/AuthContext.jsx';
+import { useClickOutside } from '../services/useClickOutside.jsx';
 
 export function Navbar() {
 
@@ -20,6 +21,10 @@ export function Navbar() {
 
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
+
+    const dropdownRef = useClickOutside(() => {
+        setIsDropdownOpen(false);
+    });
 
     const handleSearch = (e) => {
         e.preventDefault(); // Evita que la página se recargue
@@ -41,7 +46,7 @@ export function Navbar() {
                 <div className="navbar-top-message">
                     <span>
                         ¡Recuerda que siempre será gratis el retiro de los productos! Además de la variedad de productos con despacho gratis, vea más&nbsp;
-                        <Link to="/terminos">Aquí</Link>
+                        <Link to="/terminos">Aquí</Link> {/* Uso este link como acceso a sitios de prueba */}
                         {/* <Link to="/Pasarela">Aquí</Link> */}
                         {/* <Link to="/crud">Aquí</Link> */}
                     </span>
@@ -73,38 +78,38 @@ export function Navbar() {
                     </div>
 
                     <div className="navbar-icons">
-                        <div className="navbar-icon dropdown">
-                            <button className='dropbtn' onClick={toggleDropdown}>
+                        <div className="navbar-icon dropdown" ref={dropdownRef}> 
+                            <button className='dropbtn' onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                                 <FiUser className='icon-user'/>
                             </button>
+
                             <div className={`dropdown-content ${isDropdownOpen ? 'open' : ''}`}>
-                            
                             {authToken ? (
-                                // --- 1. SI ESTÁ LOGEADO ---
+                                // SI ESTÁ LOGEADO
                                 <>
-                                    {/* (a) Saludo (igual que antes) */}
+                                    {/*Saludo*/}
                                     <span className="navbar-link-user">
                                         Bienvenido, {user ? user.email : 'Cargando...'}
                                     </span>
                                     
-                                    {/* (b) Lógica de Roles */}
+                                    {/*Lógica de Roles*/}
                                     {user && (user.is_staff || user.isStaff) ? (
                                         // SI ES EMPLEADO (is_staff = true)
-                                        <Link to="/PanelEmpleado" className="navbar-link">Panel de Empleado</Link>
+                                        <Link to="/PanelEmpleado" className="navbar-link" onClick={() => setIsDropdownOpen(false)}>Panel de Empleado</Link>
                                     ) : (
                                         // SI ES CLIENTE NORMAL (is_staff = false)
-                                        <Link to="/MiCuenta" className="navbar-link">Mi Cuenta y Pedidos</Link>
+                                        <Link to="/MiCuenta" className="navbar-link" onClick={() => setIsDropdownOpen(false)}>Mi Cuenta y Pedidos</Link>
                                     )}
 
                                     {/* (c) Botón de Logout (igual que antes) */}
-                                    <button onClick={logoutAction} className='navbar-link-user' role="logout">Cerrar Sesión</button>
+                                    <button onClick={() => { logoutAction(); setIsDropdownOpen(false); }} className='navbar-link-user' role="logout">Cerrar Sesión</button>
                                 </>
                                 
                             ) : (
-                                // --- 2. SI NO ESTÁ LOGEADO (igual que antes) ---
+                                // SI NO ESTÁ LOGEADO
                                 <>
-                                    <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
-                                    <Link to="/register" className='navbar-link'>Registrarse</Link>
+                                    <Link to="/login" className='navbar-link' onClick={() => setIsDropdownOpen(false)}>Iniciar Sesión</Link>
+                                    <Link to="/register" className='navbar-link' onClick={() => setIsDropdownOpen(false)}>Registrarse</Link>
                                 </>
                             )}
                         </div>

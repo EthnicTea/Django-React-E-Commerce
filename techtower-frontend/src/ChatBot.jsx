@@ -17,7 +17,7 @@ function Chatbot({ selectedComponents }) {
     const [budgetInput, setBudgetInput] = useState(''); // El <input> del presupuesto
     const [profileInput, setProfileInput] = useState('Gaming'); // El <select> del perfil
     const [iaResponse, setIaResponse] = useState(
-        "¡Hola! Soy Peki. ¿Quieres que verifique la compatibilidad de tu armado o que te genere un PC basado en tu presupuesto?"
+        "¡Hola! Soy Tu asistente virtual. ¿Quieres que verifique la compatibilidad de tu armado o que te genere un PC basado en tu presupuesto?"
     ); // La "pantalla" de respuesta
     const [isLoading, setIsLoading] = useState(false); // Para el spinner de carga
     
@@ -143,7 +143,7 @@ function Chatbot({ selectedComponents }) {
                 {/* Formulario de Presupuesto */}
                 <form className="ia-form" onSubmit={handleBudgetSubmit}>
                     <label>Generar PC por Presupuesto</label>
-                    <div className="input-group">
+                    <div className="input-group-chatbot">
                         <input
                             type="number"
                             value={budgetInput}

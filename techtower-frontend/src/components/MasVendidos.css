@@ -1,57 +1,146 @@
+/*
+ * MasVendidos.css (Con estilos de Computacion.css)
+ */
+
+/* Contenedor principal (de .computacion-container) */
 .best-sellers {
-  padding: 20px;
-  background-color: #adadad;
-  margin: 20px auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 1000px;
+  background-color: #f8f9fb;
+  max-width: 1200px; /* Ancho máximo para una sección */
+  margin: 40px auto; /* Centrado */
+  padding: 50px 80px;
+  border-radius: 18px; /* Añadido para consistencia */
 }
 
+/* Título (de .titulo-seccion) */
 .best-sellers h2 {
   text-align: center;
-  margin-bottom: 20px;
-  color: #1b1b1b;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #007bff;
+  margin-bottom: 35px; /* Más espacio */
 }
 
+/* Lista de productos (de .productos-grid) */
 .product-list {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  justify-items: center;
 }
 
+/* Tarjeta (de .card-producto) */
 .product-card-header-seller {
-  background-color: #ffffff56;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin: 10px;
-  text-align: center;
-  width: 200px;
-  transition: transform 0.2s;
-}
-
-.product-card:hover {
-  transform: scale(1.05);
-}
-
-.product-image {
+  background-color: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   width: 100%;
-  height: auto;
-  border-radius: 4px;
+  max-width: 320px;
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s ease;
+  border: 2px solid transparent;
 }
 
+.product-card-header-seller:hover {
+  border-color: #007bff;
+  transform: translateY(-5px);
+}
+
+/* Imagen (de .imagen-container y .imagen-producto) */
+.imagen-container-seller {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-image-seller {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Texto (de .nombre-producto) */
 .product-name-header-seller {
-  font-size: 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111111;
+  margin-top: 10px;
+  /* Truco para alinear botones aunque los títulos varíen */
+  flex-grow: 1; 
+  min-height: 48px;
+}
+
+/* Precios (de .precio, .precio-transferencia, .precio-normal) */
+.precio-seller {
+  display: flex;
+  flex-direction: column;
   margin: 10px 0;
-  color: #333;
 }
 
-.product-price-header-seller {
-  font-size: 14px;
-  color: #333;
+.precio-transferencia-seller {
+  color: #007bff;
+  font-weight: 700;
+  font-size: 1.1rem; /* Un poco más grande */
 }
 
-.product-price2-header-seller {
-  font-size: 14px;
+.precio-normal-seller {
   color: #888;
+  font-size: 0.85rem;
+  text-decoration: line-through; /* Opcional: tachar el precio normal */
+}
+
+/* Botones (de .botones, .btn-agregar, .btn-ver) */
+.botones-seller {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-agregar-seller,
+.btn-ver-seller {
+  flex: 1;
+  border-radius: 12px;
+  border: none;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-agregar-seller {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-agregar-seller:hover {
+  background-color: #005bd1;
+}
+
+.btn-ver-seller {
+  background-color: #f0f2f5;
+  color: #111;
+}
+
+.btn-ver-seller:hover {
+  background-color: #e4e6eb;
+}
+
+/* Botón deshabilitado (extra) */
+.btn-agregar-seller:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Media Query (de .computacion-container) */
+@media (max-width: 768px) {
+  .best-sellers {
+    padding: 30px 20px;
+  }
 }

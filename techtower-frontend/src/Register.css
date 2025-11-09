@@ -1,14 +1,11 @@
-/* 1. VARIABLES Y CONFIGURACIÓN BASE (Igual que Login.css) */
-/* ---------------------------------- */
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 :root {
-    --color-primary: #00bcd4; /* Cian Eléctrico */
+    --color-primary: #00bcd4;
     --color-secondary: #2196f3; 
     
     --color-text-dark: #333;
-    --color-background-light: #f7f9fc; /* Fondo claro y moderno */
+    --color-background-light: #f7f9fc;
     --color-white: #ffffff;
     --color-shadow: rgba(0, 0, 0, 0.15);
     --color-border: #e0e0e0;
@@ -17,25 +14,19 @@
     --color-error: #F44336;
 }
 
-/* 2. DISEÑO DE PÁGINA Y CONTENEDOR */
-/* ---------------------------------- */
-
 .register-page {
-    /* Fondo limpio y moderno */
     background-color: var(--color-background-light); 
     font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center; /* Centrar verticalmente en pantallas largas */
+    align-items: center; 
     min-height: 100vh;
-    padding: 40px 20px; /* Padding para scroll si es necesario */
+    padding: 40px 20px;
 }
 
 .form-register {
     width: 100%;
-    max-width: 650px; /* Más ancho para contener más campos */
-    
-    /* Tarjeta limpia, igual que login */
+    max-width: 650px; 
     background: var(--color-white); 
     border-radius: 12px; 
     box-shadow: 0 10px 40px var(--color-shadow); 
@@ -45,7 +36,6 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
 
-/* Título de Marca (TechTower) */
 .brand-title {
     font-size: 2rem;
     font-weight: 700;
@@ -57,7 +47,6 @@
     color: var(--color-primary); /* Cian */
 }
 
-/* Título de la Sección de Registro */
 .register-heading { 
     font-size: 1.5rem;
     margin-bottom: 30px;
@@ -65,7 +54,6 @@
     color: var(--color-text-dark);
 }
 
-/* Títulos de Subsección (Datos Personales, Dirección) */
 .section-heading {
     font-size: 1.1rem;
     font-weight: 600;
@@ -77,8 +65,6 @@
     text-align: left;
 }
 
-/* 3. ESTILOS DE FORMULARIO CON GRID */
-/* ---------------------------------- */
 
 .form-grid {
     display: grid;
@@ -88,7 +74,7 @@
 
 .input-group {
     text-align: left;
-    margin-bottom: 0; /* Margin manejado por el gap de la grid */
+    margin-bottom: 0; 
 }
 
 .input-group label {
@@ -104,10 +90,6 @@
     grid-column: span 2; 
 }
 
-/* 4. CONTROLES (INPUTS, SELECTS) - IGUAL QUE EN LOGIN */
-/* ---------------------------------- */
-
-/* Applies to both input and select elements with class 'controls' */
 .controls {
     width: 100%;
     border: 1px solid var(--color-border); 
@@ -127,15 +109,10 @@
     color: #999;
 }
 
-/* Efecto focus moderno y vibrante */
 .controls:focus {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.15); 
 }
-
-
-/* 5. ESTILOS DEL BOTÓN (CTA) - IGUAL QUE EN LOGIN */
-/* ---------------------------------- */
 
 .buttons {
     width: 100%;
@@ -157,8 +134,6 @@
     transform: translateY(-1px);
 }
 
-/* 6. MENSAJES DE FEEDBACK Y ENLACES */
-/* ---------------------------------- */
 
 .form-message {
     padding: 15px;

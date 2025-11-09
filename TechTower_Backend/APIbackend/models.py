@@ -86,6 +86,7 @@ class Producto(models.Model):
     tipo = models.ForeignKey(TipoProducto, on_delete=models.SET_NULL, null=True)
     imagen = models.URLField(null=True, blank=True)
     watts = models.IntegerField(default=0, null=True, blank=True) # Es solo para el apartado de armados de PC, no todos tienen que tener este valor!
+    es_destacado = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nombre_producto

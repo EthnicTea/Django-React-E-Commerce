@@ -206,6 +206,11 @@ class ProductList(ListAPIView):
                 Q(descripcion_producto__icontains=search_query)
             )
 
+        destacado_param = self.request.query_params.get('destacado', None)
+        if destacado_param is not None:
+            valor_booleano = destacado_param.lower() == 'true'
+            queryset = queryset.filter(es_destacado=valor_booleano)
+
         return queryset
 # Detalle de un producto específico
 class ProductDetail(RetrieveAPIView):
