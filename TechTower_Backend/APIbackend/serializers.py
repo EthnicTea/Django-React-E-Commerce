@@ -75,9 +75,27 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         }
 
 class ProductSerializer(serializers.ModelSerializer):
+    precio_final_transferencia = serializers.ReadOnlyField()
+    precio_final_otro = serializers.ReadOnlyField()
     class Meta:
         model = Producto
-        fields = '__all__'
+        fields = [
+            'producto_id', 
+            'nombre_producto', 
+            'marca_producto',
+            'descripcion_producto',
+            'precio_transferencia', 
+            'precio_otro',
+            'stock_producto',
+            'categoria', 
+            'tipo',      
+            'imagen',
+            'watts',
+            'descuento',
+            'es_destacado',
+            'precio_final_transferencia',
+            'precio_final_otro'
+        ]
 
 class ProductEditSerializer(serializers.ModelSerializer):
     class Meta:
@@ -90,7 +108,14 @@ class ProductoSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
         # Define los campos que el carrito necesita
-        fields = ['producto_id', 'nombre_producto', 'imagen', 'precio_transferencia', 'precio_otro']
+        fields = ['producto_id', 
+                  'nombre_producto', 
+                  'imagen', 
+                  'precio_transferencia', 
+                  'precio_otro',
+                  'descuento',
+                  'precio_final_transferencia'
+                ]
 
 class ItemCarritoSerializer(serializers.ModelSerializer):
     producto = ProductoSimpleSerializer(read_only=True) 

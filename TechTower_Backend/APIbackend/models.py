@@ -87,6 +87,23 @@ class Producto(models.Model):
     imagen = models.URLField(null=True, blank=True)
     watts = models.IntegerField(default=0, null=True, blank=True) # Es solo para el apartado de armados de PC, no todos tienen que tener este valor!
     es_destacado = models.BooleanField(default=False)
+    descuento = models.IntegerField(default=0, null=True, blank=True) # Tampoco es obligatorio
+
+    @property
+    def precio_final_transferencia(self):
+        if self.descuento > 0:
+            # Descuento y redondeo
+            precio_calc = self.precio_transferencia * (1 - (self.descuento / 100))
+            return int(precio_calc)
+        # Si no hay descuento, ps nomás
+        return self.precio_transferencia
+    
+    @property
+    def precio_final_otro(self):
+        if self.descuento > 0: # Lo mismo pero para el otro precio
+            precio_calc = self.precio_otro * (1 - (self.descuento / 100))
+            return int(precio_calc)
+        return self.precio_otro
 
     def __str__(self):
         return self.nombre_producto

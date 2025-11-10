@@ -81,13 +81,33 @@ export default function Computacion() {
           <div key={p.producto_id} className="card-producto">
             <div className="imagen-container">
               <img src={p.imagen} alt={p.nombre_producto} className="imagen-producto" />
+              {p.descuento > 0 && <span className="badge-descuento">{p.descuento}% DCTO</span>}
             </div>
             <h3 className="nombre-producto">{p.nombre_producto}</h3>
             <p className="marca">{p.marca_producto}</p>
-            <p className="precio">
-              <span className="precio-transferencia">${p.precio_transferencia.toLocaleString('es-CL')}</span>
-              <span className="precio-normal">${p.precio_otro.toLocaleString('es-CL')}</span>
-            </p>
+            {p.descuento > 0 ? (
+                // Si SÍ hay descuento
+                <p className="precio">
+                    {/* Mostramos el precio normal tachado */}
+                    <span className="precio-normal-tachado">
+                        ${p.precio_otro.toLocaleString('es-CL')}
+                    </span>
+                    {/* Mostramos el precio final de transferencia */}
+                    <span className="precio-transferencia">
+                        ${p.precio_final_transferencia.toLocaleString('es-CL')} Transferencia
+                    </span>
+                </p>
+            ) : (
+                // Si NO hay descuento (el código original)
+                <p className="precio">
+                    <span className="precio-transferencia">
+                        ${p.precio_transferencia.toLocaleString('es-CL')} Transferencia
+                    </span>
+                    <span className="precio-normal">
+                        ${p.precio_otro.toLocaleString('es-CL')} Otro medio de pago
+                    </span>
+                </p>
+            )}
             <div className="botones">
               <button 
                 className="btn-agregar"

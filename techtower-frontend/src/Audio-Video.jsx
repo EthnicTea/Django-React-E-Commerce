@@ -79,13 +79,29 @@ const AudioVideo = () => {
                     <div key={p.producto_id} className="card-audiovideo">
                         <div className="imagen-container">
                             <img src={p.imagen} alt={p.nombre_producto} className="imagen-audiovideo" />
+                            {p.descuento > 0 && <span className="badge-descuento">{p.descuento}% DCTO</span>}
                         </div>
                         <h3 className="nombre-audiovideo">{p.nombre_producto}</h3>
                         <p className="marca-audiovideo">{p.marca_producto}</p>
-                        <p className="precio-audiovideo">
-                            <span className="precio-transferencia">${p.precio_transferencia.toLocaleString('es-CL')}</span>
-                            <span className="precio-normal">${p.precio_otro.toLocaleString('es-CL')}</span>
-                        </p>
+                        {p.descuento > 0 ? (
+                            <p className="precio-audiovideo">
+                                <span className="precio-normal-tachado">
+                                    ${p.precio_otro.toLocaleString('es-CL')}
+                                </span>
+                                <span className="precio-transferencia">
+                                    ${p.precio_final_transferencia.toLocaleString('es-CL')} Transferencia
+                                </span>
+                            </p>
+                        ) : (
+                            <p className="precio-gaming">
+                                <span className="precio-transferencia">
+                                    ${p.precio_transferencia.toLocaleString('es-CL')} Transferencia
+                                </span>
+                                <span className="precio-normal">
+                                    ${p.precio_otro.toLocaleString('es-CL')} Otro medio de pago
+                                </span>
+                            </p>
+                        )}
                         <div className="botones-audiovideo">
                             <button 
                                 className="btn-agregar"

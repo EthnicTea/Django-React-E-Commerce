@@ -79,19 +79,33 @@ const ConectividadRedes = () => {
                     <div key={p.producto_id} className="card-conectividad">
                         <div className="imagen-container">
                             <img src={p.imagen} alt={p.nombre_producto} className="imagen-conectividad" />
+                            {p.descuento > 0 && <span className="badge-descuento">{p.descuento}% DCTO</span>}
                         </div>
                         <h3 className="nombre-conectividad">{p.nombre_producto}</h3>
                         <p className="marca-conectividad">{p.marca_producto}</p>
-                        <p className="precio-conectividad">
-                            <span className="precio-transferencia">${p.precio_transferencia.toLocaleString('es-CL')}</span>
-                            <span className="precio-normal">${p.precio_otro.toLocaleString('es-CL')}</span>
-                        </p>
+                        {p.descuento > 0 ? (
+                            <p className="precio-conectividad">
+                                <span className="precio-normal-tachado">
+                                    ${p.precio_otro.toLocaleString('es-CL')}
+                                </span>
+                                <span className="precio-transferencia">
+                                    ${p.precio_final_transferencia.toLocaleString('es-CL')} Transferencia
+                                </span>
+                            </p>
+                        ) : (
+                            <p className="precio-gaming">
+                                <span className="precio-transferencia">
+                                    ${p.precio_transferencia.toLocaleString('es-CL')} Transferencia
+                                </span>
+                                <span className="precio-normal">
+                                    ${p.precio_otro.toLocaleString('es-CL')} Otro medio de pago
+                                </span>
+                            </p>
+                        )}
                         <div className="botones-conectividad">
                             <button 
                                 className="btn-agregar"
-                                // Llama a la función del hook con el ID del producto
                                 onClick={() => addToCart(p.producto_id)}
-                                // Deshabilita el botón si ya está agregando algo
                                 disabled={loadingCart} 
                             >
                                 {loadingCart ? 'Agregando...' : 'Agregar'}

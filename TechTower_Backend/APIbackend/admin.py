@@ -20,6 +20,7 @@ class ProductoAdmin(admin.ModelAdmin):
         'tipo', 
         'stock_producto', 
         'precio_transferencia',
+        'descuento',
         'es_destacado',
         'imagen',
         'watts'
@@ -30,6 +31,7 @@ class ProductoAdmin(admin.ModelAdmin):
         'categoria', 
         'tipo', 
         'stock_producto',
+        'descuento',
         'es_destacado',
         'imagen',
         'watts'

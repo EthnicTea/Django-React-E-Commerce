@@ -79,20 +79,37 @@ const Componentes = () => {
                 {filteredProducts.map((p) => (
                     <div key={p.producto_id} className="card-producto">
                         <div className="imagen-container">
+                            {/* Lógica de falta de Imágen */}
+                            {/* https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-thumbnail-graphic-illustration-vector-png-image_40966590.jpg */}
                             <img src={p.imagen} alt={p.nombre_producto} className="imagen-producto" />
+                            {/* Lógica de DESCUENTO, aquí se pone la etiqueta de descuento, más abajo se hace la comparación */}
+                            {p.descuento > 0 && <span className="badge-descuento">{p.descuento}% DCTO</span>}
                         </div>
                         <h3 className="nombre-producto">{p.nombre_producto}</h3>
                         <p className="marca">{p.marca_producto}</p>
-                        <p className="precio">
-                            <span className="precio-transferencia">${p.precio_transferencia.toLocaleString('es-CL')}</span>
-                            <span className="precio-normal">${p.precio_otro.toLocaleString('es-CL')}</span>
-                        </p>
+                        {p.descuento > 0 ? (
+                            <p className="precio">
+                                <span className="precio-normal-tachado">
+                                    ${p.precio_otro.toLocaleString('es-CL')}
+                                </span>
+                                <span className="precio-transferencia">
+                                    ${p.precio_final_transferencia.toLocaleString('es-CL')} Transferencia
+                                </span>
+                            </p>
+                        ) : (
+                            <p className="precio-gaming">
+                                <span className="precio-transferencia">
+                                    ${p.precio_transferencia.toLocaleString('es-CL')} Transferencia
+                                </span>
+                                <span className="precio-normal">
+                                    ${p.precio_otro.toLocaleString('es-CL')} Otro medio de pago
+                                </span>
+                            </p>
+                        )}
                         <div className="botones">
                             <button 
                                 className="btn-agregar"
-                                // Llama a la función del hook con el ID del producto
                                 onClick={() => addToCart(p.producto_id)}
-                                // Deshabilita el botón si ya está agregando algo
                                 disabled={loadingCart} 
                             >
                                 {loadingCart ? 'Agregando...' : 'Agregar'}

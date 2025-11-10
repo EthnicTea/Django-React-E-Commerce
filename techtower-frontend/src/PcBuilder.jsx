@@ -34,6 +34,8 @@ function PcBuilder() {
     const [psuRecommendation, setPsuRecommendation] = useState(0);
     // const [compatibilityErrors, setCompatibilityErrors] = useState([]);
 
+    // Esto es un ID de un prodcuto de la base de datos. Si se elimina o se cambia el producto, se debe cambiar aquí.
+    // Es especificamente el servicio de armado de PC, irá automaticamente en el carrito del usuario
     const ID_SERVICIO_ARMADO = 66;
 
     const { addToCart, loadingCart } = useCart();
@@ -69,17 +71,17 @@ function PcBuilder() {
         let price = 0;
         let watts = 0;
         const errors = [];
-        if (selectedCpu) { price += selectedCpu.precio_transferencia; watts += selectedCpu.watts; }
-        if (selectedMobo) { price += selectedMobo.precio_transferencia; watts += 30; }
-        if (selectedGpu) { price += selectedGpu.precio_transferencia; watts += selectedGpu.watts; }
-        if (selectedRam) { price += selectedRam.precio_transferencia; watts += selectedRam.watts; }
-        if (selectedSsd) { price += selectedSsd.precio_transferencia; watts += selectedSsd.watts; }
-        if (selectedPsu) { price += selectedPsu.precio_transferencia;}
-        if (selectedGabinete) { price += selectedGabinete.precio_transferencia;}
-        if (selectedOs) { price += selectedOs.precio_transferencia;}
-        if (selectedMonitor) { price += selectedMonitor.precio_transferencia;}
-        if (selectedMouse) { price += selectedMouse.precio_transferencia;}
-        if (selectedSoftware) { price += selectedSoftware.precio_transferencia;}
+        if (selectedCpu) { price += selectedCpu.precio_final_transferencia; watts += selectedCpu.watts; }
+        if (selectedMobo) { price += selectedMobo.precio_final_transferencia; watts += 30; }
+        if (selectedGpu) { price += selectedGpu.precio_final_transferencia; watts += selectedGpu.watts; }
+        if (selectedRam) { price += selectedRam.precio_final_transferencia; watts += selectedRam.watts; }
+        if (selectedSsd) { price += selectedSsd.precio_final_transferencia; watts += selectedSsd.watts; }
+        if (selectedPsu) { price += selectedPsu.precio_final_transferencia;}
+        if (selectedGabinete) { price += selectedGabinete.precio_final_transferencia;}
+        if (selectedOs) { price += selectedOs.precio_final_transferencia;}
+        if (selectedMonitor) { price += selectedMonitor.precio_final_transferencia;}
+        if (selectedMouse) { price += selectedMouse.precio_final_transferencia;}
+        if (selectedSoftware) { price += selectedSoftware.precio_final_transferencia;}
 
         const recommendedWatts = Math.ceil((watts * 1.3) / 50) * 50;
         setPsuRecommendation(recommendedWatts);
@@ -213,7 +215,7 @@ function PcBuilder() {
                             <option value="">— seleccionar CPU —</option>
                             {cpuProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -225,7 +227,7 @@ function PcBuilder() {
                             <option value="">— seleccionar placa —</option>
                             {moboProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -237,7 +239,7 @@ function PcBuilder() {
                             <option value="">— seleccionar GPU —</option>
                             {gpuProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -249,7 +251,7 @@ function PcBuilder() {
                             <option value="">— seleccionar RAM —</option>
                             {ramProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -261,7 +263,7 @@ function PcBuilder() {
                             <option value="">— seleccionar SSD —</option>
                             {ssdProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -273,7 +275,7 @@ function PcBuilder() {
                             <option value="">— seleccionar PSU —</option>
                             {psuProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -287,7 +289,7 @@ function PcBuilder() {
                             <option value="">— seleccionar Gabinete —</option>
                             {gabineteProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -299,7 +301,7 @@ function PcBuilder() {
                             <option value="">— seleccionar S.O. —</option>
                             {osProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -314,7 +316,7 @@ function PcBuilder() {
                             <option value="">— seleccionar Monitor (Opcional) —</option>
                             {monitorProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -326,7 +328,7 @@ function PcBuilder() {
                             <option value="">— seleccionar Mouse (Opcional) —</option>
                             {mouseProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -338,7 +340,7 @@ function PcBuilder() {
                             <option value="">— seleccionar Software (Opcional) —</option>
                             {softwareProducts.map(item => (
                                 <option key={item.producto_id} value={item.producto_id}>
-                                    {item.nombre_producto} (${item.precio_transferencia.toLocaleString('es-CL')})
+                                    {item.nombre_producto} (${item.precio_final_transferencia.toLocaleString('es-CL')})
                                 </option>
                             ))}
                         </select>
@@ -369,43 +371,43 @@ function PcBuilder() {
                         <div className="summary-item">
                             <span className="name">CPU</span>
                             <span className="value">{selectedCpu?.nombre_producto || '—'}</span>
-                            <span className="price">${selectedCpu?.precio_transferencia || 0}</span>
+                            <span className="price">${selectedCpu?.precio_final_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">Motherboard</span>
                             <span className="value">{selectedMobo?.nombre_producto || '—'}</span>
-                            <span className="price">${selectedMobo?.precio_transferencia || 0}</span>
+                            <span className="price">${selectedMobo?.precio_final_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">GPU</span>
                             <span className="value">{selectedGpu?.nombre_producto || '—'}</span>
-                            <span className="price">${selectedGpu?.precio_transferencia || 0}</span>
+                            <span className="price">${selectedGpu?.precio_final_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">RAM</span>
                             <span className="value">{selectedRam?.nombre_producto || '—'}</span>
-                            <span className="price">${selectedRam?.precio_transferencia || 0}</span>
+                            <span className="price">${selectedRam?.precio_final_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">Almacenamiento</span>
                             <span className="value">{selectedSsd?.nombre_producto || '—'}</span>
-                            <span className="price">${selectedSsd?.precio_transferencia || 0}</span>
+                            <span className="price">${selectedSsd?.precio_final_transferencia || 0}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">PSU sugerida</span>
                             <span className="value">{selectedPsu?.nombre_producto || '—'}</span>
-                            <span className="price">${selectedPsu?.precio_transferencia || 0}</span>
+                            <span className="price">${selectedPsu?.precio_final_transferencia || 0}</span>
                         </div>
 
                         <div className="summary-item">
                             <span className="name">Gabinete</span>
                             <span className="value">{selectedGabinete?.nombre_producto || '—'}</span>
-                            <span className="price">${(selectedGabinete?.precio_transferencia || 0).toLocaleString('es-CL')}</span>
+                            <span className="price">${(selectedGabinete?.precio_final_transferencia || 0).toLocaleString('es-CL')}</span>
                         </div>
                         <div className="summary-item">
                             <span className="name">Sistema Operativo</span>
                             <span className="value">{selectedOs?.nombre_producto || '—'}</span>
-                            <span className="price">${(selectedOs?.precio_transferencia || 0).toLocaleString('es-CL')}</span>
+                            <span className="price">${(selectedOs?.precio_final_transferencia || 0).toLocaleString('es-CL')}</span>
                         </div>
                         
                         {/* Opcionales (solo se muestran si se seleccionan) */}
@@ -413,21 +415,21 @@ function PcBuilder() {
                             <div className="summary-item optional">
                                 <span className="name">Monitor</span>
                                 <span className="value">{selectedMonitor.nombre_producto}</span>
-                                <span className="price">${selectedMonitor.precio_transferencia.toLocaleString('es-CL')}</span>
+                                <span className="price">${selectedMonitor.precio_final_transferencia.toLocaleString('es-CL')}</span>
                             </div>
                         )}
                         {selectedMouse && (
                             <div className="summary-item optional">
                                 <span className="name">Mouse</span>
                                 <span className="value">{selectedMouse.nombre_producto}</span>
-                                <span className="price">${selectedMouse.precio_transferencia.toLocaleString('es-CL')}</span>
+                                <span className="price">${selectedMouse.precio_final_transferencia.toLocaleString('es-CL')}</span>
                             </div>
                         )}
                         {selectedSoftware && (
                             <div className="summary-item optional">
                                 <span className="name">Software</span>
                                 <span className="value">{selectedSoftware.nombre_producto}</span>
-                                <span className="price">${selectedSoftware.precio_transferencia.toLocaleString('es-CL')}</span>
+                                <span className="price">${selectedSoftware.precio_final_transferencia.toLocaleString('es-CL')}</span>
                             </div>
                         )}
                     </div>
@@ -435,7 +437,8 @@ function PcBuilder() {
                     <div className="summary-total">
                         <span className="total-label">Total aproximado</span>
                         <div className="total-value">${totalPrice}</div>
-                        <div className="total-note">Estimación rápida sin costos de envío ni impuestos</div>
+                        <div className="total-note">Estimación rápida sin costos de envío ni impuestos. &nbsp;</div>
+                        <div className="total-note">Recuerda que el servicio de armado del pc viene incluido al agregar al carrito con un valor de $50000</div>
                     </div>
 
                     <div className="summary-actions">

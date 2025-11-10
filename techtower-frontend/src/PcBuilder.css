@@ -199,6 +199,7 @@ body {
 .total-note {
   font-size: 0.8rem;
   color: #999;
+  line-height: 1.5;
 }
 
 .summary-actions {

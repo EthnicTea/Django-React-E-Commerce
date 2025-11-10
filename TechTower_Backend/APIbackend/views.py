@@ -211,6 +211,12 @@ class ProductList(ListAPIView):
             valor_booleano = destacado_param.lower() == 'true'
             queryset = queryset.filter(es_destacado=valor_booleano)
 
+        en_oferta = self.request.query_params.get('en_oferta', None)
+        if en_oferta is not None:
+            # Si ?en_oferta=true, filtramos donde 'descuento' sea mayor a 0
+            if en_oferta.lower() == 'true':
+                queryset = queryset.filter(descuento__gt=0)
+
         return queryset
 # Detalle de un producto específico
 class ProductDetail(RetrieveAPIView):
@@ -507,31 +513,30 @@ class CreateOrderView(APIView):
         de pago exitosa en el frontend.
         """
         try:
-            # 1. Obtener el carrito y los items del usuario
+            # Aquí se obtiene el carrito y los items del mismo...
             cart = Carrito.objects.get(usuario=request.user)
             items = ItemCarrito.objects.filter(carrito=cart)
 
             if not items.exists():
                 return Response({"error": "Tu carrito está vacío."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # 2. RE-VALIDAR STOCK Y CALCULAR TOTAL (¡Crítico! No confiar en el frontend)
+            # IMPORTANTE! AQUÏ SE RE-VALIDA STOCK Y "CALCULAR TOTAL"
             total = 0
             for item in items:
                 if item.cantidad > item.producto.stock_producto:
                     return Response({"error": f"Stock insuficiente para {item.producto.nombre_producto}. Solo quedan {item.producto.stock_producto}."}, status=status.HTTP_400_BAD_REQUEST)
-                # Usamos el precio de transferencia (o el que decidas)
-                total += item.producto.precio_transferencia * item.cantidad
+                # Usamos el precio de transferencia (Solo de ejemplo, ya que no se puede elegir)
+                total += item.producto.precio_final_transferencia * item.cantidad
 
-            # 3. CREAR LA ORDEN
-            # (Usamos los campos que me dijiste que tenías)
+            # Se crea el pedido
             new_order = Orden.objects.create(
                 usuario_orden=request.user,
-                estado_orden='aprobado', # Aprobado porque el mock-payment fue exitoso
+                estado_orden='aprobado', # Siempre será aprobatorio...
                 total_orden=total,
-                fecha_orden=timezone.now() # Asegúrate de importar timezone
+                fecha_orden=timezone.now()
             )
 
-            # 4. TRANSFERIR ITEMS DEL CARRITO A LA ORDEN
+            # Los items del carrito, a la "orden"
             for item in items:
                 OrdenProducto.objects.create(
                     orden=new_order,
@@ -539,23 +544,25 @@ class CreateOrderView(APIView):
                     cantidad=item.cantidad
                 )
                 
-                # 5. (Opcional pero recomendado) Actualizar el stock del producto
+                # Se actualiza el stock
                 producto_actual = item.producto
                 producto_actual.stock_producto -= item.cantidad
                 producto_actual.save()
+                # Nota: debería mostrarse los datos de los items incluso cuando este sin stock. NO ELIMINARSE
+                # Eso último no pasa, pero solo queda aplicar lógica para que NO pueda hacerse compras SIN STOCK
 
-            # --- 5. ¡NUEVO! CREAR EL PAGO SIMULADO ---
+            # Mockup de pago. Algun día estará conectado a Mercado Pago
             Pago.objects.create(
                 orden=new_order,  # Vincula el pago a la orden recién creada
                 metodo_pago="Tarjeta Débito", # Opción hardcodeada para este mock!!
                 monto_pago=new_order.total_orden # Usamos el total de la orden
                 # fecha_pago se añade automáticamente por auto_now_add=True
+                # Por que lo de arriba está comentado? No sé, ahi reviso. 10-11-2025
             )
 
-            # 6. VACIAR EL CARRITO
+            # Chaolin el carrito 
             items.delete()
 
-            # 7. Devolver la orden recién creada
             serializer = OrdenSerializer(new_order)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
