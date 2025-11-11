@@ -1,0 +1,133 @@
+td {
+    color: #272727;
+}
+
+.panel-ordenes-container {
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 20px 40px;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.panel-ordenes-header {
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.panel-ordenes-header h1 {
+    font-size: 2rem;
+    color: #343a40;
+    margin: 0;
+}
+
+.panel-ordenes-header p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.error-texto {
+  color: #d93030;
+  font-weight: bold;
+}
+
+/* --- Filtros --- */
+.order-filter-bar {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.order-filter-bar label {
+    font-weight: 600;
+    color: #495057;
+    margin-right: 10px;
+}
+
+.order-filter-bar select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    font-size: 0.95rem;
+}
+
+/* --- Tabla de Órdenes --- */
+.order-table-container {
+    width: 100%;
+    overflow-x: auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border-color: #155724;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.order-table th,
+.order-table td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.order-table thead tr {
+    background-color: #343a40;
+    color: #ffffff;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Celda de Items */
+.order-items-cell {
+    font-size: 0.9rem;
+}
+
+.order-item-detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.order-item-detail img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+/* Badges de Estado */
+.estado-badge {
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+.estado-badge.aprobado {
+  background-color: #d4edda;
+  color: #155724;
+}
+.estado-badge.pendiente {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.estado-badge.rechazado {
+  background-color: #f8d7da;
+  color: #721c24;
+}

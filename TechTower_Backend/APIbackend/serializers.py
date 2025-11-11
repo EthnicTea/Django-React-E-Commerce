@@ -1,7 +1,7 @@
 from django.forms import ValidationError
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
-from .models import Producto, Carrito, ItemCarrito, Orden, OrdenProducto
+from .models import Producto, Carrito, ItemCarrito, Orden, OrdenProducto, TipoProducto, Categoria
 
 UserModel = get_user_model()
 
@@ -146,11 +146,24 @@ class OrdenProductoSimpleSerializer(serializers.ModelSerializer):
 
 class OrdenSerializer(serializers.ModelSerializer):
     """ Serializer principal para la Orden """
-    # 'items' es el related_name que DEBERÍAS poner en tu
+    # 'items' es el related_name que SE DEBERÍA poner
     # ForeignKey de OrdenProducto a Orden. 
-    # Si no lo pusiste, el 'source' por defecto es 'ordenproducto_set'
+    # Si no está, el 'source' por defecto es 'ordenproducto_set'
+    # En palabras sencillas, le decimos al "OrdenProductoSimple" que se encargue de mostrar los items.
     items = OrdenProductoSimpleSerializer(many=True, read_only=True, source='ordenproducto_set')
+
+    usuario_orden = serializers.StringRelatedField()
 
     class Meta:
         model = Orden
-        fields = ['orden_id', 'fecha_orden', 'estado_orden', 'total_orden', 'items']
+        fields = ['orden_id', 'fecha_orden', 'estado_orden', 'usuario_orden', 'total_orden', 'items']
+
+class CategoriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = ['categoria_id', 'nombre_categoria']
+
+class TipoProductoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TipoProducto
+        fields = ['tipo_id', 'nombre_tipo']

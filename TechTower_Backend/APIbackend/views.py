@@ -26,7 +26,7 @@ from google import genai
 import google.generativeai as generativeai
 from google.genai.errors import APIError
 
-from .models import Producto, Carrito, ItemCarrito, Producto, Orden, OrdenProducto, Pago
+from .models import Producto, Carrito, ItemCarrito, Producto, Orden, OrdenProducto, Pago, Categoria, TipoProducto
 from .serializers import (
     UserLoginSerializer,
     UserRegisterSerializer,
@@ -36,7 +36,9 @@ from .serializers import (
     ItemCarritoSerializer,
     OrdenSerializer,
     OrdenProductoSimpleSerializer,
-    UserProfileUpdateSerializer
+    UserProfileUpdateSerializer,
+    CategoriaSerializer,
+    TipoProductoSerializer
 )
 
 from .validations import custom_validation # No es util
@@ -163,6 +165,7 @@ class UserDeleteView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+# ============ Vistas de Productos =============
 class ProductCreate(APIView):
     # permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Solo admins pueden crear productos (is_staff=True)
     permission_classes = [permissions.AllowAny] # Depuración
@@ -171,10 +174,11 @@ class ProductCreate(APIView):
         print(request.data)
         # clean_data = custom_product(request.data)
         serializer = ProductSerializer(data=request.data)
-        data = request.data
+        # data = request.data
         if serializer.is_valid(raise_exception=True):
-            producto = serializer.create(data)
+            # producto = serializer.create(data)
             # producto.save() # Redundante si ya se guarda en el método create
+            producto = serializer.save()
             if producto:
                 return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response({"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -362,6 +366,33 @@ class CartView(APIView):
             return Response({"message": "Producto eliminado del carrito."}, status=status.HTTP_200_OK)
         except ItemCarrito.DoesNotExist:
             return Response({"error": "El ítem no existe en este carrito."}, status=status.HTTP_404_NOT_FOUND)
+
+# ================== VISTAS DE ÓRDENES ==================
+class MisOrdenesListView(ListAPIView):
+    """
+    Endpoint para el CLIENTE.
+    Devuelve solo las órdenes del usuario que está logeado.
+    """
+    permission_classes = [IsAuthenticated] # Solo usuarios logeados
+    serializer_class = OrdenSerializer
+
+    def get_queryset(self):
+        """ Filtra el queryset para devolver solo las del usuario actual. """
+        # Filtramos donde 'usuario_orden' (el campo en el modelo Orden)
+        # sea igual a 'request.user' (el usuario del token)
+        return Orden.objects.filter(usuario_orden=self.request.user).order_by('-fecha_orden')
+
+class AdminOrdenListView(ListAPIView):
+    """
+    Endpoint para el EMPLEADO (Panel de Órdenes).
+    Devuelve TODAS las órdenes de TODOS los usuarios.
+    """
+    permission_classes = [IsAdminUser] # Solo usuarios con 'is_staff=True'
+    serializer_class = OrdenSerializer
+    
+    def get_queryset(self):
+        """ Devuelve todas las órdenes, ordenadas por fecha """
+        return Orden.objects.all().order_by('-fecha_orden')
         
 # ================== Google GenAI ==================
 
@@ -570,6 +601,21 @@ class CreateOrderView(APIView):
             return Response({"error": "No se encontró un carrito para este usuario."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": f"Un error inesperado ocurrió: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+# ================== Vistas para Dropdowns ==================
+
+class CategoriaListView(ListAPIView):
+    """ Devuelve una lista de todas las categorías (ID y Nombre) """
+    permission_classes = [permissions.AllowAny]
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+
+class TipoProductoListView(ListAPIView):
+    """ Devuelve una lista de todos los Tipos de Producto (ID y Nombre) """
+    permission_classes = [permissions.AllowAny]
+    queryset = TipoProducto.objects.all()
+    serializer_class = TipoProductoSerializer
         
 # # ================== Ia EME ====================
 # # Configura la API de Gemini con tu clave

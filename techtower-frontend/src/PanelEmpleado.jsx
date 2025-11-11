@@ -23,7 +23,7 @@ export default function PanelEmpleado() {
                 </Link>
 
                 {/* Tarjeta para ver Órdenes (A futuro) */}
-                <Link to="/panel-ordenes" className="panel-card disabled-card">
+                <Link to="/panel-ordenes" className="panel-card">
                     <div className="card-icon">📋</div>
                     <h2>Ver Órdenes de Clientes</h2>
                     <p>Revisar el historial de pedidos pendientes y completados. (Próximamente)</p>

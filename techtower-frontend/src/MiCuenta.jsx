@@ -1,13 +1,45 @@
-import React from 'react';
-import { useAuth } from './services/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from './services/AuthContext.jsx';
+import { Link } from 'react-router-dom';
 import './MiCuenta.css';
 
 export default function MiCuenta() {
-    const { user, loading } = useAuth();
-    const navigate = useNavigate();
+    const { user, authToken } = useAuth();
+    
+    const [ordenes, setOrdenes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    if (loading || !user) {
+    useEffect(() => {
+        if (!user) return; 
+
+        const fetchMisOrdenes = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/mi-ordenes/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}` // ¡La autenticación!
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('No se pudieron cargar tus pedidos.');
+                }
+                const data = await response.json();
+                setOrdenes(data); // Guardamos los pedidos en el estado
+
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMisOrdenes();
+    }, [user, authToken]);
+    if (!user) {
         return <div className="mi-cuenta-container">Cargando...</div>;
     }
 
@@ -55,19 +87,44 @@ export default function MiCuenta() {
                 </Link>
             </div>
 
-            {/* --- Mockup, para más adelante --- */}
             <div className="mi-cuenta-seccion">
                 <h2>Mis Pedidos</h2>
-                 <div className="pedido-mockup"> {/*Cambiar clases??? */}
-                    <p>Orden #12345 - <strong>Enviado</strong></p>
-                    <span>Fecha: 28/10/2025</span>
-                    <p className="pedido-items">Monitor ASUS VA24EHF, Teclado Mecánico Razer...</p>
-                </div>
-                <div className="pedido-mockup">
-                    <p>Orden #12344 - <strong>Entregado</strong></p>
-                    <span>Fecha: 15/10/2025</span>
-                    <p className="pedido-items">Mouse Gamer Redragon...</p>
-                </div>
+                
+                {loading && <p>Cargando pedidos...</p>}
+                {error && <p className="error-texto">{error}</p>}
+                
+                {!loading && !error && (
+                    <div className="lista-pedidos">
+                        {ordenes.length === 0 ? (
+                            <p>Aún no has realizado ningún pedido.</p>
+                        ) : (
+                            ordenes.map(orden => (
+                                <div key={orden.orden_id} className="pedido-item">
+                                    <div className="pedido-header">
+                                        <h3>Pedido #{orden.orden_id}</h3>
+                                        <span className={`estado-pedido ${orden.estado_orden.toLowerCase()}`}>
+                                            {orden.estado_orden}
+                                        </span>
+                                    </div>
+                                    <div className="pedido-info">
+                                        <span>Fecha: {orden.fecha_orden}</span>
+                                        <span>Total: ${orden.total_orden.toLocaleString('es-CL')}</span>
+                                    </div>
+                                    <div className="pedido-items-list">
+                                        <strong>Items:</strong>
+                                        {/* SE MAPEA LOS PRODUCTOS DENTRO DE LA ORDEEEEN */}
+                                        {orden.items.map(item => (
+                                            <div key={item.producto.producto_id} className="pedido-sub-item">
+                                                <img src={item.producto.imagen} alt={item.producto.nombre_producto} />
+                                                <span>{item.producto.nombre_producto} (x{item.cantidad})</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

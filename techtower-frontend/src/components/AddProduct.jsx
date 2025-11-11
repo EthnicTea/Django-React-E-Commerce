@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './AddProduct.css';
 import api from "../services/axiosConfig";
 
 // Recibimos la prop 'onDone' del padre (Crud.jsx)
 export default function AddProduct({ onDone }) {
+
+    const [categorias, setCategorias] = useState([]);
+    const [tipos, setTipos] = useState([]);
     
-    // ¡Usamos los nombres de campo correctos de la API!
     const [product, setProduct] = useState({
         nombre_producto: "",
         marca_producto: "",
@@ -20,14 +22,46 @@ export default function AddProduct({ onDone }) {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(""); 
 
+    useEffect(() => {
+        // Función para cargar categorías
+        const fetchCategorias = async () => {
+            try {
+                const response = await api.get("/categorias/");
+                setCategorias(response.data);
+            } catch (error) {
+                console.error("Error al cargar categorías", error);
+            }
+        };
+
+        // Función para cargar tipos de producto
+        const fetchTipos = async () => {
+            try {
+                const response = await api.get("/tipos/");
+                setTipos(response.data);
+            } catch (error) {
+                console.error("Error al cargar tipos", error);
+            }
+        };
+
+        fetchCategorias();
+        fetchTipos();
+    }, []); // El array vacío [] significa que se ejecuta 1 sola vez
+
     const handleChange = (e) => {
         setProduct({ ...product, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // ¡Validación! Asegurarse de que se haya seleccionado una categoría/tipo
+        if (!product.categoria || !product.tipo) {
+            setError("Por favor, selecciona una categoría y un tipo.");
+            return;
+        }
+        
         try {
-            // Enviamos el objeto 'product' con los nombres correctos
+            // El endpoint correcto (como está en tu urls.py)
             const response = await api.post("/products/create/", product); 
             console.log("Producto guardado:", response.data);
             setSuccess(true); 
@@ -36,11 +70,11 @@ export default function AddProduct({ onDone }) {
             
             setTimeout(() => {
                 setSuccess(false);
-                onDone(); // ¡Llamamos a onDone para volver a la lista!
-            }, 2000); // 2 segundos
+                onDone(); 
+            }, 2000);
 
         } catch (err) {
-            console.error("Error al guardar el producto:", err);
+            console.error("Error al guardar el producto:", err.response.data);
             setError("Hubo un problema al guardar el producto.");
         }
     };
@@ -56,11 +90,25 @@ export default function AddProduct({ onDone }) {
                 <span className="crudspan">Marca del Producto</span>
                 <input className="crudinput" type="text" placeholder="Razer" name="marca_producto" value={product.marca_producto} onChange={handleChange} required/>
                 
-                <span className="crudspan">ID de Categoría</span>
-                <input className="crudinput" type="number" placeholder="Ej: 1 (para Gaming)" name="categoria" value={product.categoria} onChange={handleChange} required/>
+                <span className="crudspan">Categoría del Producto</span>
+                <select name="categoria" value={product.categoria} onChange={handleChange} required className="crudinput">
+                    <option value="">-- Selecciona una Categoría --</option>
+                    {categorias.map(cat => (
+                        <option key={cat.categoria_id} value={cat.categoria_id}>
+                            {cat.nombre_categoria} (ID: {cat.categoria_id})
+                        </option>
+                    ))}
+                </select>
                 
-                <span className="crudspan">ID de Tipo de Producto</span>
-                <input className="crudinput" type="number" placeholder="Ej: 1 (para Teclado)" name="tipo" value={product.tipo} onChange={handleChange} required/>
+                <span className="crudspan">Tipo de Producto</span>
+                <select name="tipo" value={product.tipo} onChange={handleChange} required className="crudinput">
+                    <option value="">-- Selecciona un Tipo --</option>
+                    {tipos.map(tipo => (
+                        <option key={tipo.tipo_id} value={tipo.tipo_id}>
+                            {tipo.nombre_tipo} (ID: {tipo.tipo_id})
+                        </option>
+                    ))}
+                </select>
 
                 <span className="crudspan">Descripción del Producto</span>
                 <input className="crudinput" type="text" placeholder="Teclado mecánico con switches..." name="descripcion_producto" value={product.descripcion_producto} onChange={handleChange} required/>
