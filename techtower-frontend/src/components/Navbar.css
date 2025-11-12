@@ -139,6 +139,7 @@ html, body {
     text-decoration: none;
     display: block;
     text-align: center;
+    cursor: pointer;
 }
 
 .navbar-link:hover{
@@ -174,7 +175,8 @@ html, body {
 .navbar-link-user[role="logout"] {
     color: #cc1717;
     font-weight: bold;
-    border-top: 1px solid #444;
+    background-color: #fffbfb;
+    text-align: center;
 }
 
 /* Botón de logout al hover */

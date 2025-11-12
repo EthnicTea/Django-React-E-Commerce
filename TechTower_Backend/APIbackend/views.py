@@ -3,7 +3,7 @@ import json
 import traceback
 
 from django.contrib.auth import authenticate, login, get_user_model, login, logout
-from django.db.models import F
+from django.db.models import F, Sum, Count
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.urls import reverse
@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.contrib.auth.hashers import check_password
+from django.db.models.functions import TruncMonth
 
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -616,7 +617,101 @@ class TipoProductoListView(ListAPIView):
     permission_classes = [permissions.AllowAny]
     queryset = TipoProducto.objects.all()
     serializer_class = TipoProductoSerializer
+
+# ================== Dashboard de datos ==================
+
+class DashboardSalesByCategoryView(APIView):
+    """
+    Devuelve el total de ventas (aprobadas) agrupado por categoría.
+    """
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        # Solo ordenes aprobadas
+        try:
+            year = int(request.query_params.get('year', timezone.now().year))
+        except ValueError:
+            return Response({"error": "Año inválido"}, status=400)
+
+        sales_data = OrdenProducto.objects.filter(
+                # Filtro de estado y año
+                orden__estado_orden='aprobado',
+                orden__fecha_orden__year=year
+            ) \
+            .values('producto__categoria__nombre_categoria') \
+            .annotate(
+                # Se sumama el precio del producto * la cantidad vendida
+                total_vendido=Sum(F('producto__precio_transferencia') * F('cantidad'))
+            ) \
+            .order_by('-total_vendido')
+
+        data_para_frontend = [
+            {'label': item['producto__categoria__nombre_categoria'], 'value': item['total_vendido']} 
+            for item in sales_data if item['total_vendido'] > 0
+        ]
         
+        return Response(data_para_frontend, status=status.HTTP_200_OK)
+
+
+class DashboardSalesByMonthView(APIView):
+    """
+    Devuelve el total de ventas (aprobadas) agrupado por mes.
+    """
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        try:
+            year = int(request.query_params.get('year', timezone.now().year))
+        except ValueError:
+            return Response({"error": "Año inválido"}, status=400)
+
+        sales_data = Orden.objects.filter(
+                estado_orden='aprobado',
+                fecha_orden__year=year
+            ) \
+            .annotate(mes=TruncMonth('fecha_orden')) \
+            .values('mes') \
+            .annotate(total_ventas=Sum('total_orden')) \
+            .order_by('mes')
+
+        data_para_frontend = [
+            {'label': item['mes'].strftime('%B'), 'value': item['total_ventas']} # Mostramos solo el mes
+            for item in sales_data
+        ]
+
+        return Response(data_para_frontend, status=status.HTTP_200_OK)
+
+class DashboardTopProductsView(APIView):
+    """
+    Devuelve los 5 productos más vendidos, basado en ingresos.
+    """
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        try:
+            year = int(request.query_params.get('year', timezone.now().year))
+        except ValueError:
+            return Response({"error": "Año inválido"}, status=400)
+
+        # Usamos el modelo Producto como base
+        top_products = Producto.objects.filter(
+                # Filtramos por productos que aparecen en órdenes aprobadas de ese año
+                ordenproducto__orden__estado_orden='aprobado',
+                ordenproducto__orden__fecha_orden__year=year
+            ) \
+            .annotate(
+                # Calculamos los ingresos totales para CADA producto
+                ingresos_totales=Sum(F('ordenproducto__cantidad') * F('precio_transferencia'))
+            ) \
+            .order_by('-ingresos_totales')[:5] # Ordenamos y tomamos los 5 primeros
+
+        data_para_frontend = [
+            {'label': p.nombre_producto, 'value': p.ingresos_totales}
+            for p in top_products if p.ingresos_totales > 0
+        ]
+        
+        return Response(data_para_frontend, status=status.HTTP_200_OK)  
+
 # # ================== Ia EME ====================
 # # Configura la API de Gemini con tu clave
 # try:

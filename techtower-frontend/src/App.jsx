@@ -27,6 +27,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PanelEmpleado from './PanelEmpleado.jsx';
 import Busqueda from './Busqueda.jsx'
 import PanelOrdenes from './PanelOrdenes.jsx';
+import Dashboard from './Dashboard.jsx';
 
 // Configuración global de Axios, quizá hay que rehubicarla.
 axios.defaults.baseURL = "http://127.0.0.1:8000";
@@ -91,6 +92,7 @@ export function App() {
           <Route path="/PanelEmpleado" element={<PanelEmpleado />} /> 
           <Route path="/crud" element={<Crud />} />
           <Route path="/panel-ordenes" element={<PanelOrdenes />} />
+          <Route path="/dashboard" element={<Dashboard />} />
       </Route>
     </Routes>
     <footer>

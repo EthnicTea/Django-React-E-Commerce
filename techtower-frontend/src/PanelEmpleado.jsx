@@ -22,6 +22,12 @@ export default function PanelEmpleado() {
                     <p>Crear, editar, actualizar y eliminar productos del inventario.</p>
                 </Link>
 
+                <Link to="/dashboard" className="panel-card">
+                    <div className="card-icon">📈</div>
+                    <h2>Visualización de Datos</h2>
+                    <p>Ver gráficos de ventas por categoría y fecha.</p>
+                </Link>
+
                 {/* Tarjeta para ver Órdenes (A futuro) */}
                 <Link to="/panel-ordenes" className="panel-card">
                     <div className="card-icon">📋</div>

@@ -33,4 +33,8 @@ urlpatterns = [
     # Api de pago, ya no hay api de pago, se simula:
     # Checkout y creación de orden
     path('checkout/create_order/', views.CreateOrderView.as_view(), name='create-order'),
+    # Dashboard
+    path('dashboard/sales-by-category/', views.DashboardSalesByCategoryView.as_view(), name='dashboard-sales-category'),
+    path('dashboard/sales-by-month/', views.DashboardSalesByMonthView.as_view(), name='dashboard-sales-month'),
+    path('dashboard/top-products/', views.DashboardTopProductsView.as_view(), name='dashboard-top-products'),
 ]
