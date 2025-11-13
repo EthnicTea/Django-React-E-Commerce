@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import './EditProduct.css'; // (Asegúrate de que el CSS coincida)
+import './EditProduct.css';
 import api from "../services/axiosConfig";
 
 // Recibimos 'productData' (el producto a editar) y 'onDone' (para volver)
@@ -30,8 +30,8 @@ export default function EditProduct({ productData, onDone }) {
                 descripcion_producto, precio_transferencia, precio_otro, 
                 stock_producto, imagen 
             };
-            
-            // ¡Llamamos al endpoint PATCH con el ID del producto!
+        
+            // Llamamos al endpoint PATCH con el ID del producto
             await api.patch(`/products/${productData.producto_id}/`, updatedData);
             
             console.log("Producto actualizado: ", product);

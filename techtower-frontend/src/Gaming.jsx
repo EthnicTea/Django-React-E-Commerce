@@ -127,8 +127,8 @@ const Gaming = () => {
                             >
                                 {loadingCart ? 'Agregando...' : 'Agregar'}
                             </button>
-                            <Link to={`/producto/${p.producto_id}`}>
-                                <button className="btn-ver">Ver</button>
+                            <Link to={`/producto/${p.producto_id}`} className="btn-ver">
+                                Ver
                             </Link>
                         </div>
                     </div>

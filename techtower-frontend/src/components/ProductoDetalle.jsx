@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom'; 
 import './ProductoDetalle.css';
+import { useCart } from '../services/useCart.jsx'; 
+import { useAuth } from '../services/AuthContext.jsx';
 
 export function ProductoDetalle() {
     const { id } = useParams();
     const navigate = useNavigate();
+    
+    // --- Hooks ---
     const [producto, setProducto] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [cantidad, setCantidad] = useState(1);
+    
+    const { addToCart, loadingCart } = useCart(); 
+    const { authToken } = useAuth(); 
 
     useEffect(() => {
-        // Fetch del producto desde Django
         const fetchProducto = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/productos/${id}/`); // Ajusta la URL de tu API
+                const response = await fetch(`http://127.0.0.1:8000/api/products/${id}/`);
                 
                 if (!response.ok) {
                     throw new Error('Producto no encontrado');
@@ -23,24 +29,31 @@ export function ProductoDetalle() {
                 
                 const data = await response.json();
                 setProducto(data);
-                setLoading(false);
+                
             } catch (err) {
                 setError(err.message);
+            } finally {
                 setLoading(false);
             }
         };
 
         fetchProducto();
-    }, [id]);
+    }, [id]); // Se ejecuta cada vez que el ID de la URL cambie
 
     const handleAgregarCarrito = () => {
-        // Lógica para agregar al carrito (implementar según tu sistema)
-        console.log(`Agregando ${cantidad} unidad(es) del producto ${producto.name}`);
-        alert(`${cantidad} ${producto.name} agregado(s) al carrito`);
+        if (!authToken) {
+            alert("Debes iniciar sesión para agregar productos al carrito.");
+            navigate('/login');
+            return;
+        }
+        // Llama a la función del hook con el ID y la cantidad
+        addToCart(producto.producto_id, cantidad);
+        alert(`${cantidad} ${producto.nombre_producto} agregado(s) al carrito`);
     };
 
-    const incrementarCantidad = () => {
-        if (cantidad < producto.stock) {
+   const incrementarCantidad = () => {
+        // Usamos el nombre de campo correcto 'stock_producto'
+        if (cantidad < producto.stock_producto) {
             setCantidad(cantidad + 1);
         }
     };
@@ -50,7 +63,7 @@ export function ProductoDetalle() {
             setCantidad(cantidad - 1);
         }
     };
-
+    
     if (loading) {
         return (
             <div className="producto-detalle-container">
@@ -93,42 +106,39 @@ export function ProductoDetalle() {
         <div className="producto-detalle-container">
             <div className="producto-detalle-wrapper">
                 
-                {/* Botón volver */}
                 <button onClick={() => navigate(-1)} className="btn-volver-top">
                     ← Volver
                 </button>
 
                 <div className="producto-detalle-content">
                     
-                    {/* Columna izquierda: Imagen */}
                     <div className="producto-imagen-section">
                         <div className="imagen-principal-container">
                             <img 
-                                src={producto.image} 
-                                alt={producto.name} 
+                                src={producto.imagen} 
+                                alt={producto.nombre_producto} 
                                 className="imagen-principal"
                             />
                         </div>
                     </div>
 
-                    {/* Columna derecha: Información */}
                     <div className="producto-info-section">
                         
-                        {/* Marca y categoría */}
                         <div className="producto-meta">
-                            <span className="producto-marca">{producto.brand}</span>
+                            <span className="producto-marca">{producto.marca_producto}</span>
                             <span className="producto-separador">|</span>
-                            <span className="producto-categoria">{producto.category}</span>
+                            {/* Mostramos el nombre de la categoría (si tu serializer lo anida) */}
+                            <span className="producto-categoria">
+                                {producto.categoria?.nombre_categoria || 'Categoría'}
+                            </span>
                         </div>
 
-                        {/* Nombre del producto */}
-                        <h1 className="producto-titulo">{producto.name}</h1>
+                        <h1 className="producto-titulo">{producto.nombre_producto}</h1>
 
-                        {/* Stock */}
                         <div className="producto-stock">
-                            {producto.stock > 0 ? (
+                            {producto.stock_producto > 0 ? (
                                 <span className="stock-disponible">
-                                    ✓ Stock disponible: {producto.stock} unidades
+                                    ✓ Stock disponible: {producto.stock_producto} unidades
                                 </span>
                             ) : (
                                 <span className="stock-agotado">
@@ -137,40 +147,33 @@ export function ProductoDetalle() {
                             )}
                         </div>
 
-                        {/* Precios */}
+                        {/* Precios con descuento (si existen) */}
                         <div className="producto-precios">
+                            {producto.descuento > 0 && (
+                                <div className="precio-secundario">
+                                    <span className="precio-label">Precio Normal:</span>
+                                    <span className="precio-valor-secundario" style={{textDecoration: 'line-through'}}>
+                                        ${producto.precio_otro.toLocaleString('es-CL')}
+                                    </span>
+                                </div>
+                            )}
                             <div className="precio-principal">
                                 <span className="precio-label">Precio Transferencia:</span>
-                                <span className="precio-valor">{producto.price}</span>
-                            </div>
-                            <div className="precio-secundario">
-                                <span className="precio-label">Otro método de pago:</span>
-                                <span className="precio-valor-secundario">{producto.price2}</span>
+                                <span className="precio-valor">
+                                    ${producto.precio_final_transferencia.toLocaleString('es-CL')}
+                                </span>
                             </div>
                         </div>
 
-                        {/* Descripción */}
-                        {producto.descripcion && (
-                            <div className="producto-descripcion">
-                                <h3>Descripción</h3>
-                                <p>{producto.descripcion}</p>
-                            </div>
-                        )}
+                        <div className="producto-descripcion">
+                            <h3>Descripción</h3>
+                            {/* Usamos 'dangerouslySetInnerHTML' si la descripción es HTML, o solo <p> si es texto plano */}
+                            <p>{producto.descripcion_producto}</p>
+                        </div>
+                        
+                        {/* (Puedes añadir la 'Ficha Técnica' aquí en el futuro) */}
 
-                        {/* Especificaciones técnicas */}
-                        {producto.especificaciones && producto.especificaciones.length > 0 && (
-                            <div className="producto-especificaciones">
-                                <h3>Especificaciones Técnicas</h3>
-                                <ul>
-                                    {producto.especificaciones.map((spec, index) => (
-                                        <li key={index}>{spec}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-
-                        {/* Selector de cantidad y botón agregar */}
-                        {producto.stock > 0 && (
+                        {producto.stock_producto > 0 ? (
                             <div className="producto-acciones">
                                 <div className="cantidad-selector">
                                     <button 
@@ -184,7 +187,7 @@ export function ProductoDetalle() {
                                     <button 
                                         onClick={incrementarCantidad}
                                         className="btn-cantidad"
-                                        disabled={cantidad >= producto.stock}
+                                        disabled={cantidad >= producto.stock_producto}
                                     >
                                         +
                                     </button>
@@ -192,10 +195,13 @@ export function ProductoDetalle() {
                                 <button 
                                     onClick={handleAgregarCarrito}
                                     className="btn-agregar-carrito"
+                                    disabled={loadingCart} // Deshabilita mientras se añade
                                 >
-                                    Agregar al Carrito
+                                    {loadingCart ? 'Agregando...' : 'Agregar al Carrito'}
                                 </button>
                             </div>
+                        ) : (
+                            <p>Producto no disponible.</p>
                         )}
                     </div>
                 </div>

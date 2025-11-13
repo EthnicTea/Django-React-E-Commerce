@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './MasVendidos.css';
-import { useCart } from '../services/useCart'; // Importamos el hook del carrito
+import { useCart } from '../services/useCart';
+import { Link } from 'react-router-dom';
 
 const BestSellers = () => {
     // Usamos 'products' para guardar lo que nos dé la API
@@ -37,7 +38,7 @@ const BestSellers = () => {
     }, []);
 
     if (loading) return <div className="best-sellers"><h2>Cargando ofertas...</h2></div>;
-    if (error) return null; // O muestra un mensaje de error discreto
+    if (error) return null; // muestra un mensaje de error discreto
 
     return (
         <div className="best-sellers">
@@ -63,7 +64,6 @@ const BestSellers = () => {
                     </span>
                 </div>
 
-                {/* --- ¡NUEVO! Contenedor de botones --- */}
                 <div className="botones-seller">
                     <button 
                         className="btn-agregar-seller"
@@ -72,12 +72,10 @@ const BestSellers = () => {
                     >
                         Agregar
                     </button>
-                    {/* El botón "Ver" que querías agregar */}
-                    <button className="btn-ver-seller">
-                        Ver
-                    </button>
+                    <Link to={`/producto/${product.producto_id}`} className="btn-ver-seller">
+                       Ver
+                    </Link>                      
                 </div>
-                {/* ------------------------------------- */}
 
             </div>
         ))}

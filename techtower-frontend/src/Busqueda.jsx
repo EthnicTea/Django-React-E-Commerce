@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom'; // Hook para leer la URL
+import { useSearchParams } from 'react-router-dom';
 import { useCart } from './services/useCart';
-import './Computacion.css'; // Reusa los estilos de Computacion (grid, cards)
+import './Computacion.css'; // Simplemente reutiliza el CSS de Computación
 
 export default function Busqueda() {
     const [searchParams] = useSearchParams();
-    const query = searchParams.get('q'); // Obtiene el valor de "?q=..."
+    const query = searchParams.get('q');
     
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,7 +18,6 @@ export default function Busqueda() {
             
             setLoading(true);
             try {
-                // Llama a tu API con el parámetro ?search=
                 const response = await fetch(`http://127.0.0.1:8000/api/products/?search=${encodeURIComponent(query)}`);
                 if (!response.ok) throw new Error('Error en la búsqueda');
                 const data = await response.json();

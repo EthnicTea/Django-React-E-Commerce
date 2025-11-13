@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; 
 import './Audio-Video.css';
 import { useCart } from './services/useCart';
 
@@ -112,7 +113,9 @@ const AudioVideo = () => {
                             >
                                 {loadingCart ? 'Agregando...' : 'Agregar'}
                             </button>
-                            <button className="btn-ver">Ver</button>
+                            <Link to={`/producto/${p.producto_id}`} className="btn-ver">
+                                Ver
+                            </Link>
                         </div>
                     </div>
                 ))}

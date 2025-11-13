@@ -29,6 +29,7 @@ import Busqueda from './Busqueda.jsx'
 import PanelOrdenes from './PanelOrdenes.jsx';
 import Dashboard from './Dashboard.jsx';
 import { ProductoDetalle } from './components/ProductoDetalle.jsx';
+
 // Configuración global de Axios, quizá hay que rehubicarla.
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 axios.defaults.xsrfCookieName = 'csrftoken';
