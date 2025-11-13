@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Gaming.css';
 import { useCart } from './services/useCart';
+import { Link } from 'react-router-dom';
 
 const Gaming = () => {
     const [products, setProducts] = useState([]);
@@ -126,7 +127,9 @@ const Gaming = () => {
                             >
                                 {loadingCart ? 'Agregando...' : 'Agregar'}
                             </button>
-                            <button className="btn-ver">Ver</button>
+                            <Link to={`/producto/${p.producto_id}`}>
+                                <button className="btn-ver">Ver</button>
+                            </Link>
                         </div>
                     </div>
                 ))}

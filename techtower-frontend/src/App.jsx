@@ -28,7 +28,7 @@ import PanelEmpleado from './PanelEmpleado.jsx';
 import Busqueda from './Busqueda.jsx'
 import PanelOrdenes from './PanelOrdenes.jsx';
 import Dashboard from './Dashboard.jsx';
-
+import { ProductoDetalle } from './components/ProductoDetalle.jsx';
 // Configuración global de Axios, quizá hay que rehubicarla.
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -83,6 +83,7 @@ export function App() {
       <Route path="/Pasarela" element={<Pasarela />} />
       <Route path="/MiCuenta" element={<MiCuenta />} />
       <Route path="busqueda" element={<Busqueda />} />
+      <Route path="/producto/:id" element={<ProductoDetalle />} />
 
       {/* Estas rutas deben estar protegidas */}
       {/* <Route path="/crud" element={isStaff ? <Crud /> : <Navigate to="/" />} /> {<Crud />}
