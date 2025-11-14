@@ -117,7 +117,12 @@ class Orden(models.Model):
     orden_id = models.AutoField(primary_key=True)
     fecha_orden = models.DateField(auto_now_add=True)
     estado_orden = models.CharField(max_length=30, default='Pendiente')
-    usuario_orden = models.ForeignKey('UsuarioApp', on_delete=models.CASCADE)
+    usuario_orden = models.ForeignKey(
+        'UsuarioApp', 
+        on_delete=models.SET_NULL, # Nunca se borrará una orden.
+        null=True,                 
+        blank=True                 
+    )
     productos = models.ManyToManyField('Producto', through=OrdenProducto)
     total_orden = models.IntegerField(blank=True, null=True) # Se puede calcular dinámicamente
 

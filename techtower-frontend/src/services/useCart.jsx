@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../services/AuthContext.jsx';
 
-// Este es un custom hook para manejar el carrito de compras
-// Provee funciones para agregar productos al carrito
-// Esto optimiza el código y evita repetir lógica en varios componentes, como en las páginas de productos!
-
 export const useCart = () => {
     const { authToken } = useAuth();
     const [loading, setLoading] = useState(false);
@@ -14,11 +10,12 @@ export const useCart = () => {
 
     /**
      * Llama al endpoint POST /api/cart/ para agregar un producto.
+     * Esta versión es 'silenciosa' (no usa 'alert') y 'lanza' (throws) errores.
      */
-    const addToCart = async (productoId) => {
+    const addToCart = async (productoId, cantidad = 1) => { // Aceptamos cantidad
         if (!authToken) {
-            alert('Por favor, inicia sesión para agregar productos al carrito.');
-            return;
+            // Si no hay token, lanzamos un error para que el componente lo maneje
+            throw new Error('Usuario no autenticado.');
         }
 
         setLoading(true);
@@ -31,29 +28,24 @@ export const useCart = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
-                // Tu backend espera 'producto' (no 'producto_id') y 'cantidad'
                 body: JSON.stringify({
                     producto: productoId,
-                    cantidad: 1
+                    cantidad: cantidad // Usamos la cantidad
                 })
             });
 
             if (response.ok) {
-                // ¡Éxito!
-                alert('¡Producto agregado al carrito!');
+                console.log(`Producto ${productoId} agregado.`);
             } else {
-                // Manejamos errores específicos, como el stock
+                // Si el backend falla (ej. sin stock), lanzamos un error
                 const errorData = await response.json();
-                if (response.status === 400) { // Bad Request
-                    alert(`Error: ${errorData.error}`); // Ej: "Stock insuficiente"
-                } else {
-                    throw new Error(errorData.detail || 'No se pudo agregar el producto.');
-                }
+                throw new Error(errorData.error || 'No se pudo agregar el producto.');
             }
-        // hay que hacer un error especializado cuando el token expira para avisar al usuario de que se loguee otra vez
+
         } catch (err) {
             setError(err.message);
-            alert('Ocurrió un error de red. Intenta de nuevo.'); 
+            // Re-lanzamos el error para que Promise.all lo capture
+            throw err; 
         } finally {
             setLoading(false);
         }
@@ -61,6 +53,5 @@ export const useCart = () => {
 
     // (Aquí podrías agregar 'removeFromCart', 'updateQuantity' en el futuro)
 
-    // Devolvemos la función y los estados para que los componentes los usen
     return { addToCart, loadingCart: loading, errorCart: error };
 };

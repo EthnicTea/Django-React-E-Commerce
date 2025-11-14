@@ -22,15 +22,13 @@ function PerfilUsuario() {
         departamento: ''
     });
     
-    // --- Estados de los Selects (Tu lógica) ---
+    // --- Estados de los Selects 
     const [selectedRegion, setSelectedRegion] = useState('');
     const [availableComunas, setAvailableComunas] = useState([]);
     const [selectedComuna, setSelectedComuna] = useState('');
 
-    // --- Estado de la Zona de Peligro ---
     const [passwordConfirm, setPasswordConfirm] = useState('');
 
-    // --- ¡NUEVO! Cargar datos reales al iniciar ---
     useEffect(() => {
         console.log("PerfilUsuario useEffect SE DISPARÓ."); // Debugging!!!!
         if (user) {
@@ -59,7 +57,6 @@ function PerfilUsuario() {
     }, [user]); // Este efecto se ejecuta cada vez que el 'user' (del context) se cargue
 
     
-    // --- Tus Handlers (Manejadores) ---
     const handleRegionChange = (e) => {
         const region = e.target.value;
         setSelectedRegion(region);
@@ -127,7 +124,7 @@ function PerfilUsuario() {
             alert('¡Perfil actualizado exitosamente!');
             
             // Opcional: aquí se podría actualizar el 'user' en tu AuthContext 
-            // pero se actualizará solo al recargar la página de todos modos, eso creo.
+            // pero se actualizará solo al recargar la página de todos modos, eso creo... :P
 
         } else {
             // Validaciones, etc etc...
@@ -141,24 +138,56 @@ function PerfilUsuario() {
     }
 };
 
-    const handleDeleteAccount = (e) => {
+    const handleDeleteAccount = async (e) => {
         e.preventDefault();
+        
         if (passwordConfirm === '') {
             alert('Por favor, ingresa tu contraseña para confirmar.');
             return;
         }
 
-        if (window.confirm('¿Estás SEGURO de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
-            // 2. Aquí llamarías al endpoint (DELETE /api/user/delete)
-            // enviando { password: passwordConfirm } en el body.
-            console.log('Enviando petición de borrado con contraseña:', passwordConfirm);
+        if (!window.confirm('¿Estás SEGURO de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+            return; // Si el usuario cancela, no hacemos nada
+        }
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/user/delete/', { // <-- 3. URL con barra al final
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ password: passwordConfirm })
+            });
+
+            // Manejo de la respuesta
+            if (response.status === 204) {
+                // Bien, exito.
+                alert('Tu cuenta ha sido eliminada permanentemente.');
+                logoutAction(); // Limpiamos el token
+                navigate('/');    // Redirigimos al inicio
             
-            // Si es exitoso (simulación):
-            alert('Cuenta eliminada (simulado). Serás redirigido.');
-            logoutAction(); // Cierra la sesión
-            navigate('/'); // Envía al inicio
+            } else if (response.ok) {
+                // Exito con mensaje (200)... 
+                const data = await response.json();
+                alert(data.message || 'Cuenta eliminada.');
+                logoutAction();
+                navigate('/');
+
+            } else {
+                // Errores 
+                const errorData = await response.json();
+                console.error('Error al borrar:', errorData);
+                alert(`Error: ${errorData.error || 'No se pudo eliminar la cuenta.'}`);
+            }
+
+        } catch (err) {
+            // Error de red 
+            console.error('Error de red:', err);
+            alert('Error de conexión. No se pudo conectar con el servidor.');
         }
     };
+
 
     return (
         <div className="profile-container">

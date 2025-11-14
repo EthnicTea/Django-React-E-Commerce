@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './PcBuilder.css';
 import Chatbot from './ChatBot';
 import { useCart } from './services/useCart';
+import { useNavigate } from 'react-router-dom';
 
 function PcBuilder() {
 
@@ -39,6 +40,7 @@ function PcBuilder() {
     const ID_SERVICIO_ARMADO = 66;
 
     const { addToCart, loadingCart } = useCart();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchAllProducts = async () => {
@@ -173,28 +175,38 @@ function PcBuilder() {
         setComponent(name, value || null);
     };
 
-    const handleAddBuildToCart = () => {
-        const buildProducts = [
-            selectedCpu, selectedMobo, selectedGpu, selectedRam,
-            selectedSsd, selectedPsu, selectedGabinete, selectedOs,
-            selectedMonitor, selectedMouse, selectedSoftware
-        ].filter(p => p !== null);
-
+    const handleAddBuildToCart = async () => {
         if (!selectedCpu || !selectedMobo || !selectedRam || !selectedSsd || !selectedPsu || !selectedGabinete || !selectedOs) {
             alert("Faltan componentes obligatorios. Por favor, revisa la lista.");
             return;
         }
-
-        alert(`Se añadirán ${buildProducts.length + 1} productos a tu carrito.`);
         
-        buildProducts.forEach(product => {
-            addToCart(product.producto_id);
-        });
-        addToCart(ID_SERVICIO_ARMADO);      
-        // Redirigir
-        navigate('/carrito');
-    };
+        const buildProducts = [
+            selectedCpu, selectedMobo, selectedGpu, selectedRam,
+            selectedSsd, selectedPsu, selectedGabinete, selectedOs,
+            selectedMonitor, selectedMouse, selectedSoftware
+        ].filter(p => p !== null); // Filtra los nulos
 
+        // Crear una lista 
+        const promises = buildProducts.map(product => {
+            return addToCart(product.producto_id, 1); // Añade 1 de cada uno
+        });
+        
+        promises.push(addToCart(ID_SERVICIO_ARMADO, 1));
+
+        alert(`Añadiendo ${promises.length} productos a tu carrito. Serás redirigido al finalizar.`);
+
+        try {
+            await Promise.all(promises);
+            
+            navigate('/carrito');
+
+        } catch (error) {
+            // Errores de las promesas (listas)
+            console.error("Error al añadir el armado al carrito:", error);
+            alert(`Hubo un error al añadir los productos: ${error.message}`);
+        }
+    };
     return (
         <div className="container">
             <header>
@@ -441,7 +453,7 @@ function PcBuilder() {
                         <div className="total-note">Recuerda que el servicio de armado del pc viene incluido al agregar al carrito con un valor de $50000</div>
                     </div>
 
-                    <div className="summary-actions">
+                     <div className="summary-actions">
                         <button 
                             className="btn btn-primary"
                             onClick={handleAddBuildToCart}
@@ -449,7 +461,6 @@ function PcBuilder() {
                         >
                             {loadingCart ? 'Añadiendo...' : 'Añadir a carrito'}
                         </button>
-                        {/* <button className="btn btn-success">Guardar configuración</button> */}
                     </div>
                 </aside>
 
