@@ -18,6 +18,26 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
     const location = useLocation();
     const totalAmount = location.state?.totalAPagar || 0; // Si no hay monto, 0
 
+    const handleExpiryChange = (e) => {
+        let valorNuevo = e.target.value;
+
+        valorNuevo = valorNuevo.replace(/[^0-9/]/g, '');
+
+        if (valorNuevo.length === 2 && expiryDate.length === 1) {
+            valorNuevo = valorNuevo + '/';
+        }
+
+        if (valorNuevo === '/') {
+            valorNuevo = '';
+        }
+
+        if (valorNuevo.length === 4 && !valorNuevo.includes('/')) {
+            valorNuevo = valorNuevo.slice(0, 2) + '/' + valorNuevo.slice(2, 4);
+        }
+
+        setExpiryDate(valorNuevo.slice(0, 5));
+    };
+
     const handleContinuePayment = async (e) => {
         e.preventDefault();
         setIsLoading(true); 
@@ -27,12 +47,22 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
             setIsLoading(false);
             return;
         }
+        if (!expiryDate.match(/^\d{2}\/\d{2}$/)) {
+            alert('Por favor, ingresa una fecha de vencimiento válida (MM/AA).');
+            setIsLoading(false);
+            return;
+        }
+        if (cvv.length !== 3 || !/^\d+$/.test(cvv)) {
+            alert('Por favor, ingresa un CVV válido de 3 dígitos.');
+            setIsLoading(false);
+            return;
+        }
         if (cardHolder.trim() === '') {
             alert('Por favor, ingresa el nombre del titular de la tarjeta.');
             setIsLoading(false);
             return;
         }
-        
+
         try {
             if (!authToken) {
                 alert("Tu sesión ha expirado. Por favor, inicia sesión de nuevo.");
@@ -40,30 +70,29 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
                 return;
             }
 
-            const response = await fetch('http://127.0.0.1:8000/api/checkout/create_order/', {
+            const delay = new Promise(resolve => setTimeout(resolve, 2000)); 
+
+            const fetchPromise = fetch('http://127.0.0.1:8000/api/checkout/create_order/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${authToken}`
                 },
             });
+            const [_, response] = await Promise.all([delay, fetchPromise]);
+            
+            // ------------------------------------
 
             const data = await response.json();
 
             if (response.ok) { 
                 alert('¡Pago Aprobado! Tu orden ha sido creada.');
-                
-                // Llamamos a la función onPaymentSuccess (si existe)
                 if (onPaymentSuccess) {
                     onPaymentSuccess({ status: 'approved', ordenData: data });
                 }
-                
-                // Redirigir a la página de gracias por tu compra (aun no existe), por ahora se irá a la home
-                navigate(`/`); 
-                //navigate(`/gracias-por-tu-compra/${data.orden_id}`); 
-    
+                navigate(`/gracias-por-tu-compra/${data.orden_id}`); 
+
             } else {
-                // MANEJAR ERRORES DEL BACKEND (ej. Sin Stock)
                 alert(`Error al procesar el pago: ${data.error || 'Intenta de nuevo.'}`);
                 if (onPaymentCancel) {
                     onPaymentCancel({ status: 'rejected', reason: data.error });
@@ -71,7 +100,6 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
             }
 
         } catch (err) {
-            // MANEJAR ERRORES DE RED
             console.error("Error de red en el pago:", err);
             alert("Error de conexión. No se pudo procesar el pago.");
             if (onPaymentCancel) {
@@ -87,10 +115,9 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
             onPaymentCancel({ status: 'cancelled' });
         }
         // Opcional: redirigir al carrito
-        // navigate('/carrito');
+        navigate('/carrito');
     };
     
-
     return (
         <div className="webpay-mock-container">
             <header className="webpay-header">
@@ -155,8 +182,23 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
                                 id="cardNumber"
                                 placeholder="XXXX XXXX XXXX XXXX"
                                 maxLength="16"
+                                inputMode="numeric"
+                                pattern="\d*"
                                 value={cardNumber}
-                                onChange={(e) => setCardNumber(e.target.value)}
+                                onKeyDown={(e) => {
+                                    const allowed = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab'];
+                                    if (allowed.includes(e.key)) return;
+                                    if (!/\d/.test(e.key)) e.preventDefault();
+                                }}
+                                onPaste={(e) => {
+                                    e.preventDefault();
+                                    const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 16);
+                                    setCardNumber(pasted);
+                                }}
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, '').slice(0, 16);
+                                    setCardNumber(value);
+                                }}
                                 required
                             />
 
@@ -174,12 +216,15 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
                                 <div className="form-group-small">
                                     <label htmlFor="expiryDate">Vencimiento (MM/AA)</label>
                                     <input
-                                        type="text"
+                                        type="text" 
                                         id="expiryDate"
                                         placeholder="MM/AA"
                                         maxLength="5"
+                                        inputMode="numeric" 
+                                        pattern="^(0[1-9]|1[0-2])\/\d{2}$" 
+                                        title="Ingresa la fecha en formato MM/AA" 
                                         value={expiryDate}
-                                        onChange={(e) => setExpiryDate(e.target.value)}
+                                        onChange={handleExpiryChange}
                                         required
                                     />
                                 </div>
@@ -190,8 +235,20 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
                                         id="cvv"
                                         placeholder="XXX"
                                         maxLength="3"
+                                        inputMode="numeric"
+                                        pattern="\d*"
                                         value={cvv}
-                                        onChange={(e) => setCvv(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            const allowed = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab'];
+                                            if (allowed.includes(e.key)) return;
+                                            if (!/\d/.test(e.key)) e.preventDefault();
+                                        }}
+                                        onPaste={(e) => {
+                                            e.preventDefault();
+                                            const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 3);
+                                            setCvv(pasted);
+                                        }}
+                                        onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').slice(0, 3))}
                                         required
                                     />
                                 </div>

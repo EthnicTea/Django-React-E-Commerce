@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from '../services/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export const useCart = () => {
     const { authToken } = useAuth();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    // const [error, setError] = useState(null);
 
     const API_URL = 'http://127.0.0.1:8000/api';
 
@@ -12,14 +14,15 @@ export const useCart = () => {
      * Llama al endpoint POST /api/cart/ para agregar un producto.
      * Esta versión es 'silenciosa' (no usa 'alert') y 'lanza' (throws) errores.
      */
-    const addToCart = async (productoId, cantidad = 1) => { // Aceptamos cantidad
+    const addToCart = async (productoId, cantidad = 1) => { 
         if (!authToken) {
-            // Si no hay token, lanzamos un error para que el componente lo maneje
-            throw new Error('Usuario no autenticado.');
+            alert('Debes iniciar sesión para agregar productos al carrito.');
+            navigate('/login');
+            return;
         }
 
         setLoading(true);
-        setError(null);
+        // setError(null);
 
         try {
             const response = await fetch(`${API_URL}/cart/`, {
@@ -30,28 +33,24 @@ export const useCart = () => {
                 },
                 body: JSON.stringify({
                     producto: productoId,
-                    cantidad: cantidad // Usamos la cantidad
+                    cantidad: cantidad
                 })
             });
 
             if (response.ok) {
-                console.log(`Producto ${productoId} agregado.`);
+                alert('¡Producto agregado al carrito!');
             } else {
-                // Si el backend falla (ej. sin stock), lanzamos un error
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'No se pudo agregar el producto.');
+                alert(`Error: ${errorData.error || 'No se pudo agregar el producto.'}`);
             }
 
         } catch (err) {
-            setError(err.message);
-            // Re-lanzamos el error para que Promise.all lo capture
-            throw err; 
+            alert('Error de conexión. No se pudo conectar con el servidor.');
+            console.error("Error en addToCart:", err);
         } finally {
             setLoading(false);
         }
     };
 
-    // (Aquí podrías agregar 'removeFromCart', 'updateQuantity' en el futuro)
-
-    return { addToCart, loadingCart: loading, errorCart: error };
+    return { addToCart, loadingCart: loading }; 
 };

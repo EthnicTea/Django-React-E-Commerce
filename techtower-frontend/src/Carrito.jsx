@@ -164,7 +164,6 @@ const ShoppingCart = () => {
                   <div className="cart-summary">
                       <h2>Resumen</h2>
                       
-                      {/* --- ¡ESTO ES LO QUE TE FALTA! --- */}
                       <div className="summary-row">
                           <span>Subtotal</span>
                           <span>{formatter.format(subtotal)}</span>
@@ -180,7 +179,7 @@ const ShoppingCart = () => {
                       </div>
                       <button 
                           className="checkout-button"
-                          onClick={() => navigate('/Pasarela', { state: { totalAPagar: total } })} // Redirige a tu pasarela MOCK
+                          onClick={() => setTimeout(() => navigate('/Pasarela', { state: { totalAPagar: total } }), 2000)}
                       >
                           Ir a Pagar
                       </button>

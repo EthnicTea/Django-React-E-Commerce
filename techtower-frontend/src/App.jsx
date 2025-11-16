@@ -29,6 +29,7 @@ import Busqueda from './Busqueda.jsx'
 import PanelOrdenes from './PanelOrdenes.jsx';
 import Dashboard from './Dashboard.jsx';
 import { ProductoDetalle } from './components/ProductoDetalle.jsx';
+import GraciasCompra from './GraciasCompra.jsx';
 
 // Configuración global de Axios, quizá hay que rehubicarla.
 axios.defaults.baseURL = "http://127.0.0.1:8000";
@@ -85,6 +86,7 @@ export function App() {
       <Route path="/MiCuenta" element={<MiCuenta />} />
       <Route path="busqueda" element={<Busqueda />} />
       <Route path="/producto/:id" element={<ProductoDetalle />} />
+      <Route path="/gracias-por-tu-compra/:orden_id" element={<GraciasCompra />} />
 
       {/* Estas rutas deben estar protegidas */}
       {/* <Route path="/crud" element={isStaff ? <Crud /> : <Navigate to="/" />} /> {<Crud />}

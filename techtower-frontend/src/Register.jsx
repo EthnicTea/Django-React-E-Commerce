@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Register.css';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 // 1. DATA DE REGIONES Y COMUNAS DE CHILE
@@ -44,6 +45,8 @@ export function Register() {
   
   // Estado para mensajes de éxito o error
   const [message, setMessage] = useState(null); 
+
+  const navigate = useNavigate();
   
   // Función para manejar el cambio de región y actualizar comunas
   const handleRegionChange = (e) => {
@@ -85,24 +88,34 @@ export function Register() {
       region: selectedRegion,
       comuna: selectedComuna,
       direccion: addressNumber,
-      data_apartamento: apartmentNumber,
+      data_departamento: apartmentNumber,
     };
 
     try {
-      // Simulación de registro exitoso, ajusta la URL si es necesario
-      // const response = await axios.post('/api/register', userData); 
-      console.log('Datos a enviar (simulación):', userData);
-      
-      setMessage({ type: 'success', text: '¡Registro exitoso! Ya eres parte de TechTower. Redirigiendo...' });
-      
-      setTimeout(() => {
-          // Aquí puedes redirigir al login o a la página principal
-          // window.location.href = '/login'; 
-      }, 2000); 
+        const response = await axios.post('http://127.0.0.1:8000/api/register/', userData); 
+        
+        // Verificamos la respuesta del backend
+        if (response.status !== 201) {
+            throw new Error('Error en el registro. Código de estado: ' + response.status);
+        }
+        setMessage({ type: 'success', text: '¡Registro exitoso! Redirigiendo...' });
+        
+        setTimeout(() => {
+            navigate('/login');
+        }, 2000); 
 
     } catch (error) {
-      console.error('Error en el registro:', error.response?.data || error.message);
-      setMessage({ type: 'error', text: 'Hubo un error al registrarte. Verifica tus datos o intenta más tarde.' });
+        console.error('Error en el registro:', error.response?.data || error.message);
+        
+        // Esto es opcional pero recomendado, da un error específico
+        let errorMessage = 'Hubo un error al registrarte. Intenta más tarde.';
+        if (error.response?.data) {
+            // Si el serializer de Django devuelve un error (ej: "email ya existe")
+            // Lo mostramos.
+            errorMessage = Object.values(error.response.data).join(' ');
+        }
+        
+        setMessage({ type: 'error', text: errorMessage });
     }
   };
 

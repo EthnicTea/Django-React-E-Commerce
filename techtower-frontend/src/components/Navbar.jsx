@@ -101,7 +101,6 @@ export function Navbar() {
                                         <Link to="/MiCuenta" className="navbar-link" onClick={() => setIsDropdownOpen(false)}>Mi Cuenta y Pedidos</Link>
                                     )}
 
-                                    {/* (c) Botón de Logout (igual que antes) */}
                                     <button onClick={() => { logoutAction(); setIsDropdownOpen(false); }} className='navbar-link-user' role="logout">Cerrar Sesión</button>
                                 </>
                                 

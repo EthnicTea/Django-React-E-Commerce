@@ -245,6 +245,7 @@ body {
 }
 
 .card-form input[type="text"],
+.card-form input[type="number"],
 .card-form input[type="tel"] {
     width: 100%;
     padding: 12px;

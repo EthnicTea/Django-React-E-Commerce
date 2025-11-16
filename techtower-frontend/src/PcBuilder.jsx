@@ -57,7 +57,7 @@ function PcBuilder() {
                 setPsuProducts(data.filter(p => p.tipo === 13));
                 setGabineteProducts(data.filter(p => p.tipo === 14));
                 setMonitorProducts(data.filter(p => p.tipo === 3));
-                setMouseProducts(data.filter(p => p.tipo === 3));
+                setMouseProducts(data.filter(p => p.tipo === 6));
                 setOsProducts(data.filter(p => p.tipo === 20)); // ID del tipo "Servicio"
                 setSoftwareProducts(data.filter(p => p.tipo === 19));
                 

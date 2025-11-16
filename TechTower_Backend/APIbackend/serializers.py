@@ -9,16 +9,51 @@ UserModel = get_user_model()
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ('email', 'password') 
-        extra_kwargs = {'password': {'write_only': True}} # Oculta la contraseña en la respuesta de la API.
+        fields = (
+            'email', 
+            'password', 
+            'rut', 
+            'nombre', 
+            'apellido', 
+            'telefono', 
+            'region', 
+            'comuna', 
+            'direccion', 
+            'data_departamento' 
+        )
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        # Solo email y password son obligatorios.
-        # Los otros campos se dejarán con sus valores por defecto (blank=True, null=True).
+        # Sacamos los campos extra de 'validated_data'
+        # Usamos .pop() para quitarlos, así solo quedan 'email' y 'password'
+        rut = validated_data.pop('rut', None)
+        nombre = validated_data.pop('nombre', None)
+        apellido = validated_data.pop('apellido', None)
+        telefono = validated_data.pop('telefono', None)
+        region = validated_data.pop('region', None)
+        comuna = validated_data.pop('comuna', None)
+        direccion = validated_data.pop('direccion', None)
+        data_departamento = validated_data.pop('data_departamento', None)
+
+        # Creamos el usuario solo con email y password
         user_obj = UserModel.objects.create_user(
             email=validated_data['email'],
-            password=validated_data['password'],
+            password=validated_data['password']
         )
+        
+        # Asignamos los campos extra al objeto de usuario
+        user_obj.rut = rut
+        user_obj.nombre = nombre
+        user_obj.apellido = apellido
+        user_obj.telefono = telefono
+        user_obj.region = region
+        user_obj.comuna = comuna
+        user_obj.direccion = direccion
+        user_obj.data_departamento = data_departamento
+
+        # Guardamos los cambios
+        user_obj.save()
+        
         return user_obj
     
 class UserLoginSerializer(serializers.Serializer):

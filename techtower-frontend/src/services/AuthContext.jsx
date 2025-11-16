@@ -57,7 +57,18 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('authToken');
         setAuthToken(null);
         setUser(null);
-        // (Aquí llamarías a /api/logout/ si es necesario)
+        // Aquí se llamaría a /api/logout/ si es necesario
+
+        // Redirige a la página principal después de 1 segundo
+        setTimeout(() => {
+            // Si está usando useNavigate() y tiene `navigate` en el scope, se usará en el componente
+            // Si no, se realizará una redirección por URL como fallback.
+            if (typeof navigate === 'function') {
+                navigate('/');
+            } else {
+                window.location.href = '/';
+            }
+        }, 1000);
     };
 
     // No mostramos la app hasta saber si estamos logeados o no

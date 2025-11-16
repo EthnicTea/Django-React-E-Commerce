@@ -1,0 +1,77 @@
+.gracias-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Ocupa casi toda la pantalla */
+    background-color: #f4f7f6;
+    padding: 20px;
+}
+
+.gracias-card {
+    background-color: #ffffff;
+    padding: 40px 50px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.icono-exito {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.gracias-card h1 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.mensaje-principal {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.detalle-orden {
+    background-color: #e8f0fe;
+    color: #007bff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    display: inline-block; /* Para que no ocupe todo el ancho */
+    font-size: 1.1rem;
+}
+
+.detalle-orden span {
+    margin-right: 8px;
+}
+
+.mensaje-secundario {
+    font-size: 0.95rem;
+    color: #888;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.btn-volver-inicio {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-volver-inicio:hover {
+    background-color: #0056b3;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
