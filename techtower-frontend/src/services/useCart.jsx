@@ -6,23 +6,24 @@ export const useCart = () => {
     const { authToken } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    // const [error, setError] = useState(null);
 
     const API_URL = 'http://127.0.0.1:8000/api';
 
-    /**
-     * Llama al endpoint POST /api/cart/ para agregar un producto.
-     * Esta versión es 'silenciosa' (no usa 'alert') y 'lanza' (throws) errores.
-     */
-    const addToCart = async (productoId, cantidad = 1) => { 
+    // --- ¡AQUÍ ESTÁ EL CAMBIO! ---
+    // Añadimos un 3er parámetro 'options'
+    const addToCart = async (productoId, cantidad = 1, options = {}) => {
+        
+        // Por defecto, NO es silencioso.
+        // Solo será silencioso si le pasamos { silent: true }
+        const isSilent = options.silent || false;
+
         if (!authToken) {
             alert('Debes iniciar sesión para agregar productos al carrito.');
             navigate('/login');
-            return;
+            throw new Error('Usuario no autenticado.'); 
         }
 
         setLoading(true);
-        // setError(null);
 
         try {
             const response = await fetch(`${API_URL}/cart/`, {
@@ -38,19 +39,32 @@ export const useCart = () => {
             });
 
             if (response.ok) {
-                alert('¡Producto agregado al carrito!');
+                // ¡AHORA PREGUNTAMOS!
+                // Si NO es silencioso, mostramos la alerta.
+                if (!isSilent) {
+                    alert('¡Producto agregado al carrito!');
+                }
             } else {
                 const errorData = await response.json();
-                alert(`Error: ${errorData.error || 'No se pudo agregar el producto.'}`);
+                // Si NO es silencioso, mostramos el error.
+                if (!isSilent) {
+                    alert(`Error: ${errorData.error || 'No se pudo agregar el producto.'}`);
+                }
+                // Pero SIEMPRE lanzamos el error para que Promise.all falle
+                throw new Error(errorData.error || 'No se pudo agregar el producto.');
             }
 
         } catch (err) {
-            alert('Error de conexión. No se pudo conectar con el servidor.');
             console.error("Error en addToCart:", err);
+            // Si es un error de red, SÍ mostramos la alerta
+            if (!isSilent) {
+                alert('Error de conexión. No se pudo conectar con el servidor.');
+            }
+            throw err; 
         } finally {
             setLoading(false);
         }
     };
 
-    return { addToCart, loadingCart: loading }; 
+    return { addToCart, loadingCart: loading };
 };

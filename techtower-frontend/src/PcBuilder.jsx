@@ -189,11 +189,11 @@ function PcBuilder() {
 
         // Crear una lista 
         const promises = buildProducts.map(product => {
-            return addToCart(product.producto_id, 1); // Añade 1 de cada uno
+            return addToCart(product.producto_id, 1, { silent: true });
         });
         
-        promises.push(addToCart(ID_SERVICIO_ARMADO, 1));
-
+        promises.push(addToCart(ID_SERVICIO_ARMADO, 1, { silent: true }));
+        
         alert(`Añadiendo ${promises.length} productos a tu carrito. Serás redirigido al finalizar.`);
 
         try {
