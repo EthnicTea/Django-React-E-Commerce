@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Filtro from './Filtro';
 import Gaming from './Gaming';
 
+// Componente sin uso (?)
+
 const Gaming = () => {
     const [filters, setFilters] = useState({ brand: '', category: '' });
 

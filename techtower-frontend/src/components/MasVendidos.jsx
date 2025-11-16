@@ -1,30 +1,87 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './MasVendidos.css';
+import { useCart } from '../services/useCart';
+import { Link } from 'react-router-dom';
 
 const BestSellers = () => {
-  // Aquí puedes agregar tus productos más vendidos
-  const bestSellingProducts = [
-    { id: 12, name: 'Teclado Mecánico Razer RGB', brand: 'Razer', category: 'Teclado', price: '$80.000 Transferencia', price2: '$100.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/vqczuwsv_e8307d49_thumbnail_512.png' },
-    { id: 1, name: 'Monitor Plano ASUS VA24EHF Eye Care', brand: 'Asus', category: 'Monitor', price: '$99.990 Transferencia', price2: '$105.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/q0txzqxy_c4b644f0_thumbnail_512.png' },
-    { id: 25, name: 'Tarjeta de Video MSI Nvidia GeForce RTX 3060 VENTUS 2X 12G OC, 12GB GDDR6, 192-bit', brand: 'MSI', category: 'Tarjeta Grafica', price: '$299.990 Transferencia', price2: '$313.495 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/scpkheea_557a8ffc_thumbnail_512.jpg' },
-    { id: 18, name: 'Mouse Gamer Razer Deathadder V3, Black, 59g Ultra-lightweight Ergonomic Esports Mouse, 30K Optical', brand: 'Razer', category: 'Mouse', price: '$69.990 Transferencia', price2: '$73.145 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/714zzdnd_ffeba0c7_thumbnail_512.png' }
-  ];
+    // Usamos 'products' para guardar lo que nos dé la API
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+    // Hook del carrito para el botón "Agregar"
+    const { addToCart, loadingCart } = useCart();
 
-  return (
-    <div className="best-sellers">
-      <h2>Más Vendidos</h2>
-      <div className="product-list">
-        {bestSellingProducts.map(product => (
-          <div key={product.id} className="product-card-header-seller">
-            <img src={product.image} alt={product.name} className="product-image" />
-            <h3 className="product-name-header-seller">{product.name}</h3>
-            <p className="product-price-header-seller">{product.price}</p>
-            <p className="product-price-header-seller">{product.price2}</p>
-          </div>
+    useEffect(() => {
+        const fetchBestSellers = async () => {
+            try {
+                // Llamamos a la API pidiendo SOLO los destacados
+                const response = await fetch('http://127.0.0.1:8000/api/products/?destacado=true');
+                
+                if (!response.ok) {
+                    throw new Error('Error al cargar los más vendidos');
+                }
+                
+                const data = await response.json();
+                // La API ya los filtró, así que los guardamos directamente
+                setProducts(data);
+                
+            } catch (err) {
+                console.error("Error:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchBestSellers();
+    }, []);
+
+    if (loading) return <div className="best-sellers"><h2>Cargando ofertas...</h2></div>;
+    if (error) return null; // muestra un mensaje de error discreto
+
+    return (
+        <div className="best-sellers">
+    <h2>Más Vendidos / Destacados</h2>
+    <div className="product-list">
+        {products.map(product => (
+            <div key={product.producto_id} className="product-card-header-seller">
+                {/* Imagen del producto */}
+                <div className="imagen-container-seller">
+                    <img src={product.imagen} alt={product.nombre_producto} className="product-image-seller" />
+                </div>
+                
+                {/* Nombre del producto */}
+                <h3 className="product-name-header-seller">{product.nombre_producto}</h3>
+                
+                {/* Precio (agrupado) */}
+                <div className="precio-seller">
+                    <span className="precio-transferencia-seller">
+                        ${product.precio_transferencia.toLocaleString('es-CL')}
+                    </span>
+                    <span className="precio-normal-seller">
+                        ${product.precio_otro.toLocaleString('es-CL')}
+                    </span>
+                </div>
+
+                <div className="botones-seller">
+                    <button 
+                        className="btn-agregar-seller"
+                        onClick={() => addToCart(product.producto_id)}
+                        disabled={loadingCart}
+                    >
+                        Agregar
+                    </button>
+                    <Link to={`/producto/${product.producto_id}`} className="btn-ver-seller">
+                       Ver
+                    </Link>                      
+                </div>
+
+            </div>
         ))}
-      </div>
     </div>
-  );
+</div>
+    );
 };
 
 export default BestSellers;

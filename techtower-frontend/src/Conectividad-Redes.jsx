@@ -1,58 +1,125 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; 
 import './Conectividad-Redes.css';
-import Items2 from './components/Items2.jsx';
-import Filtro from './components/Filtro.jsx';
+import { useCart } from './services/useCart';
 
-const Gaming = () => {
-    const [filters, setFilters] = useState({ brand: '', category: '' });
+const ConectividadRedes = () => {
+    const [products, setProducts] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [selectedBrand, setSelectedBrand] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Lista de productos
-    const products = [
-        { id: 31, name: 'Cable de Alimentación C14 Macho a C13 Hembra', brand: 'TRIPP LITE', category: 'Conector', price: '$1.310 Transferencia', price2: '$2.410 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/c2zlalo0_0ec8bf20_thumbnail_512.jpg' },
-        { id: 32, name: 'Cable Xtech USB 2.0 con conector Macho A a Macho B 1.8mts', brand: 'XTECH', category: 'Conector', price: '$2.000 Transferencia', price2: '$3.000 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/o_sma1in_52d2f6ad_thumbnail_512.jpg' },
-        { id: 33, name: 'Access Point de Pared Omada EAP235, Gigabit, WiFi, MU-MIMO, AC1200', brand: 'TP-LINK', category: 'Access Point', price: '$67.990 Transferencia', price2: '$71.045 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/vp9gblsx_a39cdb5f_thumbnail_512.jpg' },
-        { id: 34, name: 'Access Point Inalámbrico Wi-Fi 4 Montaje en Techo TP-Link EAP115 , 300 Mbps', brand: 'TP-LINK', category: 'Access Point', price: '$29.990 Transferencia', price2: '$31.345 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/7iw6mh1__34c8d8f1_thumbnail_512.jpg' },
-        { id: 35, name: 'Adaptador anfitrión micro-USB macho a USB-A hembra Xtech XTC-360, 28AWG, 13,5cm', brand: 'XTECH', category: 'Adaptador', price: '$2.190 Transferencia', price2: '$2.298 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/_eo5jcfv_643aed2f_thumbnail_512.jpg' },
-        { id: 36, name: 'Adaptador de Red Ethernet a USB-C Startech.com, 2.5GbE, Thunderbolt 3', brand: 'STARTECH.COM', category: 'Adaptador', price: '$51.520 Transferencia', price2: '$53.843 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/7z4oj2xz_d1885f8a_thumbnail_512.jpg' },
-        { id: 37, name: 'Adaptador de red USB AC600 Nano Wi-Fi Bluetooth 4.2 TP-Link Archer T2UB Nano, Doble banda', brand: 'TP-LINK', category: 'Adaptador', price: '$10.900 Transferencia', price2: '$11.390 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/0_xgfty0_84e9ae5b_thumbnail_512.jpg' },
-        { id: 38, name: 'Adaptador de red USB Wi-Fi 6 con 2 antenas AX1800 TP-Link Archer TX20U,Tecnología MU-MIMO', brand: 'TP-LINK', category: 'Adaptador', price: '$16.280 Transferencia', price2: '$17.023 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/os9gvbbr_77803a78_thumbnail_512.jpg' },
-        { id: 39, name: 'Adaptador de red Wifi TP-Link TL-WN851ND PCI Express Inalámbrico N a 300 Mbps', brand: 'TP-LINK', category: 'Adaptador', price: '$12.990 Transferencia', price2: '$13.580 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/4wtbz00y_ab9a9e26_thumbnail_512.jpg' },
-        { id: 40, name: 'Adaptador Mini PCI TP-Link TL-WN360G 54Mbps Wireless Mini PCI Adapter', brand: 'TP-LINK', category: 'Adaptador', price: '$3.880 Transferencia', price2: '$4.062 Otro metodo de pago', image: 'https://media.spdigital.cl/thumbnails/products/gdmj1kd3_52ad7f53_thumbnail_512.jpg' },
-        // Añadir más productos con sus propiedades
-    ];
-
-    const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
+    const { addToCart, loadingCart } = useCart();
+    
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/products/?categoria=Conectividad Y Redes');
+    
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+    
+                const data = await response.json();
+                setProducts(data);
+                
+                const marcasUnicas = [...new Set(data.map(p => p.marca_producto))];
+                setBrands(marcasUnicas.sort());
+    
+            } catch (err) {
+                console.error("Error al hacer fetch(￣ε(#￣):", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchProducts(); 
+    }, []);
+        
+    const handleBrandChange = (e) => {
+        setSelectedBrand(e.target.value);
     };
-
+    
     const filteredProducts = products.filter((product) => {
-        return (
-            (filters.brand === '' || product.brand === filters.brand) &&
-            (filters.category === '' || product.category === filters.category)
-        );
+        return (selectedBrand === '' || product.marca_producto === selectedBrand);
     });
+    
+    if (loading) {
+        return <div className="conectividad-container"><h2>Cargando productos de Conectividad...</h2></div>;
+    }
+    
+    if (error) {
+        return <div className="conectividad-container"><h2>Error al cargar productos: {error}</h2></div>;
+    }
 
     return (
-        <section className="gaming-section">
-            <h1 className="gaming-title">Explora el Rincon de las Conexiones</h1>
-            <p className="gaming-description">Encuentra todo lo que necesitas para mejorar o agregar Conexiones: desde Cables de Alimentación hasta todo tipo de usb's.</p>
+        <div className="conectividad-container">
+            <h2 className="conectividad-title">Explora el Rincón de las Conexiones</h2>
+            <p className="conectividad-description">
+                Encuentra todo lo que necesitas para mejorar o agregar Conexiones: desde Cables de Alimentación hasta todo tipo de USB's.
+            </p>
             
-            {/* Filtro de productos */}
-            <Filtro onFilter={handleFilterChange} />
+            <div className="filter-bar-modern">
+                <div className="filter-group-modern">
+                    <label htmlFor="brand-filter-gaming">Marca:</label>
+                    <select id="brand-filter-gaming" value={selectedBrand} onChange={handleBrandChange}>
+                        <option value="">Todas las marcas</option>
+                        {brands.map((brand) => (
+                            <option key={brand} value={brand}>
+                                {brand}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
 
-            <div className="gaming-products">
-                {filteredProducts.map((product) => (
-                    <Items2 
-                        key={product.id} 
-                        name={product.name}
-                        price={product.price}
-                        price2={product.price2}
-                        image={product.image}
-                    />
+            <div className="conectividad-products">
+                {filteredProducts.map((p) => (
+                    <div key={p.producto_id} className="card-conectividad">
+                        <div className="imagen-container">
+                            <img src={p.imagen} alt={p.nombre_producto} className="imagen-conectividad" />
+                            {p.descuento > 0 && <span className="badge-descuento">{p.descuento}% DCTO</span>}
+                        </div>
+                        <h3 className="nombre-conectividad">{p.nombre_producto}</h3>
+                        <p className="marca-conectividad">{p.marca_producto}</p>
+                        {p.descuento > 0 ? (
+                            <p className="precio-conectividad">
+                                <span className="precio-normal-tachado">
+                                    ${p.precio_otro.toLocaleString('es-CL')}
+                                </span>
+                                <span className="precio-transferencia">
+                                    ${p.precio_final_transferencia.toLocaleString('es-CL')} Transferencia
+                                </span>
+                            </p>
+                        ) : (
+                            <p className="precio-gaming">
+                                <span className="precio-transferencia">
+                                    ${p.precio_transferencia.toLocaleString('es-CL')} Transferencia
+                                </span>
+                                <span className="precio-normal">
+                                    ${p.precio_otro.toLocaleString('es-CL')} Otro medio de pago
+                                </span>
+                            </p>
+                        )}
+                        <div className="botones-conectividad">
+                            <button 
+                                className="btn-agregar"
+                                onClick={() => addToCart(p.producto_id)}
+                                disabled={loadingCart} 
+                            >
+                                {loadingCart ? 'Agregando...' : 'Agregar'}
+                            </button>
+                            <Link to={`/producto/${p.producto_id}`} className="btn-ver">
+                                Ver
+                            </Link>
+                        </div>
+                    </div>
                 ))}
             </div>
-        </section>
+        </div>
     );
 };
 
-export default Gaming;
+export default ConectividadRedes;

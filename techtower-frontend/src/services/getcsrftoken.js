@@ -5,8 +5,8 @@ export async function getCsrfToken() {
     const response = await axios.get('/api/csrf/');
     const csrfToken = response.data.csrfToken;
     axios.defaults.headers.common['X-CSRFToken'] = csrfToken; // Configura el token en Axios
-    console.log("CSRF token configurado:", csrfToken);
+    //console.log("CSRF token configurado:", csrfToken); // Depuración
   } catch (error) {
-    console.error("Error obteniendo el CSRF token:", error);
+    //console.error("Error obteniendo el CSRF token:", error); // Depuración
   }
 }

@@ -1,31 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Importa Link aquí
+import { Link } from 'react-router-dom';
 import './Hero.css';
-import TechTower from '../assets/techtower.png';
+import BannerImage from '../assets/techtowerbanner.jpg'; // Cambia al nombre de tu imagen
 
 export function Hero() {
     return (
-        <div className="hero-flex-border">
-            <img src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/137.png" alt="" className='porygonimg' />
-            {/* Parte izquierda del componente */}
-            <div className="inner-full-hero-border">
-                <div className="inner-text-black">
-                    <h1 className="h1-offer">Siempre calidad y ofertas todo el año</h1>
-                    <div className="flex items">
-                        <p className="base-text">Revisa nuestras mejores ofertas&nbsp;
-                        <Link to="/ofertas" className='link-hero'>Aquí</Link>
-                        </p>
-                    </div>
-                </div>
+        <div className="hero-container">
+            {/* Banner horizontal arriba */}
+            <div className="hero-banner">
+                <img 
+                    src={BannerImage}
+                    alt="techtowerbanner" 
+                    className="banner-image"
+                />
             </div>
 
-            {/* Parte derecha: imagen */}
-            <div className="hero-image-container">
-                <img 
-                    src={ TechTower }
-                    alt="Ofertas" 
-                    className="hero-image"
-                />
+            {/* Texto debajo del banner */}
+            <div className="hero-text-section">
+                <h1 className="hero-title">Siempre calidad y ofertas todo el año</h1>
+                <p className="hero-description">
+                    Revisa nuestras mejores ofertas&nbsp;
+                    <Link to="/ofertas" className='hero-link'>Aquí</Link>
+                </p>
             </div>
         </div>
     );

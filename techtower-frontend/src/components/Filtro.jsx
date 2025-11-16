@@ -1,4 +1,4 @@
-// FilterBar.jsx
+// Filtro.jsx
 import React, { useState } from 'react';
 import './Filtro.css';
 
@@ -21,7 +21,6 @@ const Filtro = ({ onFilter }) => {
 
     return (
         <div className="filter-bar">
-            <h2>Filtrar Productos</h2>
             <div className="filter-group">
                 <label htmlFor="brand-filter">Marca:</label>
                 <select id="brand-filter" value={selectedBrand} onChange={handleBrandChange}>

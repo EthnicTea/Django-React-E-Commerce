@@ -3,6 +3,17 @@ from django.contrib.auth import get_user_model
 
 UserModel = get_user_model()
 
+'''
+
+La lógica de validación personalizada puede ir aquí.
+
+No obstante, al parecer no es realmente util e incluso puede fragmentar de forma innecesaria el código.
+
+eventualmente se puede eliminar este archivo.
+
+'''
+
+
 def custom_validation(data):
     email = data['email'].strip()
     # username = data['username'].strip()

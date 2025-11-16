@@ -41,8 +41,8 @@ class UsuarioApp(AbstractBaseUser, PermissionsMixin):
     region = models.TextField(blank=True, null=True)
     comuna = models.TextField(blank=True, null=True)
     # numeroc, debe ser dirección, se debe cambiar, también en el frontend!
-    direccion = models.CharField(blank=True, null=True, max_length=25)
-    data_departamento = models.CharField(blank=True, null=True, max_length=25)
+    direccion = models.CharField(blank=True, null=True, max_length=255)
+    data_departamento = models.CharField(blank=True, null=True, max_length=255)
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -51,51 +51,110 @@ class UsuarioApp(AbstractBaseUser, PermissionsMixin):
 
     # Como antes, el email es el username, los nombres son solo datos de envío
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nombre', 'apellido']  # Datos requeridos adicionales para el registro
+    # REQUIRED_FIELDS = ['nombre', 'apellido']  # Datos requeridos adicionales para el registro
 
     def __str__(self):
         return self.email
+    
+class Categoria(models.Model):
+    """ Categoria Navbar """
+    categoria_id = models.AutoField(primary_key=True)
+    nombre_categoria = models.CharField(max_length=100, unique=True)
+    
+    def __str__(self):
+        return self.nombre_categoria
 
+class TipoProducto(models.Model):
+    """ Modelo para los productos como tal. Ejemplo: CPU, GPU, RAM, etc. """
+    tipo_id = models.AutoField(primary_key=True)
+    nombre_tipo = models.CharField(max_length=100, unique=True)
+    info_adicional = models.TextField(blank=True, null=True) # Info relevante como especificaciones generales
+    
+    def __str__(self):
+        return self.nombre_tipo
+
+# Quizás agregar una tabla de "ficha técnica" todos los datos específicos
 class Producto(models.Model):
-    IdProducto = models.AutoField(primary_key=True)
-    NomProducto = models.CharField(max_length=200)
-    MarcaProducto = models.CharField(max_length=100)
-    CategoriaProducto = models.CharField(max_length=50)
-    DescripcionProducto = models.TextField()
-    PrecioTransferencia = models.IntegerField()
-    PrecioOtroMetodo = models.IntegerField()
-    StockProducto = models.IntegerField()
-    ImagenProducto = models.URLField()
+    producto_id = models.AutoField(primary_key=True)
+    nombre_producto = models.CharField(max_length=200)
+    marca_producto = models.CharField(max_length=100)
+    descripcion_producto = models.TextField()
+    precio_transferencia = models.IntegerField()
+    precio_otro = models.IntegerField()
+    stock_producto = models.IntegerField()
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
+    tipo = models.ForeignKey(TipoProducto, on_delete=models.SET_NULL, null=True)
+    imagen = models.URLField(null=True, blank=True)
+    watts = models.IntegerField(default=0, null=True, blank=True) # Es solo para el apartado de armados de PC, no todos tienen que tener este valor!
+    es_destacado = models.BooleanField(default=False)
+    descuento = models.IntegerField(default=0, null=True, blank=True) # Tampoco es obligatorio
+
+    @property
+    def precio_final_transferencia(self):
+        if self.descuento > 0:
+            # Descuento y redondeo
+            precio_calc = self.precio_transferencia * (1 - (self.descuento / 100))
+            return int(precio_calc)
+        # Si no hay descuento, ps nomás
+        return self.precio_transferencia
+    
+    @property
+    def precio_final_otro(self):
+        if self.descuento > 0: # Lo mismo pero para el otro precio
+            precio_calc = self.precio_otro * (1 - (self.descuento / 100))
+            return int(precio_calc)
+        return self.precio_otro
 
     def __str__(self):
-        return self.NomProducto
+        return self.nombre_producto
 
 class OrdenProducto(models.Model):
-    Orden = models.ForeignKey('Orden', on_delete=models.CASCADE)
-    Producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
-    Cantidad = models.PositiveIntegerField(default=1)
+    orden = models.ForeignKey('Orden', on_delete=models.CASCADE)
+    producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
 
 class Orden(models.Model):
-    IdOrden = models.AutoField(primary_key=True)
-    FechaOrden = models.DateField(auto_now_add=True)
-    EstadoOrden = models.CharField(max_length=30, default='Pendiente')
-    UsuarioOrden = models.ForeignKey('UsuarioApp', on_delete=models.CASCADE)
-    Productos = models.ManyToManyField('Producto', through=OrdenProducto)
-    TotalOrden = models.IntegerField(blank=True, null=True)
+    orden_id = models.AutoField(primary_key=True)
+    fecha_orden = models.DateField(auto_now_add=True)
+    estado_orden = models.CharField(max_length=30, default='Pendiente')
+    usuario_orden = models.ForeignKey(
+        'UsuarioApp', 
+        on_delete=models.SET_NULL, # Nunca se borrará una orden.
+        null=True,                 
+        blank=True                 
+    )
+    productos = models.ManyToManyField('Producto', through=OrdenProducto)
+    total_orden = models.IntegerField(blank=True, null=True) # Se puede calcular dinámicamente
 
 class Pago(models.Model):
-    IdPago = models.AutoField(primary_key=True)
-    Orden = models.OneToOneField('Orden', on_delete=models.CASCADE)
-    MetodoPago = models.CharField(max_length=20)
-    MontoPago = models.IntegerField()
-    FechaPago = models.DateField(auto_now_add=True)
+    pago_id = models.AutoField(primary_key=True)
+    orden = models.OneToOneField('Orden', on_delete=models.CASCADE)
+    metodo_pago = models.CharField(max_length=20)
+    monto_pago = models.IntegerField()
+    fecha_pago = models.DateField(auto_now_add=True)
 
-'''class Carrito(models.Model):
-    UsuarioCarrito = models.ForeignKey('UsuarioApp', on_delete=models.CASCADE)
-    ProductoCarrito = models.ForeignKey('Producto', on_delete=models.CASCADE) 
-    CantidadCarrito = models.PositiveIntegerField(default=1) 
-    FechaAgregado = models.DateTimeField(auto_now_add=True)
+class Carrito(models.Model):
+    usuario = models.OneToOneField('UsuarioApp', on_delete=models.CASCADE, related_name="carrito")
+    # Este campo asegura que un usuario solo tenga un carrito "activo" a la vez.
+    activo = models.BooleanField(default=True)
+    creado_en = models.DateTimeField(auto_now_add=True)
+    
+    def vaciar(self):
+        self.items.all().delete() # Elimina todos los items del carrito 
 
-    # Calcular el total dinámicamente.
-    # Vincular el carrito con las órdenes.
-    # Procesar pagos y confirmar pedidos.'''
+    def __str__(self):
+        return f"Carrito de {self.usuario.email}"
+
+class ItemCarrito(models.Model):
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name="items")
+    producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ('carrito', 'producto')
+
+    def subtotal(self):
+        return self.cantidad * self.producto.precio_transferencia
+
+    def __str__(self):
+         return f"{self.cantidad} x {self.producto.nombre_producto}"

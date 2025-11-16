@@ -1,0 +1,233 @@
+/* Dashboard.css - Estilos mejorados y responsivos */
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Header del Dashboard */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.dashboard-header h1 {
+    font-size: 2rem;
+    color: #343a40;
+    margin: 0;
+}
+
+/* Selector de año */
+.year-selector {
+    background-color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.year-selector label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.year-selector select {
+    font-size: 1rem;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #fafafa;
+    transition: border-color 0.3s ease;
+}
+
+.year-selector select:hover {
+    border-color: #888;
+}
+
+.year-selector select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Grid del Dashboard */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* Tarjetas de gráficos */
+.chart-card {
+    background-color: #ffffff;
+    padding: 20px;
+    padding-bottom: 50px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+    height: fit-content;
+    overflow: hidden;
+}
+
+.chart-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.chart-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 0 0 15px 0;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Contenedor del canvas del gráfico */
+.chart-card canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Gráfico grande (izquierda) */
+.chart-card.large-card {
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-card.large-card > div {
+    flex: 1;
+    position: relative;
+}
+
+/* Stack de gráficos pequeños (derecha) */
+.small-charts-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.small-charts-stack .chart-card {
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+}
+
+.small-charts-stack .chart-card > div {
+    flex: 1;
+    position: relative;
+}
+
+/* Gráfico de top productos necesita más espacio vertical */
+.small-charts-stack .chart-card:last-child {
+    height: 450px;
+}
+
+/* Texto de error */
+.error-texto {
+    color: #d93030;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Responsive Design */
+
+/* Tablets (landscape) */
+@media (max-width: 1200px) {
+    .dashboard-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.75rem;
+    }
+}
+
+/* Tablets (portrait) y pantallas medianas */
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-card.large-card {
+        min-height: 350px;
+    }
+    
+    .small-charts-stack {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Móviles grandes */
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .year-selector {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .chart-card {
+        padding: 15px;
+    }
+    
+    .chart-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .chart-card.large-card {
+        min-height: 300px;
+    }
+    
+    .small-charts-stack .chart-card {
+        min-height: 250px;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 10px;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .year-selector label {
+        font-size: 0.85rem;
+    }
+    
+    .year-selector select {
+        font-size: 0.9rem;
+        padding: 5px 8px;
+    }
+    
+    .chart-card {
+        padding: 12px;
+    }
+    
+    .chart-card h3 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+}

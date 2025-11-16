@@ -1,39 +1,39 @@
+import React, { useState } from 'react';
 import './Navbar.css';
 import { BsFillCartFill } from "react-icons/bs";
 import { FiUser } from "react-icons/fi";
 import { FiMenu } from "react-icons/fi";
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-axios.defaults.withCredentials = true;
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../services/AuthContext.jsx';
+import { useClickOutside } from '../services/useClickOutside.jsx';
 
 export function Navbar() {
-    const [userEmail, setUserEmail] = useState(null);
-    const [isStaff, setIsStaff] = useState(false);
-  
-    useEffect(() => {
-      const email = localStorage.getItem('userEmail');
-      const staffStatus = localStorage.getItem('isStaff') === 'true';
-  
-      setUserEmail(email);
-      setIsStaff(staffStatus);
-    }, []);
-  
-    const handleLogout = async () => {
-      try {
-        await axios.post('/api/logout');
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('isStaff');
-        setUserEmail(null);
-        setIsStaff(false);
-        window.location.href = '/';
-      } catch (error) {
-        console.error('Error en el logout:', error);
-      }
-    };
 
+// --- LÓGICA con "context" ---
+    // Se obtiene el estado y las funciones de nuestro AuthContext
+    // 'user' tendrá los datos como {email, is_staff, ...}
+    // 'logoutAction' es la función que borra el token
+    // Agregar que se "recarge" la página al deslogearse
+    const { authToken, user, logoutAction } = useAuth();
+    
+    // El estado del dropdown se mantiene igual
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
+
+    const dropdownRef = useClickOutside(() => {
+        setIsDropdownOpen(false);
+    });
+
+    const handleSearch = (e) => {
+        e.preventDefault(); // Evita que la página se recargue
+        if (searchTerm.trim()) {
+            // Redirige a la página de búsqueda con el query param
+            navigate(`/busqueda?q=${encodeURIComponent(searchTerm)}`);
+            setSearchTerm(''); // Limpia la barra (opcional)
+        }
+    };
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -46,21 +46,27 @@ export function Navbar() {
                 <div className="navbar-top-message">
                     <span>
                         ¡Recuerda que siempre será gratis el retiro de los productos! Además de la variedad de productos con despacho gratis, vea más&nbsp;
-                        <Link to="/terminos">Aquí</Link>
+                        <Link to="/terminos">Aquí</Link> {/* Uso este link como acceso a sitios de prueba */}
+                        {/* <Link to="/Pasarela">Aquí</Link> */}
+                        {/* <Link to="/crud">Aquí</Link> */}
                     </span>
                 </div>
 
                 <div className="navbar-main">
                     <div className="navbar-logo">
-                        <Link to="/">TechTower</Link>
+                        <Link to="/">
+                            <span className="tech-highlight">Tech</span>Tower
+                        </Link>
                     </div>
 
                     <div className="navbar-search">
-                        <form className="navbar-search-form">
+                        <form className="navbar-search-form" onSubmit={handleSearch}>
                             <input 
                                 type="text" 
                                 placeholder="Busca lo mejor para ti..." 
                                 className="navbar-search-input"
+                                value={searchTerm} // VALOR!
+                                onChange={(e) => setSearchTerm(e.target.value)} // Busca el cambio
                             />
                             <button type="submit" className="navbar-search-button">
                                 <svg stroke="currentColor" fill="none" viewBox="0 0 32 32" height="20" width="20">
@@ -72,26 +78,40 @@ export function Navbar() {
                     </div>
 
                     <div className="navbar-icons">
-                        <div className="navbar-icon dropdown">
-                            <button className='dropbtn' onClick={toggleDropdown}>
+                        <div className="navbar-icon dropdown" ref={dropdownRef}> 
+                            <button className='dropbtn' onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                                 <FiUser className='icon-user'/>
                             </button>
+
                             <div className={`dropdown-content ${isDropdownOpen ? 'open' : ''}`}>
-                                {userEmail ? (
-                                    <>
-                                        <span className="navbar-link-user">Bienvenido, {userEmail}</span>
-                                        <button onClick={handleLogout} className='navbar-link-user' role="logout">Cerrar Sesión</button>
-                                        {isStaff && (
-                                            <Link to="/crud" className="navbar-link">Administrar Productos</Link>
-                                        )}
-                                    </>
-                                ) : (
-                                    <>
-                                        <Link to="/login" className='navbar-link'>Iniciar Sesión</Link>
-                                        <Link to="/register" className='navbar-link'>Registrarse</Link>
-                                    </>
-                                )}
-                            </div>
+                            {authToken ? (
+                                // SI ESTÁ LOGEADO
+                                <>
+                                    {/*Saludo*/}
+                                    <span className="navbar-link-user">
+                                        Bienvenido, {user ? user.email : 'Cargando...'}
+                                    </span>
+                                    
+                                    {/*Lógica de Roles*/}
+                                    {user && (user.is_staff || user.isStaff) ? (
+                                        // SI ES EMPLEADO (is_staff = true)
+                                        <Link to="/PanelEmpleado" className="navbar-link" onClick={() => setIsDropdownOpen(false)}>Panel de Empleado</Link>
+                                    ) : (
+                                        // SI ES CLIENTE NORMAL (is_staff = false)
+                                        <Link to="/MiCuenta" className="navbar-link" onClick={() => setIsDropdownOpen(false)}>Mi Cuenta y Pedidos</Link>
+                                    )}
+
+                                    <button onClick={() => { logoutAction(); setIsDropdownOpen(false); }} className='navbar-link-user' role="logout">Cerrar Sesión</button>
+                                </>
+                                
+                            ) : (
+                                // SI NO ESTÁ LOGEADO
+                                <>
+                                    <Link to="/login" className='navbar-link' onClick={() => setIsDropdownOpen(false)}>Iniciar Sesión</Link>
+                                    <Link to="/register" className='navbar-link' onClick={() => setIsDropdownOpen(false)}>Registrarse</Link>
+                                </>
+                            )}
+                        </div>
                         </div>
                         <div className="navbar-icon">
                             <Link to="/carrito">
@@ -116,9 +136,9 @@ export function Navbar() {
                     <li className="category-item"><Link to="/Componentes">Componentes</Link></li>
                     <li className="category-item"><Link to="/Conectividad">Conectividad y Redes</Link></li>
                     <li className="category-item"><Link to="/AudioVideo">Equipos de Audio y Video</Link></li>
+                    <li className="category-item"><Link to="/PcBuilder">Armado de Pc</Link></li>
                 </ul>
             </nav>
         </>
     );
 }
-    

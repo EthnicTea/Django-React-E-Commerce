@@ -1,19 +1,19 @@
 /* Estilos generales de la primera navbar */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-*{
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box; /* Esto sí es útil */
     font-family: "Outfit", sans-serif;
     font-style: normal;
-  }
+}
 
-html, body {
-    background-color: #dee4ee;
-    margin: 0;
-    padding: 0;
-    height: 100%;
+body {
+    /* Evitar scroll horizontal -_- */
+    overflow-x: hidden;
 }
 
 .navbar, .navbar-categories {
@@ -48,10 +48,17 @@ html, body {
     padding: 10px;
 }
 
+/* ESTILOS DEL LOGO TECHTOWER */
 .navbar-logo a {
-    font-size: 24px;
-    color: #ffffff;
-    text-decoration: none;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    color: #ffffff !important; /* Color blanco para "Tower" */
+}
+
+.tech-highlight {
+    color: #00bcd4 !important; /* Cian para "Tech" */
 }
 
 .navbar-search {
@@ -93,9 +100,9 @@ html, body {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    padding: 10px; /* Ampliar relleno interno */
-    margin-right: 5px; /* Separar ligeramente de otros elementos */
-    border-radius: 2px; /* Estilo más visual */
+    padding: 10px;
+    margin-right: 5px;
+    border-radius: 2px;
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
@@ -131,6 +138,7 @@ html, body {
     text-decoration: none;
     display: block;
     text-align: center;
+    cursor: pointer;
 }
 
 .navbar-link:hover{
@@ -154,7 +162,7 @@ html, body {
 
 .dropdown-content span:hover,
 .dropdown-content button:hover {
-    background-color: #ddd; /* Resalta con un fondo más claro */
+    background-color: #ddd;
 }
 
 .navbar-link-user {
@@ -164,9 +172,10 @@ html, body {
 
 /* Botón de logout con estilos */
 .navbar-link-user[role="logout"] {
-    color: #cc1717; /* Color especial para logout */
+    color: #cc1717;
     font-weight: bold;
-    border-top: 1px solid #444;
+    background-color: #fffbfb;
+    text-align: center;
 }
 
 /* Botón de logout al hover */
@@ -184,10 +193,9 @@ html, body {
     display: none;
 }
 
-
 /* Segunda navbar: categorías */
 .navbar-categories {
-    background-color: #406ce4;
+    background-color: #007bff;
     padding: 10px;
     text-align: center;
     width: 100%;
@@ -213,7 +221,7 @@ html, body {
 }
 
 .category-item a:hover {
-    background-color: #2f52b3;
+    background-color: #0866cc;
     border-radius: 4px;
     transition: 0.3s;
 }
@@ -232,6 +240,7 @@ html, body {
     .dropdown-content {
         left: 0;
     }
+    
     .navbar-search {
         width: 100%;
     }
