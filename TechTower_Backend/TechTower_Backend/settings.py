@@ -2,6 +2,7 @@ from pathlib import Path
 import pymysql
 from datetime import timedelta
 from dotenv import load_dotenv
+import dj_database_url
 import os
 
 # Cargar un ambiente virtual para la aplicación, para las credenciales de la base de datos 
@@ -11,24 +12,26 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-SECRET_KEY = 'django-insecure-tv%g_dmzi$ag&0m0guqbb**32fhn)0@fu136@wm1da7#^=-+y6'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") 
 
 # SECURITY WARNING: don't run with debug turned on in production!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # El * es para que permita cualquier host alojar la aplicación como tal. Luego si se quisiera alojar en
 # un servidor, se debe cambiar!
-ALLOWED_HOSTS = ["*"] 
+ALLOWED_HOSTS = ["*"] # ejemplo: 'backend.onrender.com'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:5173',
+    # 'https://frontend.vercel.app', # Url de producción del frontend
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
+    # "https://frontend.vercel.app", # Url de producción del frontend
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -137,12 +140,21 @@ WSGI_APPLICATION = 'TechTower_Backend.wsgi.application'
 pymysql.install_as_MySQLdb()
 pymysql.version_info = (1, 4, 3, "final", 0)
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / "db.sqlite3",
+#     }
+# }
+
+# Configuración de la base de datos para producción en Render usando dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",
-    }
+    'default': dj_database_url.config(
+        # Render Variables de entorno para la base de datos
+        default=os.environ.get('DATABASE_URL')
+    )
 }
+
 AUTH_USER_MODEL = 'APIbackend.UsuarioApp'
 
 # Password validation
@@ -185,5 +197,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWS_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True # Comentar esta línea si se quiere especificar orígenes específicos (más arriba están especificados).
+CORS_ALLOWS_CREDENTIALS = True # Permitir el envío de cookies y credenciales en solicitudes CORS.
