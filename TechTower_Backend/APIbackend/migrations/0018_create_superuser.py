@@ -26,7 +26,7 @@ def create_superuser(apps, schema_editor):
             is_superuser=True
         )
         
-        user.set_password(password)
+        user = User.objects.create_user(email, password)
         
         user.save()
         
