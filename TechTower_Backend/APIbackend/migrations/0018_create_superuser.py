@@ -1,44 +1,37 @@
 # APIbackend/migrations/0018_create_superuser.py
 
 from django.db import migrations
+from django.contrib.auth.hashers import make_password
 import os
 
 def create_superuser(apps, schema_editor):
-    """
-    Lee las variables de entorno y crea un superusuario
-    de forma manual (bypass del manager).
-    """
-    User = apps.get_model('APIbackend', 'UsuarioApp') 
-
+    User = apps.get_model('APIbackend', 'UsuarioApp')
+    
     email = os.environ.get('DJANGO_SUPERUSER_EMAIL')
     password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
-
+    
     if not email or not password:
-        print("Variables de superusuario no configuradas, saltando creación.")
+        print("⚠️ Variables no configuradas")
         return
-
-    if not User.objects.filter(email=email).exists():
-        print(f"Creando superusuario: {email}")
-        
-        user = User(
-            email=email,
-            is_staff=True,
-            is_superuser=True
-        )
-        
-        user = User.objects.create_user(email, password)
-        
-        user.save()
-        
-    else:
-        print(f"Superusuario {email} ya existe.")
+    
+    if User.objects.filter(email=email).exists():
+        print(f"✓ Superusuario ya existe")
+        return
+    
+    print(f"🔧 Creando superusuario...")
+    User.objects.create(
+        email=email,
+        password=make_password(password),
+        is_staff=True,
+        is_superuser=True,
+        is_active=True
+    )
+    print(f"✓ Creado!")
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('APIbackend', '0017_alter_orden_usuario_orden'), 
+        ('APIbackend', '0017_alter_orden_usuario_orden'),
     ]
-
     operations = [
-        migrations.RunPython(create_superuser),
+        migrations.RunPython(create_superuser, reverse_code=migrations.RunPython.noop),
     ]
