@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './Chatbot.css'; // ¡Usará el CSS nuevo de abajo!
+import './ChatBot.css'; // ¡Usará el CSS nuevo de abajo!
 
 // (El avatar del bot se mantiene, es un buen detalle)
 const BotAvatar = () => (
