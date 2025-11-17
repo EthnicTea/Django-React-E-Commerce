@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
             if (authToken) {
                 try {
                     // Usa el token para pedir los datos del usuario
-                    const response = await fetch('http://127.0.0.1:8000/api/user/', {
+                    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/`, { // fetch('http://127.0.0.1:8000/api/user/',
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',

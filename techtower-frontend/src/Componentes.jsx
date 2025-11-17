@@ -15,7 +15,7 @@ const Componentes = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/products/?categoria=Componentes');
+                const response = await fetch(import.meta.env.VITE_API_URL + '/api/products/?categoria=Componentes') //fetch('http://127.0.0.1:8000/api/products/?categoria=Componentes');
     
                 if (!response.ok) {
                     throw new Error(`Error HTTP: ${response.status}`);

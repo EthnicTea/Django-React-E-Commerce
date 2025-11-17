@@ -46,7 +46,7 @@ function PcBuilder() {
         const fetchAllProducts = async () => {
             try {
                 // TRAEMOS TODO SI TODO GRRR dame un gr!
-                const response = await fetch('http://127.0.0.1:8000/api/products/');
+                const response = await fetch(import.meta.env.VITE_API_URL + '/api/products/'); //fetch('http://127.0.0.1:8000/api/products/');
                 const data = await response.json();
                 // MISMOS PRODUCTOS DE LA TABLA TIPO PRODUCTO gr
                 setCpuProducts(data.filter(p => p.tipo === 1));

@@ -15,7 +15,7 @@ const ConectividadRedes = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/products/?categoria=Conectividad Y Redes');
+                const response = await fetch(import.meta.env.VITE_API_URL + '/api/products/?categoria=Conectividad Y Redes') //fetch('http://127.0.0.1:8000/api/products/?categoria=Conectividad Y Redes');
     
                 if (!response.ok) {
                     throw new Error(`Error HTTP: ${response.status}`);

@@ -17,7 +17,7 @@ ChartJS.register(
     CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement
 );
 
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = import.meta.env.VITE_API_URL + '/api' //'http://127.0.0.1:8000/api';
 
 // Agrega esto DESPUÉS de tus imports y ANTES del componente Dashboard
 

@@ -18,7 +18,7 @@ const Ofertas = () => {
     useEffect(() => {
         const fetchOfertas = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/products/?en_oferta=true');
+                const response = await fetch(import.meta.env.VITE_API_URL + '/api/products/?en_oferta=true'); //fetch('http://127.0.0.1:8000/api/products/?en_oferta=true');
                 
                 if (!response.ok) {
                     throw new Error(`Error HTTP: ${response.status}`);

@@ -18,7 +18,7 @@ export default function PanelOrdenes() {
             setLoading(true);
             try {
                 // 1. Llamamos al endpoint de ADMIN
-                const response = await fetch('http://127.0.0.1:8000/api/admin/ordenes/', {
+                const response = await fetch(import.meta.env.VITE_API_URL + '/api/admin/ordenes/', { // fetch('http://127.0.0.1:8000/api/admin/ordenes/');
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

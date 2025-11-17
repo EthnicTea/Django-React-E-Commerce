@@ -17,7 +17,7 @@ const Gaming = () => {
         const fetchProducts = async () => {
             try {
                 // Se traen solo los productos de la categoría que se necesita... muy importante!
-                const response = await fetch('http://127.0.0.1:8000/api/products/?categoria=Streaming y Gaming');
+                const response = await fetch(import.meta.env.VITE_API_URL + '/api/products/?categoria=Streaming y Gaming'); //fetch('http://127.0.0.1:8000/api/products/?categoria=Streaming y Gaming');
 
                 if (!response.ok) {
                     throw new Error(`Error HTTP: ${response.status}`);

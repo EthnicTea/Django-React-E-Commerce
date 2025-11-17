@@ -72,7 +72,7 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
 
             const delay = new Promise(resolve => setTimeout(resolve, 2000)); 
 
-            const fetchPromise = fetch('http://127.0.0.1:8000/api/checkout/create_order/', {
+            const fetchPromise = fetch(import.meta.env.VITE_API_URL + '/api/checkout/create_order/', { //fetch('http://127.0.0.1:8000/api/checkout/create_order/');
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

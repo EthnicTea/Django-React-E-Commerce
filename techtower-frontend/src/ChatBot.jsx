@@ -23,7 +23,7 @@ function Chatbot({ selectedComponents }) {
     
     const chatBodyRef = useRef(null); // Para el autoscroll de la respuesta
 
-    const API_URL = 'http://127.0.0.1:8000/api/ia'; // URL base de la IA
+    const API_URL = import.meta.env.VITE_API_URL + '/api/ia/' //'http://127.0.0.1:8000/api/ia'; // URL base de la IA
 
     // Autoscroll cuando la respuesta de la IA cambia
     useEffect(() => {

@@ -32,14 +32,14 @@ import { ProductoDetalle } from './components/ProductoDetalle.jsx';
 import GraciasCompra from './GraciasCompra.jsx';
 
 // Configuración global de Axios, quizá hay que rehubicarla.
-axios.defaults.baseURL = "http://127.0.0.1:8000";
+axios.defaults.baseURL = import.meta.env.VITE_API_URL; //"http://127.0.0.1:8000";
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 axios.defaults.withCredentials = true;
 const isStaff = localStorage.getItem('isStaff') === 'true';
 
 const client = axios.create({
-  baseURL: "http://127.0.0.1:8000"
+  baseURL: import.meta.env.VITE_API_URL
 });
 
 export const loginUser = async (email, password) => {

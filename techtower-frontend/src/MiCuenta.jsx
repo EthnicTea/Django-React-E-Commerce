@@ -16,7 +16,7 @@ export default function MiCuenta() {
         const fetchMisOrdenes = async () => {
             setLoading(true);
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/mi-ordenes/', {
+                const response = await fetch(import.meta.env.VITE_API_URL + '/api/mi-ordenes/', { // fetch('http://127.0.0.1:8000/api/mi-ordenes/',
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

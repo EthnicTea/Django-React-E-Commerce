@@ -21,7 +21,7 @@ export function ProductoDetalle() {
         const fetchProducto = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`http://127.0.0.1:8000/api/products/${id}/`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}/`); // fetch(`http://127.0.0.1:8000/api/products/${id}/`);
                 
                 if (!response.ok) {
                     throw new Error('Producto no encontrado');

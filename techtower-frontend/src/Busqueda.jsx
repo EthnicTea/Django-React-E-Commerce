@@ -18,7 +18,7 @@ export default function Busqueda() {
             
             setLoading(true);
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/products/?search=${encodeURIComponent(query)}`);
+                const response = await fetch(import.meta.env.VITE_API_URL + `/api/products/?search=${encodeURIComponent(query)}`) //fetch(`http://127.0.0.1:8000/api/products/?search=${encodeURIComponent(query)}`);
                 if (!response.ok) throw new Error('Error en la búsqueda');
                 const data = await response.json();
                 setProducts(data);

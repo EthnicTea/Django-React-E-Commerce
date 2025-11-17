@@ -7,7 +7,7 @@ export const useCart = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
-    const API_URL = 'http://127.0.0.1:8000/api';
+    const API_URL = `${import.meta.env.VITE_API_URL}/api`; //http://127.0.0.1:8000/api
 
     // --- ¡AQUÍ ESTÁ EL CAMBIO! ---
     // Añadimos un 3er parámetro 'options'

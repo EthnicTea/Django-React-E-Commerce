@@ -16,7 +16,7 @@ const BestSellers = () => {
         const fetchBestSellers = async () => {
             try {
                 // Llamamos a la API pidiendo SOLO los destacados
-                const response = await fetch('http://127.0.0.1:8000/api/products/?destacado=true');
+                const response = await fetch(import.meta.env.VITE_API_URL + '/api/products/?destacado=true'); //fetch('http://127.0.0.1:8000/api/products/?destacado=true');    
                 
                 if (!response.ok) {
                     throw new Error('Error al cargar los más vendidos');
