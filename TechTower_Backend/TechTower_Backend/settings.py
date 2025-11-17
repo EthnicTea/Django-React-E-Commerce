@@ -197,5 +197,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True # Comentar esta línea si se quiere especificar orígenes específicos (más arriba están especificados).
+#CORS_ALLOW_ALL_ORIGINS = True # Comentar esta línea si se quiere especificar orígenes específicos (más arriba están especificados).
+
+CORS_ALLOWED_ORIGINS = [  # Lista de orígenes permitidos para solicitudes CORS.
+    'http://localhost:5173',
+    'https://django-react-e-commerce-cjge.vercel.app',
+]
+
 CORS_ALLOWS_CREDENTIALS = True # Permitir el envío de cookies y credenciales en solicitudes CORS.
