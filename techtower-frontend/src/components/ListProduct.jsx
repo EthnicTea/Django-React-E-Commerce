@@ -3,40 +3,21 @@ import api from "../services/axiosConfig";
 import "./ListProduct.css";
 
 // Recibimos la prop 'onEditProduct' del padre (Crud.jsx)
-export default function ListProduct({ onEditProduct }) {
+export default function ListProduct({ products, onEditProduct, onDeleteSuccess }) {
     
-    const [products, setProducts] = useState([]);
-    const [error, setError] = useState("");
-
-    // Función para cargar los productos
-    const fetchProducts = async () => {
-        try {
-            const response = await api.get("/products/"); // Usamos la URL base
-            setProducts(response.data);
-        } catch (err) {
-            setError("Hubo un error al obtener los productos.");
-            console.error(err);
-        }
-    };
-
-    // Cargar productos al montar el componente
-    useEffect(() => {
-        fetchProducts();
-    }, []);
+    const [error, setError] = useState(null);
     
-    // Función para manejar el clic de borrado
     const handleDeleteClick = async (productId) => {
         const isConfirmed = window.confirm('¿Estás seguro de que quieres eliminar este producto?');
+        setError(null);
         
         if (isConfirmed) {
             try {
-                // Usamos la URL correcta del API (ej: /api/products/17/)
                 await api.delete(`/products/${productId}/`);
-                // Recargamos la lista para mostrar los cambios
-                fetchProducts(); 
+                onDeleteSuccess(); 
             } catch (err) {
                 console.error("Error al eliminar el producto", err);
-                setError("No se pudo eliminar el producto.");
+                alert("No se pudo eliminar el producto.");
             }
         }
     };
@@ -59,24 +40,23 @@ export default function ListProduct({ onEditProduct }) {
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {products.map((product) => (
-                            // ¡Usamos los nombres de campo correctos de la BD!
-                            <tr key={product.producto_id}>
-                                <td>{product.producto_id}</td>
-                                <td>{product.nombre_producto}</td>
-                                <td>{product.marca_producto}</td>
-                                <td>{product.categoria}</td> {/* Esto mostrará el ID de la categoría */}
-                                <td>${product.precio_transferencia.toLocaleString('es-CL')}</td>
-                                <td>{product.stock_producto}</td>
-                                <td>
-                                    {/* ¡Conectamos onEditProduct con la prop del padre! */}
-                                    <button className="btn-edit" onClick={() => onEditProduct(product)}>Editar</button>
-                                    <button className="btn-delete" onClick={() => handleDeleteClick(product.producto_id)}>Eliminar</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
+                    <tbody>{products.map((product) => (
+                        <tr key={product.producto_id}>
+                            <td>{product.producto_id}</td>
+                            <td>{product.nombre_producto}</td>
+                            <td>{product.marca_producto}</td>
+                            {/* Esto fallará si 'categoria' es un objeto.
+                                Debería ser 'product.categoria.nombre_categoria'
+                                o simplemente 'product.categoria' si es el ID */}
+                            <td>{product.categoria}</td> 
+                            <td>{product.precio_transferencia}</td>
+                            <td>{product.stock_producto}</td>
+                            <td>
+                                <button className="btn-edit" onClick={() => onEditProduct(product)}>Editar</button>
+                                <button className="btn-delete" onClick={() => handleDeleteClick(product.producto_id)}>Eliminar</button>
+                            </td>
+                        </tr>
+                    ))}</tbody>
                 </table>
             </div>
         </div>

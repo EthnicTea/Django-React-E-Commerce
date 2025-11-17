@@ -11,13 +11,16 @@ export default function AddProduct({ onDone }) {
     const [product, setProduct] = useState({
         nombre_producto: "",
         marca_producto: "",
-        categoria: "", // ID de la categoría
-        tipo: "",       // ID del tipo
+        categoria: "", 
+        tipo: "",       
         descripcion_producto: "",
         precio_transferencia: "",
         precio_otro: "",
         stock_producto: "",
         imagen: "",
+        watts: "",
+        es_destacado: false,  
+        descuento: "",           
     });
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(""); 
@@ -48,7 +51,11 @@ export default function AddProduct({ onDone }) {
     }, []); // El array vacío [] significa que se ejecuta 1 sola vez
 
     const handleChange = (e) => {
-        setProduct({ ...product, [e.target.name]: e.target.value });
+        const { name, value, type, checked } = e.target;
+        setProduct(prevProduct => ({
+            ...prevProduct,
+            [name]: type === 'checkbox' ? checked : value
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -66,7 +73,20 @@ export default function AddProduct({ onDone }) {
             console.log("Producto guardado:", response.data);
             setSuccess(true); 
             setError(""); 
-            setProduct({ /* ... (limpiar formulario) ... */ });
+            setProduct({
+                nombre_producto: "",
+                marca_producto: "",
+                categoria: "",
+                tipo: "",
+                descripcion_producto: "",
+                precio_transferencia: "",
+                precio_otro: "",
+                stock_producto: "",
+                imagen: "",
+                watts: 0,
+                es_destacado: false,
+                descuento: 0
+            }); 
             
             setTimeout(() => {
                 setSuccess(false);
@@ -74,8 +94,8 @@ export default function AddProduct({ onDone }) {
             }, 2000);
 
         } catch (err) {
-            console.error("Error al guardar el producto:", err.response.data);
-            setError("Hubo un problema al guardar el producto.");
+            console.error("Error al guardar el producto:", err.response.data); // Debug
+            setError("Hubo un problema al guardar el producto."); // Mensaje genérico, poner una alerta?
         }
     };
 
@@ -124,6 +144,42 @@ export default function AddProduct({ onDone }) {
                 
                 <span className="crudspan">Imagen del Producto</span>
                 <input className="crudinput" type="text" placeholder="URL de la imágen" name="imagen" value={product.imagen} onChange={handleChange} required/>
+
+                <span className="crudspan">Watts (Consumo)</span>
+                <input 
+                    className="crudinput" 
+                    type="number" 
+                    placeholder="Ej: 650 (solo para CPU/GPU/PSU)" 
+                    name="watts" 
+                    value={product.watts} 
+                    onChange={handleChange} 
+                    required
+                />
+                
+                <span className="crudspan">Descuento (%)</span>
+                <input 
+                    className="crudinput" 
+                    type="number" 
+                    placeholder="Ej: 10 (para 10% DCTO)" 
+                    name="descuento" 
+                    value={product.descuento} 
+                    onChange={handleChange} 
+                    required
+                />
+
+                <div className="checkbox-container">
+                    <label htmlFor="es_destacado" className="crudspan">
+                        ¿Es un producto destacado?
+                    </label>
+                    <input 
+                        type="checkbox"
+                        id="es_destacado"
+                        name="es_destacado"
+                        checked={product.es_destacado}
+                        onChange={handleChange}
+                        className="crud-checkbox"
+                    />
+                </div>
                 
                 <button className="submitproduct" type="submit">Agregar Producto</button>
             </form>

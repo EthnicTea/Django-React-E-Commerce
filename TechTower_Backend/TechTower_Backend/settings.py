@@ -140,20 +140,22 @@ WSGI_APPLICATION = 'TechTower_Backend.wsgi.application'
 pymysql.install_as_MySQLdb()
 pymysql.version_info = (1, 4, 3, "final", 0)
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / "db.sqlite3",
-#     }
-# }
+#  =========== Alternar entre base de datos local y producción =========== 
+# Configuración de la base de datos para desarrollo local con SQLite
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
+    }
+}
 
 # Configuración de la base de datos para producción en Render usando dj_database_url
-DATABASES = {
-    'default': dj_database_url.config(
-        # Render Variables de entorno para la base de datos
-        default=os.environ.get('DATABASE_URL')
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Render Variables de entorno para la base de datos
+#         default=os.environ.get('DATABASE_URL')
+#     )
+# }
 
 AUTH_USER_MODEL = 'APIbackend.UsuarioApp'
 

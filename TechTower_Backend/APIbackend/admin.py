@@ -1,52 +1,89 @@
 from django.contrib import admin
-from .models import UsuarioApp, Producto, Categoria, TipoProducto, Orden, OrdenProducto, Pago
-
-@admin.register(UsuarioApp)  
+from .models import (
+    UsuarioApp, Producto, Categoria, TipoProducto, 
+    Orden, OrdenProducto, Pago
+)
+@admin.register(UsuarioApp)
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'email', 'nombre', 'apellido', 'is_staff')
-    list_editable =   ('nombre', 'apellido')
-    search_fields = ('email',)  
-    list_filter = ('is_staff',) 
-
-# admin.site.register(Producto)
-# admin.site.register(Categoria)
-# admin.site.register(TipoProducto)
-
-class ProductoAdmin(admin.ModelAdmin):
-    # Muestra estos campos en la lista principal
     list_display = (
+        'user_id', 
+        'email', 
+        'nombre', 
+        'apellido', 
+        'telefono', 
+        'region', 
+        'comuna', 
+        'is_staff', 
+        'is_superuser'
+    )
+    list_editable = (
+        'nombre', 
+        'apellido', 
+        'telefono', 
+        'region', 
+        'comuna', 
+        'is_staff', 
+        'is_superuser'
+    )
+    search_fields = ('email', 'nombre', 'apellido')
+    list_filter = ('is_staff', 'is_superuser', 'region') 
+    ordering = ('user_id',) 
+
+# --- Admin de Producto (El tuyo, un poco mejorado) ---
+@admin.register(Producto)
+class ProductoAdmin(admin.ModelAdmin):
+    list_display = (
+        'producto_id', # Es bueno ver el ID
         'nombre_producto', 
         'categoria', 
         'tipo', 
         'stock_producto', 
         'precio_transferencia',
+        'precio_otro', # Añadido
         'descuento',
         'es_destacado',
-        'imagen',
         'watts'
+        # 'imagen' (la quito de la lista porque puede ser muy grande)
     )
-    
-    # ¡LA MAGIA! Permite editar estos campos en la lista
     list_editable = (
         'categoria', 
         'tipo', 
         'stock_producto',
+        'precio_transferencia', # ¡Muy útil para editar precios rápido!
+        'precio_otro',          # ¡Y este!
         'descuento',
         'es_destacado',
-        'imagen',
         'watts'
     )
-    
-    # Añade filtros para encontrar productos rápido
-    list_filter = ('categoria', 'tipo')
-    
-    # Añade una barra de búsqueda
-    search_fields = ('nombre_producto', 'marca_producto')
+    list_filter = ('categoria', 'tipo', 'es_destacado', 'marca_producto')
+    search_fields = ('nombre_producto', 'marca_producto', 'producto_id')
+    ordering = ('producto_id',)
 
-# Registra los modelos para que aparezcan en el panel de admin
-admin.site.register(Producto, ProductoAdmin) # Usa la clase "tuneada"
+
+class OrdenProductoInline(admin.TabularInline):
+    """
+    Esto permite ver y editar los *productos* DENTRO de una orden.
+    """
+    model = OrdenProducto
+    readonly_fields = ('producto', 'cantidad')
+    extra = 0 
+
+@admin.register(Orden)
+class OrdenAdmin(admin.ModelAdmin):
+    list_display = (
+        'orden_id', 
+        'usuario_orden', 
+        'fecha_orden', 
+        'estado_orden', 
+        'total_orden'
+    )
+    list_editable = ('estado_orden',) 
+    list_filter = ('estado_orden', 'fecha_orden')
+    search_fields = ('orden_id', 'usuario_orden__email')
+    ordering = ('-fecha_orden',) 
+    inlines = [OrdenProductoInline]
+
 admin.site.register(Categoria)
 admin.site.register(TipoProducto)
-admin.site.register(Orden)
-admin.site.register(OrdenProducto)
 admin.site.register(Pago)
+admin.site.register(OrdenProducto) # Opcional

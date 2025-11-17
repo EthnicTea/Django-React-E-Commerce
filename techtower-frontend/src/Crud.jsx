@@ -1,14 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AddProduct from "./components/AddProduct.jsx";
 import EditProduct from "./components/EditProduct.jsx";
 import ListProducts from "./components/ListProduct.jsx";
 import './Crud.css';
 import { useAuth } from './services/AuthContext.jsx'; 
+import api from "./services/axiosConfig";
 
 export function Crud() {
+
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [view, setView] = useState("list"); // Vista por defecto
     const { user } = useAuth();
+
+    const fetchProducts = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await api.get("/products/");
+            setProducts(response.data);
+        } catch (err) {
+            setError("Hubo un error al obtener los productos.");
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
 
     // Función para que ListProducts nos envíe el producto a editar
     const handleEditClick = (product) => {
@@ -22,21 +46,27 @@ export function Crud() {
         setView("list");
     };
 
+    const handleFinishAction = () => {
+        setSelectedProduct(null);
+        setView("list");
+        fetchProducts(); 
+    };
+
     const renderView = () => {
+        if (loading) return <h2>Cargando productos...</h2>;
+        if (error) return <h2 className="error-message">{error}</h2>;
+
         switch (view) {
             case "add":
-                return <AddProduct onDone={handleDone} />; // Le pasamos la prop onDone
+                return <AddProduct onFinished={handleDone} />;
             case "edit":
-                return (
-                    <EditProduct
-                        productData={selectedProduct} // Le pasamos el producto
-                        onDone={handleDone}         // Le pasamos la prop onDone
-                    />
-                );
-            default: // "list"
+                return <EditProduct productToEdit={selectedProduct} onFinished={handleFinishAction} />;
+            default:
                 return (
                     <ListProducts
-                        onEditProduct={handleEditClick} // Le pasamos la función de "editar"
+                        products={products} 
+                        onEditProduct={handleEditClick}
+                        onDeleteSuccess={fetchProducts} 
                     />
                 );
         }
