@@ -5,7 +5,8 @@ import os
 
 def create_superuser(apps, schema_editor):
     """
-    Lee las variables de entorno de Render y crea un superusuario.
+    Lee las variables de entorno y crea un superusuario
+    de forma manual (bypass del manager).
     """
     User = apps.get_model('APIbackend', 'UsuarioApp') 
 
@@ -13,21 +14,21 @@ def create_superuser(apps, schema_editor):
     password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
 
     if not email or not password:
-        print("Variables de superusuario (DJANGO_SUPERUSER_EMAIL, DJANGO_SUPERUSER_PASSWORD) no configuradas, saltando creación.")
+        print("Variables de superusuario no configuradas, saltando creación.")
         return
 
     if not User.objects.filter(email=email).exists():
         print(f"Creando superusuario: {email}")
         
-        # NO llamamos a .create_superuser()
-        # LLAMAMOS a .create_user() y pasamos los flags manualmente.
-        User.objects.create_user(
+        user = User(
             email=email,
-            password=password,
             is_staff=True,
             is_superuser=True
         )
-        # ---------------------------------
+        
+        user.set_password(password)
+        
+        user.save()
         
     else:
         print(f"Superusuario {email} ya existe.")
@@ -35,8 +36,7 @@ def create_superuser(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        # (Asegúrate que esto apunte a tu migración anterior, ej: '0017_..._data')
-        ('APIbackend', '0017_alter_orden_usuario_orden'), 
+        ('APIbackend', '0017_alter_orden_usuario_orden.py'), 
     ]
 
     operations = [
