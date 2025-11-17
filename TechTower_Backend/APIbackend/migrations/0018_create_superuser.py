@@ -36,7 +36,7 @@ def create_superuser(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('APIbackend', '0017_alter_orden_usuario_orden.py'), 
+        ('APIbackend', '0017_alter_orden_usuario_orden'), 
     ]
 
     operations = [
