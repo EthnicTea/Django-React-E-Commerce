@@ -42,18 +42,19 @@ class ProductoAdmin(admin.ModelAdmin):
         'precio_otro', # Añadido
         'descuento',
         'es_destacado',
-        'watts'
-        # 'imagen' (la quito de la lista porque puede ser muy grande)
+        'watts',
+        'imagen'
     )
     list_editable = (
         'categoria', 
         'tipo', 
         'stock_producto',
-        'precio_transferencia', # ¡Muy útil para editar precios rápido!
-        'precio_otro',          # ¡Y este!
+        'precio_transferencia', 
+        'precio_otro',          
         'descuento',
         'es_destacado',
-        'watts'
+        'watts',
+        'imagen'
     )
     list_filter = ('categoria', 'tipo', 'es_destacado', 'marca_producto')
     search_fields = ('nombre_producto', 'marca_producto', 'producto_id')
@@ -86,4 +87,4 @@ class OrdenAdmin(admin.ModelAdmin):
 admin.site.register(Categoria)
 admin.site.register(TipoProducto)
 admin.site.register(Pago)
-admin.site.register(OrdenProducto) # Opcional
+admin.site.register(OrdenProducto)

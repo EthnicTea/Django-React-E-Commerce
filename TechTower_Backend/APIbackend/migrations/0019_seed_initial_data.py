@@ -47,7 +47,6 @@ def seed_data(apps, schema_editor):
     
     print("Creando Productos...")
     
-    # Lista de productos (basada en tu JSON)
     productos_a_crear = [
     # ============ PROCESADORES (CPUs) ============
     {
@@ -904,42 +903,390 @@ def seed_data(apps, schema_editor):
     except User.DoesNotExist:
         print(f"ADVERTENCIA: No se encontró el superusuario {admin_email}. Las órdenes no se crearán!")
         return # No podemos continuar si no hay usuario
+    
+    def calcular_precio_final(producto):
+        """
+        Re-implementa la lógica de @property DENTRO de la migración.
+        """
+        # Aseguramos que los valores no sean None
+        descuento = producto.descuento or 0
+        precio = producto.precio_transferencia or 0
+        
+        if descuento > 0:
+            precio_calc = precio * (1 - (descuento / 100))
+            return int(precio_calc)
+        return precio
 
     # Verificamos si ya existen órdenes
     if not Orden.objects.exists():
-        # Obtenemos algunos productos para las órdenes
-        p1 = Producto.objects.get(nombre_producto="Cable de Alimentación C14 Macho a C13 Hembra")
-        p2 = Producto.objects.get(nombre_producto="Audífonos Inalámbricos JBL Wave Buds")
+        print("Creando órdenes de prueba (2022-2025)...")
+        try:
+            # Obtenemos productos variados para las órdenes
+            p1 = Producto.objects.get(nombre_producto="Cable de Alimentación C14 Macho a C13 Hembra")
+            p2 = Producto.objects.get(nombre_producto="Audífonos Inalámbricos JBL Wave Buds")
+            p3 = Producto.objects.get(nombre_producto="Parlante Portátil JBL Go 3")
+            p4 = Producto.objects.get(nombre_producto="Procesador AMD Ryzen 7 7800X3D")
+            p5 = Producto.objects.get(nombre_producto="Tarjeta Gráfica RTX 4070 Ti SUPER 16GB")
+            p6 = Producto.objects.get(nombre_producto="Memoria RAM Corsair Vengeance RGB 32GB (2x16GB) DDR5 6000MHz")
+            p7 = Producto.objects.get(nombre_producto="SSD Samsung 990 PRO 2TB NVMe M.2 Gen4")
+            p8 = Producto.objects.get(nombre_producto="Monitor LG UltraGear 27GP850-B 27' 2K 165Hz IPS")
+            p9 = Producto.objects.get(nombre_producto="Teclado Mecánico Logitech G Pro X TKL Lightspeed Wireless")
+            p10 = Producto.objects.get(nombre_producto="Mouse Logitech G Pro X Superlight 2 Wireless")
+            p11 = Producto.objects.get(nombre_producto="Fuente de Poder Corsair RM1000e 1000W 80 Plus Gold")
+            p12 = Producto.objects.get(nombre_producto="Gabinete Corsair 5000D Airflow Tempered Glass")
+            p13 = Producto.objects.get(nombre_producto="Refrigeración Líquida Corsair iCUE H150i Elite LCD 360mm")
+            p14 = Producto.objects.get(nombre_producto="Placa Madre ASUS ROG Strix X670E-E Gaming WiFi")
+            p15 = Producto.objects.get(nombre_producto="Notebook ASUS ROG Strix G16 RTX 4060")
+            
+            # ============ ÓRDENES 2022 ============
+            # Enero 2022
+            orden_1 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p3.calcular_precio_final(p3),
+                fecha_orden=date(2022, 1, 12)
+            )
+            OrdenProducto.objects.create(orden=orden_1, producto=p3, cantidad=1)
+            
+            # Marzo 2022
+            orden_2 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p2.calcular_precio_final(p2) + p1.calcular_precio_final(p1),
+                fecha_orden=date(2022, 3, 8)
+            )
+            OrdenProducto.objects.create(orden=orden_2, producto=p2, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_2, producto=p1, cantidad=1)
+            
+            # Mayo 2022
+            orden_3 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p6.calcular_precio_final(p6),
+                fecha_orden=date(2022, 5, 20)
+            )
+            OrdenProducto.objects.create(orden=orden_3, producto=p6, cantidad=1)
+            
+            # Julio 2022
+            orden_4 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='cancelado',
+                total_orden=p8.calcular_precio_final(p8),
+                fecha_orden=date(2022, 7, 15)
+            )
+            OrdenProducto.objects.create(orden=orden_4, producto=p8, cantidad=1)
+            
+            # Septiembre 2022
+            orden_5 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p10.calcular_precio_final(p10) + p9.calcular_precio_final(p9),
+                fecha_orden=date(2022, 9, 3)
+            )
+            OrdenProducto.objects.create(orden=orden_5, producto=p10, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_5, producto=p9, cantidad=1)
+            
+            # Noviembre 2022
+            orden_6 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p7.calcular_precio_final(p7),
+                fecha_orden=date(2022, 11, 25)
+            )
+            OrdenProducto.objects.create(orden=orden_6, producto=p7, cantidad=1)
+            
+            # ============ ÓRDENES 2023 ============
+            # Enero 2023
+            orden_7 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p4.calcular_precio_final(p4) + p14.calcular_precio_final(p14),
+                fecha_orden=date(2023, 1, 10)
+            )
+            OrdenProducto.objects.create(orden=orden_7, producto=p4, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_7, producto=p14, cantidad=1)
+            
+            # Febrero 2023
+            orden_8 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p5.calcular_precio_final(p5),
+                fecha_orden=date(2023, 2, 14)
+            )
+            OrdenProducto.objects.create(orden=orden_8, producto=p5, cantidad=1)
+            
+            # Abril 2023
+            orden_9 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='pendiente',
+                total_orden=p11.calcular_precio_final(p11) + p12.calcular_precio_final(p12),
+                fecha_orden=date(2023, 4, 5)
+            )
+            OrdenProducto.objects.create(orden=orden_9, producto=p11, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_9, producto=p12, cantidad=1)
+            
+            # Mayo 2023
+            orden_10 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p13.calcular_precio_final(p13),
+                fecha_orden=date(2023, 5, 22)
+            )
+            OrdenProducto.objects.create(orden=orden_10, producto=p13, cantidad=1)
+            
+            # Junio 2023
+            orden_11 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p2.calcular_precio_final(p2) * 2,
+                fecha_orden=date(2023, 6, 18)
+            )
+            OrdenProducto.objects.create(orden=orden_11, producto=p2, cantidad=2)
+            
+            # Agosto 2023
+            orden_12 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p8.calcular_precio_final(p8),
+                fecha_orden=date(2023, 8, 9)
+            )
+            OrdenProducto.objects.create(orden=orden_12, producto=p8, cantidad=1)
+            
+            # Septiembre 2023
+            orden_13 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='cancelado',
+                total_orden=p15.calcular_precio_final(p15),
+                fecha_orden=date(2023, 9, 30)
+            )
+            OrdenProducto.objects.create(orden=orden_13, producto=p15, cantidad=1)
+            
+            # Octubre 2023
+            orden_14 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p6.calcular_precio_final(p6) + p7.calcular_precio_final(p7),
+                fecha_orden=date(2023, 10, 12)
+            )
+            OrdenProducto.objects.create(orden=orden_14, producto=p6, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_14, producto=p7, cantidad=1)
+            
+            # Diciembre 2023
+            orden_15 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p10.calcular_precio_final(p10) + p9.calcular_precio_final(p9) + p3.calcular_precio_final(p3),
+                fecha_orden=date(2023, 12, 24)
+            )
+            OrdenProducto.objects.create(orden=orden_15, producto=p10, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_15, producto=p9, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_15, producto=p3, cantidad=1)
+            
+            # ============ ÓRDENES 2024 ============
+            # Enero 2024
+            orden_16 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p4.calcular_precio_final(p4) + p5.calcular_precio_final(p5) + p6.calcular_precio_final(p6),
+                fecha_orden=date(2024, 1, 15)
+            )
+            OrdenProducto.objects.create(orden=orden_16, producto=p4, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_16, producto=p5, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_16, producto=p6, cantidad=1)
+            
+            # Febrero 2024
+            orden_17 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p11.calcular_precio_final(p11),
+                fecha_orden=date(2024, 2, 20)
+            )
+            OrdenProducto.objects.create(orden=orden_17, producto=p11, cantidad=1)
+            
+            # Marzo 2024
+            orden_18 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p12.calcular_precio_final(p12) + p13.calcular_precio_final(p13),
+                fecha_orden=date(2024, 3, 8)
+            )
+            OrdenProducto.objects.create(orden=orden_18, producto=p12, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_18, producto=p13, cantidad=1)
+            
+            # Abril 2024
+            orden_19 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='pendiente',
+                total_orden=p8.calcular_precio_final(p8) * 2,
+                fecha_orden=date(2024, 4, 17)
+            )
+            OrdenProducto.objects.create(orden=orden_19, producto=p8, cantidad=2)
+            
+            # Mayo 2024
+            orden_20 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p7.calcular_precio_final(p7) + p6.calcular_precio_final(p6),
+                fecha_orden=date(2024, 5, 25)
+            )
+            OrdenProducto.objects.create(orden=orden_20, producto=p7, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_20, producto=p6, cantidad=1)
+            
+            # Junio 2024
+            orden_21 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p15.calcular_precio_final(p15),
+                fecha_orden=date(2024, 6, 10)
+            )
+            OrdenProducto.objects.create(orden=orden_21, producto=p15, cantidad=1)
+            
+            # Agosto 2024
+            orden_22 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p2.calcular_precio_final(p2) + p3.calcular_precio_final(p3),
+                fecha_orden=date(2024, 8, 5)
+            )
+            OrdenProducto.objects.create(orden=orden_22, producto=p2, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_22, producto=p3, cantidad=1)
+            
+            # Septiembre 2024
+            orden_23 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='cancelado',
+                total_orden=p5.calcular_precio_final(p5),
+                fecha_orden=date(2024, 9, 14)
+            )
+            OrdenProducto.objects.create(orden=orden_23, producto=p5, cantidad=1)
+            
+            # Octubre 2024
+            orden_24 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p10.calcular_precio_final(p10) * 2,
+                fecha_orden=date(2024, 10, 20)
+            )
+            OrdenProducto.objects.create(orden=orden_24, producto=p10, cantidad=2)
+            
+            # Noviembre 2024
+            orden_25 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p4.calcular_precio_final(p4) + p14.calcular_precio_final(p14) + p6.calcular_precio_final(p6),
+                fecha_orden=date(2024, 11, 28)
+            )
+            OrdenProducto.objects.create(orden=orden_25, producto=p4, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_25, producto=p14, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_25, producto=p6, cantidad=1)
+            
+            # Diciembre 2024
+            orden_26 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p9.calcular_precio_final(p9) + p10.calcular_precio_final(p10),
+                fecha_orden=date(2024, 12, 15)
+            )
+            OrdenProducto.objects.create(orden=orden_26, producto=p9, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_26, producto=p10, cantidad=1)
+            
+            # ============ ÓRDENES 2025 ============
+            # Enero 2025
+            orden_27 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p7.calcular_precio_final(p7) * 2,
+                fecha_orden=date(2025, 1, 8)
+            )
+            OrdenProducto.objects.create(orden=orden_27, producto=p7, cantidad=2)
+            
+            # Febrero 2025
+            orden_28 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p5.calcular_precio_final(p5) + p11.calcular_precio_final(p11),
+                fecha_orden=date(2025, 2, 14)
+            )
+            OrdenProducto.objects.create(orden=orden_28, producto=p5, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_28, producto=p11, cantidad=1)
+            
+            # Marzo 2025
+            orden_29 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='pendiente',
+                total_orden=p15.calcular_precio_final(p15),
+                fecha_orden=date(2025, 3, 22)
+            )
+            OrdenProducto.objects.create(orden=orden_29, producto=p15, cantidad=1)
+            
+            # Mayo 2025
+            orden_30 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p8.calcular_precio_final(p8) + p9.calcular_precio_final(p9) + p10.calcular_precio_final(p10),
+                fecha_orden=date(2025, 5, 10)
+            )
+            OrdenProducto.objects.create(orden=orden_30, producto=p8, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_30, producto=p9, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_30, producto=p10, cantidad=1)
+            
+            # Julio 2025
+            orden_31 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p4.calcular_precio_final(p4) + p5.calcular_precio_final(p5),
+                fecha_orden=date(2025, 7, 4)
+            )
+            OrdenProducto.objects.create(orden=orden_31, producto=p4, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_31, producto=p5, cantidad=1)
+            
+            # Septiembre 2025
+            orden_32 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p2.calcular_precio_final(p2) * 3,
+                fecha_orden=date(2025, 9, 18)
+            )
+            OrdenProducto.objects.create(orden=orden_32, producto=p2, cantidad=3)
+            
+            # Octubre 2025
+            orden_33 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p13.calcular_precio_final(p13) + p12.calcular_precio_final(p12),
+                fecha_orden=date(2025, 10, 28)
+            )
+            OrdenProducto.objects.create(orden=orden_33, producto=p13, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_33, producto=p12, cantidad=1)
+            
+            # Noviembre 2025 - Reciente #1
+            orden_34 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='aprobado',
+                total_orden=p6.calcular_precio_final(p6) + p7.calcular_precio_final(p7),
+                fecha_orden=date(2025, 11, 5)
+            )
+            OrdenProducto.objects.create(orden=orden_34, producto=p6, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_34, producto=p7, cantidad=1)
+            
+            # Noviembre 2025 - Reciente #2
+            orden_35 = Orden.objects.create(
+                usuario_orden=admin_user,
+                estado_orden='pendiente',
+                total_orden=p10.calcular_precio_final(p10) + p9.calcular_precio_final(p9) + p8.calcular_precio_final(p8),
+                fecha_orden=date(2025, 11, 15)
+            )
+            OrdenProducto.objects.create(orden=orden_35, producto=p10, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_35, producto=p9, cantidad=1)
+            OrdenProducto.objects.create(orden=orden_35, producto=p8, cantidad=1)
+            
+            print(f"✓ 35 órdenes creadas exitosamente (2022-2025)")
         
-        # Orden de 2024
-        orden_2024 = Orden.objects.create(
-            usuario_orden=admin_user, 
-            estado_orden='aprobado',
-            total_orden=p1.precio_final_transferencia, # Usamos el precio final
-            fecha_orden=date(2024, 10, 15)
-        )
-        OrdenProducto.objects.create(orden=orden_2024, producto=p1, cantidad=1)
-        
-        # Orden de Octubre 2025
-        orden_oct_2025 = Orden.objects.create(
-            usuario_orden=admin_user, 
-            estado_orden='aprobado',
-            total_orden=(p2.precio_final_transferencia * 2),
-            fecha_orden=date(2025, 10, 28)
-        )
-        OrdenProducto.objects.create(orden=orden_oct_2025, producto=p2, cantidad=2)
-        
-        # Orden de Noviembre 2025
-        orden_nov_2025 = Orden.objects.create(
-            usuario_orden=admin_user, 
-            estado_orden='aprobado',
-            total_orden=(p1.precio_final_transferencia + p2.precio_final_transferencia),
-            fecha_orden=date(2025, 11, 5) 
-        )
-        OrdenProducto.objects.create(orden=orden_nov_2025, producto=p1, cantidad=1)
-        OrdenProducto.objects.create(orden=orden_nov_2025, producto=p2, cantidad=1)
-        
-        print("Órdenes falsas creadas para 2024 y 2025.")
+        except Producto.DoesNotExist as e:
+            print(f"\nADVERTENCIA: No se pudo crear una orden porque el producto no existe: {e}")
+            print("Asegúrate de que los nombres en 'Producto.objects.get()' coincidan con 'productos_a_crear'.\n")
+    else:
+        print("⚠️ Ya existen órdenes en la base de datos, saltando creación.")
 
 
 class Migration(migrations.Migration):
