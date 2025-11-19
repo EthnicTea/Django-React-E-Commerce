@@ -58,7 +58,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 15,
         "categoria": cat_componentes,
         "tipo": tipo_cpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/tbbzah2z_5a4e67f8_thumbnail_512.jpg",
+        "imagen": "https://trulustore.cl/wp-content/uploads/2023/07/procesador-ryzen7-7800x3d-e1685047673110.png",
         "watts": 120,
         "es_destacado": True,
         "descuento": 5
@@ -72,7 +72,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 10,
         "categoria": cat_componentes,
         "tipo": tipo_cpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/kpnroeay_d7ec5275_thumbnail_512.jpg",
+        "imagen": "https://media.spdigital.cl/thumbnails/products/ecgtaiz6_7753237b_thumbnail_512.png",
         "watts": 253,
         "es_destacado": True,
         "descuento": 0
@@ -86,7 +86,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_componentes,
         "tipo": tipo_cpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/4cw81vnj_88e8d78b_thumbnail_512.jpg",
+        "imagen": "https://static.myshop.cl/12969/1_1689007745000.jpg",
         "watts": 105
     },
     {
@@ -98,7 +98,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 18,
         "categoria": cat_componentes,
         "tipo": tipo_cpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/hkm7gpft_ab95f06a_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1648709_picture_1664520396.jpg",
         "watts": 181
     },
     {
@@ -110,7 +110,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 8,
         "categoria": cat_componentes,
         "tipo": tipo_cpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/3rp3m9ia_2c21e37a_thumbnail_512.jpg",
+        "imagen": "https://sipoonline.cl/wp-content/uploads/2025/05/Procesador-AMD-Ryzen-9-9950X-3D-AM5-5.7GHz-16core-32hilos.webp",
         "watts": 170,
         "es_destacado": True
     },
@@ -125,7 +125,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 5,
         "categoria": cat_componentes,
         "tipo": tipo_gpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/3rvwvgqp_5a1fde65_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1845779_picture_1700835601.png",
         "watts": 450,
         "es_destacado": True,
         "descuento": 3
@@ -139,7 +139,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 12,
         "categoria": cat_componentes,
         "tipo": tipo_gpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/lyfvhznb_f6fa9f45_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1873169_picture_1706588671.jpg",
         "watts": 285,
         "es_destacado": True
     },
@@ -152,7 +152,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 10,
         "categoria": cat_componentes,
         "tipo": tipo_gpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/b4bj2w0z_64cad66f_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1721468_picture_1676201158.webp",
         "watts": 355,
         "es_destacado": True
     },
@@ -165,7 +165,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 20,
         "categoria": cat_componentes,
         "tipo": tipo_gpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/k7qmgm7p_3c9d12b8_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1765449_picture_1685011998.png",
         "watts": 160
     },
     {
@@ -177,7 +177,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 22,
         "categoria": cat_componentes,
         "tipo": tipo_gpu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/rxs3vjcn_aa2e3d95_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1767762_picture_1685548744.webp",
         "watts": 165
     },
 
@@ -191,7 +191,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 30,
         "categoria": cat_componentes,
         "tipo": tipo_ram,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/odhqeadr_e95e6e3e_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1647680_picture_1664436667.jpg",
         "es_destacado": True,
         "descuento": 10
     },
@@ -204,8 +204,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 15,
         "categoria": cat_componentes,
         "tipo": tipo_ram,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/trvwfp5z_e1d2558b_thumbnail_512.jpg",
-        "es_destacado": True
+        "imagen": "https://media.solotodo.com/media/products/1537710_picture_1644038001.jpg"
     },
     {
         "nombre_producto": "Memoria RAM Kingston Fury Beast 16GB (2x8GB) DDR4 3200MHz",
@@ -216,7 +215,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 50,
         "categoria": cat_componentes,
         "tipo": tipo_ram,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/r8dnasut_a9b43fd5_thumbnail_512.jpg"
+        "imagen": "https://http2.mlstatic.com/D_NQ_NP_840283-MLC48349496523_112021-O.webp"
     },
     {
         "nombre_producto": "Memoria RAM Crucial 32GB (2x16GB) DDR5 5600MHz",
@@ -227,7 +226,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 35,
         "categoria": cat_componentes,
         "tipo": tipo_ram,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/h6g9l9re_06b3c516_thumbnail_512.jpg"
+        "imagen": "https://media.spdigital.cl/thumbnails/products/n54uaaun_4432c494_thumbnail_512.jpg"
     },
 
     # ============ PLACAS MADRE ============
@@ -240,8 +239,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 12,
         "categoria": cat_componentes,
         "tipo": tipo_pm,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/ibtk5lh9_f9e8bbc6_thumbnail_512.jpg",
-        "es_destacado": True
+        "imagen": "https://media.spdigital.cl/thumbnails/products/lc_6b72v_f135b79d_thumbnail_512.jpg"
     },
     {
         "nombre_producto": "Placa Madre MSI MAG B650 Tomahawk WiFi",
@@ -252,7 +250,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 18,
         "categoria": cat_componentes,
         "tipo": tipo_pm,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/bnxr5tke_ab08fc71_thumbnail_512.jpg"
+        "imagen": "https://www.megabytes.cl/wp-content/uploads/2024/08/1024-2.png"
     },
     {
         "nombre_producto": "Placa Madre Gigabyte Z790 AORUS Elite AX",
@@ -263,7 +261,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 15,
         "categoria": cat_componentes,
         "tipo": tipo_pm,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/vl41amog_5e7d8a94_thumbnail_512.jpg"
+        "imagen": "https://media.solotodo.com/media/products/1667351_picture_1668508851.webp"
     },
     {
         "nombre_producto": "Placa Madre ASRock B760M Pro RS",
@@ -274,7 +272,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_componentes,
         "tipo": tipo_pm,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/kvcgzz_be6fa8fb_thumbnail_512.jpg"
+        "imagen": "https://media.solotodo.com/media/products/1749419_picture_1681472803.png"
     },
 
     # ============ FUENTES DE PODER (PSU) ============
@@ -287,9 +285,8 @@ def seed_data(apps, schema_editor):
         "stock_producto": 20,
         "categoria": cat_componentes,
         "tipo": tipo_psu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/1yq8x5m__aa68b45b_thumbnail_512.jpg",
-        "watts": 1000,
-        "es_destacado": True
+        "imagen": "https://media.spdigital.cl/thumbnails/products/tqmdsuc__e9a2217c_thumbnail_512.png",
+        "watts": 1000
     },
     {
         "nombre_producto": "Fuente de Poder EVGA SuperNOVA 850 GT 850W 80 Plus Gold",
@@ -300,7 +297,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 22,
         "categoria": cat_componentes,
         "tipo": tipo_psu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/eqgjqrj2_785ce831_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1400729_picture_1622536654.jpg",
         "watts": 850
     },
     {
@@ -312,7 +309,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 28,
         "categoria": cat_componentes,
         "tipo": tipo_psu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/fvtnhgv6_9c5ef4de_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1816927_picture_1694806007.jpg",
         "watts": 750
     },
     {
@@ -324,7 +321,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 35,
         "categoria": cat_componentes,
         "tipo": tipo_psu,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/s9v0stbe_dbc95e3c_thumbnail_512.jpg",
+        "imagen": "https://trulustore.cl/wp-content/uploads/2023/04/MWE80bronce-6.webp",
         "watts": 650
     },
 
@@ -338,8 +335,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_componentes,
         "tipo": tipo_ssd,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/eajynmqg_e35e6f0b_thumbnail_512.jpg",
-        "es_destacado": True,
+        "imagen": "https://cdn.mos.cms.futurecdn.net/W2CKdCgQAAFeMDqEneEXqB.jpg",
         "descuento": 8
     },
     {
@@ -351,7 +347,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 30,
         "categoria": cat_componentes,
         "tipo": tipo_ssd,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/6rlpekzj_9b46f34b_thumbnail_512.jpg"
+        "imagen": "https://mercury.vtexassets.com/arquivos/ids/14802737-800-800?v=638368800471970000&width=800&height=800&aspect=true"
     },
     {
         "nombre_producto": "SSD Crucial P3 Plus 4TB NVMe M.2 Gen4",
@@ -362,8 +358,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 15,
         "categoria": cat_componentes,
         "tipo": tipo_ssd,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/l3zpgn7i_07e4cb95_thumbnail_512.jpg",
-        "es_destacado": True
+        "imagen": "https://www.crucial.es/content/dam/crucial/ssd-products/p3-plus/images/web/Crucial-p3-plus-ssd-standing-up-on-white-Image.psd.transform/small-jpg/img.jpg"
     },
     {
         "nombre_producto": "SSD Kingston NV2 500GB NVMe M.2 Gen4",
@@ -374,7 +369,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 45,
         "categoria": cat_componentes,
         "tipo": tipo_ssd,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/jhcaxrnj_1c9b3ea9_thumbnail_512.jpg"
+        "imagen": "https://http2.mlstatic.com/D_NQ_NP_938299-MLA53568342589_022023-O.webp"
     },
 
     # ============ GABINETES ============
@@ -387,8 +382,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 12,
         "categoria": cat_componentes,
         "tipo": tipo_gabinete,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/q5shnznf_fc1be7b6_thumbnail_512.jpg",
-        "es_destacado": True
+        "imagen": "https://media.solotodo.com/media/products/1391351_picture_1621015891.jpg"
     },
     {
         "nombre_producto": "Gabinete NZXT H7 Flow RGB",
@@ -399,7 +393,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 15,
         "categoria": cat_componentes,
         "tipo": tipo_gabinete,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/jcgk0kvv_b8f3e2a9_thumbnail_512.jpg"
+        "imagen": "https://media.solotodo.com/media/products/2005295_picture_1734718072.jpg"
     },
     {
         "nombre_producto": "Gabinete Lian Li Lancool 216 RGB",
@@ -410,7 +404,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 18,
         "categoria": cat_componentes,
         "tipo": tipo_gabinete,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/8gjujqp8_c9a5d741_thumbnail_512.jpg"
+        "imagen": "https://media.solotodo.com/media/products/1755423_picture_1683119805.jpg"
     },
     {
         "nombre_producto": "Gabinete Cooler Master MasterBox Q300L",
@@ -421,7 +415,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_componentes,
         "tipo": tipo_gabinete,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/nxruz2qe_d4e81c6f_thumbnail_512.jpg"
+        "imagen": "https://media.solotodo.com/media/products/754125_picture_1528171236.jpg"
     },
 
     # ============ REFRIGERACIÓN LÍQUIDA ============
@@ -434,8 +428,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 10,
         "categoria": cat_componentes,
         "tipo": tipo_rf,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/u_eyyb2x_8d3fc694_thumbnail_512.jpg",
-        "es_destacado": True
+        "imagen": "https://media.solotodo.com/media/products/1662801_picture_1667829110.jpg"
     },
     {
         "nombre_producto": "Refrigeración Líquida NZXT Kraken Elite 280mm RGB",
@@ -446,7 +439,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 12,
         "categoria": cat_componentes,
         "tipo": tipo_rf,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/m_jw2y3f_5b6e47a3_thumbnail_512.jpg"
+        "imagen": "https://http2.mlstatic.com/D_Q_NP_742147-CBT81207358140_122024-O.webp"
     },
     {
         "nombre_producto": "Refrigeración Líquida Cooler Master MasterLiquid 240L V2 RGB",
@@ -457,7 +450,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 20,
         "categoria": cat_componentes,
         "tipo": tipo_rf,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/ljbj7gog_7e9c3b52_thumbnail_512.jpg"
+        "imagen": "https://media.solotodo.com/media/products/1776259_picture_1688117032.jpg"
     },
 
     # ============ MONITORES ============
@@ -470,8 +463,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 15,
         "categoria": cat_gaming,
         "tipo": tipo_monitor,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/z7nrfofz_f8c2d5b6_thumbnail_512.jpg",
-        "es_destacado": True,
+        "imagen": "https://media.solotodo.com/media/products/1466811_picture_1632993336.jpg",
         "descuento": 12
     },
     {
@@ -483,7 +475,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 18,
         "categoria": cat_gaming,
         "tipo": tipo_monitor,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/5a6f73vx_cf9e6ba8_thumbnail_512.jpg"
+        "imagen": "https://cdnx.jumpseller.com/killstore/image/47388912/resize/610/610?1718121128"
     },
     {
         "nombre_producto": "Monitor Samsung Odyssey G5 34' UltraWide 165Hz VA",
@@ -494,8 +486,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 10,
         "categoria": cat_gaming,
         "tipo": tipo_monitor,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/1nnwx1jp_a9e5c7d3_thumbnail_512.jpg",
-        "es_destacado": True
+        "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6s58Jf7_mk4AZ9ynxXRpGHLd72kodjFznCA&s"
     },
     {
         "nombre_producto": "Monitor AOC 24G2 24' Full HD 144Hz IPS",
@@ -506,7 +497,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_gaming,
         "tipo": tipo_monitor,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/y2fk2aqf_b6d3e9a7_thumbnail_512.jpg"
+        "imagen": "https://m.media-amazon.com/images/I/81J4utZ5bnL._AC_SL1500_.jpg"
     },
 
     # ============ TECLADOS ============
@@ -519,7 +510,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 20,
         "categoria": cat_gaming,
         "tipo": tipo_teclado,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/fqonmsj7_e3c9f5b8_thumbnail_512.jpg",
+        "imagen": "https://http2.mlstatic.com/D_NQ_NP_918779-MLA95841047869_102025-O.webp",
         "es_destacado": True
     },
     {
@@ -531,7 +522,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 15,
         "categoria": cat_gaming,
         "tipo": tipo_teclado,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/c5z2xtei_9a7f6b4e_thumbnail_512.jpg"
+        "imagen": "https://prophonechile.cl/wp-content/uploads/2023/05/v4pro.png"
     },
     {
         "nombre_producto": "Teclado Mecánico HyperX Alloy Origins Core TKL",
@@ -542,7 +533,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 30,
         "categoria": cat_gaming,
         "tipo": tipo_teclado,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/8bg4vfvx_c4e8f6a9_thumbnail_512.jpg"
+        "imagen": "https://media.solotodo.com/media/products/1035661_picture_1577203614.jpg"
     },
     {
         "nombre_producto": "Teclado Redragon Kumara K552 RGB",
@@ -553,7 +544,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 40,
         "categoria": cat_gaming,
         "tipo": tipo_teclado,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/llqoitma_b8f5c3d7_thumbnail_512.jpg"
+        "imagen": "https://media.solotodo.com/media/products/754633_picture_1528247905.png"
     },
 
     # ============ MOUSE ============
@@ -566,7 +557,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_gaming,
         "tipo": tipo_mouse,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/ijuexqk4_d7e9f3b5_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1824978_picture_1696512344.webp",
         "es_destacado": True,
         "descuento": 10
     },
@@ -579,7 +570,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 22,
         "categoria": cat_gaming,
         "tipo": tipo_mouse,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/snvbz5ca_a8f6c4e9_thumbnail_512.jpg"
+        "imagen": "https://www.winpy.cl/files/38383-6739-Mouse-Gamer-Razer-DeathHadder-V3-Pro-White-4.jpg"
     },
     {
         "nombre_producto": "Mouse SteelSeries Rival 3 Wireless",
@@ -590,7 +581,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 35,
         "categoria": cat_gaming,
         "tipo": tipo_mouse,
-        "imagen": "https://images.ctfassets.net/w5r1fvmogo3f/1634RpVgtwGZSQ0G1QraNx/0751d91623e8e89284ad0d5e139fcda6/rival_3_wl_gen_2_black_pdp_img_buy_05.png?fm=webp&q=90&fit=scale&w=1920"
+        "imagen": "https://images.ctfassets.net/w5r1fvmogo3f/5heFOFlRxDVgYHHhFO7ZXF/9459bc50970530d2562bddf583c944b9/rival_3_wl_gen_2_black_pdp_img_buy_01.png?fm=webp&q=90&fit=scale&w=1920"
     },
     {
         "nombre_producto": "Mouse Logitech G305 Lightspeed Wireless",
@@ -601,7 +592,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 45,
         "categoria": cat_gaming,
         "tipo": tipo_mouse,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/7xmfbqp4_c9e5f7a8_thumbnail_512.jpg"
+        "imagen": "https://http2.mlstatic.com/D_Q_NP_627234-MLA94038782978_102025-O.webp"
     },
 
     # ============ AUDÍFONOS ============
@@ -614,8 +605,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 20,
         "categoria": cat_audio,
         "tipo": tipo_audifonos,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/n8qjvfr2_d7e8f4b9_thumbnail_512.jpg",
-        "es_destacado": True
+        "imagen": "https://media.solotodo.com/media/products/1893246_picture_1710217421.jpg"
     },
     {
         "nombre_producto": "Audífonos SteelSeries Arctis Nova Pro Wireless",
@@ -626,8 +616,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 12,
         "categoria": cat_audio,
         "tipo": tipo_audifonos,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/k5zgmqn7_b9f6c3e8_thumbnail_512.jpg",
-        "es_destacado": True
+        "imagen": "https://images-na.ssl-images-amazon.com/images/I/61Eqdt502lL.jpg"
     },
     {
         "nombre_producto": "Audífonos Logitech G733 Lightspeed Wireless RGB",
@@ -638,7 +627,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_audio,
         "tipo": tipo_audifonos,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/p3mjrtz8_f8c5e7a9_thumbnail_512.jpg"
+        "imagen": "https://media.falabella.com/falabellaCL/140107700_01/w=1500,h=1500,fit=pad"
     },
     {
         "nombre_producto": "Audífonos Razer BlackShark V2 Pro Wireless",
@@ -649,7 +638,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 18,
         "categoria": cat_audio,
         "tipo": tipo_audifonos,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/q9tjvbx4_a8f7c6e9_thumbnail_512.jpg"
+        "imagen": "https://todoclick.cl/6734632-large_default/audifono-gamer-inalambrico-razer-blackshark-v2-pro-pc-mac-ps4-switch.jpg"
     },
     {
         "nombre_producto": "Audífonos Inalámbricos JBL Wave Buds",
@@ -660,7 +649,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 30,
         "categoria": cat_audio,
         "tipo": tipo_audifonos,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/298ynsi0_34010889_thumbnail_512.jpg",
+        "imagen": "https://media.solotodo.com/media/products/1774161_picture_1687527652.webp",
         "descuento": 15
     },
 
@@ -674,7 +663,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 15,
         "categoria": cat_audio,
         "tipo": tipo_microfono,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/r7pkzqm3_c8f9e5a7_thumbnail_512.jpg",
+        "imagen": "https://row.hyperx.com/cdn/shop/files/hyperx_quadcast_s_4_angled.jpg?v=1737792675&width=1946",
         "es_destacado": True
     },
     {
@@ -686,7 +675,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 18,
         "categoria": cat_audio,
         "tipo": tipo_microfono,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/t4njxbp9_f7e8c6a9_thumbnail_512.jpg"
+        "imagen": "https://prophonechile.cl/wp-content/uploads/2020/01/negro-2.png"
     },
     {
         "nombre_producto": "Micrófono Razer Seiren Mini USB",
@@ -697,7 +686,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_audio,
         "tipo": tipo_microfono,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/m8qjvfx5_a9f7c8e6_thumbnail_512.jpg"
+        "imagen": "https://todoclick.cl/5800100-square_large_default/microfono_razer_seiren_mini_black_119rz00011.jpg"
     },
 
     # ============ PARLANTES ============
@@ -710,7 +699,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 10,
         "categoria": cat_audio,
         "tipo": tipo_parlante,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/s6mjqbz7_e8f9c7a6_thumbnail_512.jpg"
+        "imagen": "https://www.achorao.com/cdn/shop/files/logitech-g-parlante-para-pc-default-title-parlantes-gamer-logitech-g560-usb-bluetooth-rgb-sub-woofer-00097855136107-38359812767984_720x.jpg?v=1754482702"
     },
     {
         "nombre_producto": "Parlante Portátil JBL Go 3",
@@ -721,7 +710,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_audio,
         "tipo": tipo_parlante,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/26bb6pix_386bdef3_thumbnail_512.jpg"
+        "imagen": "https://prophonechile.cl/wp-content/uploads/2022/11/jblceleste.png"
     },
     {
         "nombre_producto": "Parlante JBL Flip 6 Bluetooth",
@@ -732,7 +721,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 20,
         "categoria": cat_audio,
         "tipo": tipo_parlante,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/j9pkxqv4_f8c7e9a6_thumbnail_512.jpg"
+        "imagen": "https://http2.mlstatic.com/D_NQ_NP_684483-MLA95667999642_102025-O.webp"
     },
 
     # ============ SILLAS GAMER ============
@@ -745,8 +734,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 8,
         "categoria": cat_gaming,
         "tipo": tipo_silla,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/n7mjpqx8_c9f8e7a6_thumbnail_512.jpg",
-        "es_destacado": True
+        "imagen": "https://media.spdigital.cl/thumbnails/products/l1jep4s0_634842f3_thumbnail_4096.png"
     },
     {
         "nombre_producto": "Silla Gamer DXRacer Formula Series",
@@ -757,7 +745,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 6,
         "categoria": cat_gaming,
         "tipo": tipo_silla,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/p8tjvbx5_f7e9c8a6_thumbnail_512.jpg"
+        "imagen": "https://media.spdigital.cl/thumbnails/products/2q675dkk_2d55eb73_thumbnail_4096.jpg"
     },
 
     # ============ NOTEBOOKS ============
@@ -770,7 +758,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 5,
         "categoria": cat_computacion,
         "tipo": tipo_notebook,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/k8mjqvx7_a9f8c7e6_thumbnail_512.jpg",
+        "imagen": "https://dlcdnwebimgs.asus.com/files/media/7307645f-321a-46f8-8ded-bea6bfc2a968/v1/img/performance/engine-pd.png",
         "es_destacado": True,
         "descuento": 5
     },
@@ -783,7 +771,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 8,
         "categoria": cat_computacion,
         "tipo": tipo_notebook,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/m9pjxqz4_f8c9e7a6_thumbnail_512.jpg"
+        "imagen": "https://p2-ofp.static.pub/fes/cms/2023/03/17/x8xy4gzx65sy97sa9ndvwcxyqjiw4r811187.png"
     },
     {
         "nombre_producto": "Notebook Lenovo LOQ 15 RTX 3050",
@@ -807,7 +795,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 15,
         "categoria": cat_conectividad,
         "tipo": tipo_ap,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/vp9gblsx_a39cdb5f_thumbnail_512.jpg"
+        "imagen": "https://media.spdigital.cl/thumbnails/products/lb7wzhcl_c3617c05_thumbnail_512.jpg"
     },
     {
         "nombre_producto": "Router TP-Link Archer AX55 AX3000 WiFi 6",
@@ -818,7 +806,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 20,
         "categoria": cat_conectividad,
         "tipo": tipo_acceseorio,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/t8mjqvx9_f7e9c8a6_thumbnail_512.jpg"
+        "imagen": "https://m.media-amazon.com/images/I/71q6rzG-eWL._AC_SL1500_.jpg"
     },
     {
         "nombre_producto": "Cable de Alimentación C14 Macho a C13 Hembra",
@@ -841,7 +829,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 30,
         "categoria": cat_conectividad,
         "tipo": tipo_acceseorio,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/p9mjvqx7_c8f9e7a6_thumbnail_512.jpg"
+        "imagen": "https://http2.mlstatic.com/D_Q_NP_954945-CBT96650901676_112025-O.webp"
     },
     {
         "nombre_producto": "Webcam Logitech C920 HD Pro",
@@ -852,7 +840,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 25,
         "categoria": cat_gaming,
         "tipo": tipo_acceseorio,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/k8mjvqx5_f9c8e7a6_thumbnail_512.jpg"
+        "imagen": "https://media.spdigital.cl/thumbnails/products/tmpfrn8w3zz_4416e585_thumbnail_512.jpg"
     },
     {
         "nombre_producto": "Mousepad Logitech G840 XL",
@@ -863,7 +851,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 40,
         "categoria": cat_gaming,
         "tipo": tipo_acceseorio,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/m7njvbx9_a8f9c7e6_thumbnail_512.jpg"
+        "imagen": "https://media.spdigital.cl/thumbnails/products/tj3c06z9_9d994a2a_thumbnail_4096.jpg"
     },
     {
         "nombre_producto": "Capturadora Elgato HD60 S+",
@@ -874,7 +862,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 12,
         "categoria": cat_gaming,
         "tipo": tipo_acceseorio,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/q9mjvqx8_f8c9e7a6_thumbnail_512.jpg",
+        "imagen": "https://media.spdigital.cl/thumbnails/products/td8tu7ex_5f2518d3_thumbnail_4096.png",
         "es_destacado": True
     },
     {
@@ -886,7 +874,7 @@ def seed_data(apps, schema_editor):
         "stock_producto": 22,
         "categoria": cat_componentes,
         "tipo": tipo_acceseorio,
-        "imagen": "https://media.spdigital.cl/thumbnails/products/t8njvbx7_c9f8e7a6_thumbnail_512.jpg"
+        "imagen": "https://media.solotodo.com/media/products/1546127_picture_1645111531.jpg"
     }
 ]
 
