@@ -151,7 +151,7 @@ function PerfilUsuario() {
         }
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/user/delete/', { // <-- 3. URL con barra al final
+            const response = await  fetch(import.meta.env.VITE_API_URL + '/api/user/delete/', { // <-- 3. URL con barra al final
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
