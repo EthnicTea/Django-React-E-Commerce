@@ -26,6 +26,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from google import genai
 import google.generativeai as generativeai
 from google.genai.errors import APIError
+from google.api_core import exceptions as google_exceptions
 
 from .models import Producto, Carrito, ItemCarrito, Producto, Orden, OrdenProducto, Pago, Categoria, TipoProducto
 from .serializers import (
@@ -418,21 +419,35 @@ class AsistenteIAViewCompatible(APIView):
             
             datos_contexto = "\n".join(datos_para_ia)
 
-            prompt = (
-                "Eres un experto en hardware, revisa la siguiente lista de componentes y evalúa su compatibilidad. "
-                "Si hay incompatibilidad, explica el motivo (ej: socket, potencia, o cuello de botella). " \
-                "Evita sobre extenderte, y da una solución"
-                "Lista de Componentes:\n"
-                f"--- INICIO DATOS DB ---\n{datos_contexto}\n--- FIN DATOS DB ---\n"
-            )
+            try:
+                prompt = (
+                    "Eres un experto en hardware, revisa la siguiente lista de componentes y evalúa su compatibilidad. "
+                    "Si hay incompatibilidad, explica el motivo (ej: socket, potencia, o cuello de botella). " \
+                    "Evita sobre extenderte, y da una solución"
+                    "Lista de Componentes:\n"
+                    f"--- INICIO DATOS DB ---\n{datos_contexto}\n--- FIN DATOS DB ---\n"
+                )
 
-            client = genai.Client(api_key=settings.GEMINI_API_KEY)
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt
-            )
+                client = genai.Client(api_key=settings.GEMINI_API_KEY)
+                response = client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=prompt
+                )
 
-            return Response({"respuesta_ia": response.text})
+                return Response({"respuesta_ia": response.text})
+            except google_exceptions.ResourceExhausted as e:
+                print(f"Cuota excedida: {e}")
+                return Response(
+                    {"error": "La IA está saturada por muchas peticiones. Por favor, espera 10 segundos e intenta de nuevo."},
+                    status=status.HTTP_429_TOO_MANY_REQUESTS
+                )
+            except Exception as e:
+                # Captura genérica para otros errores
+                print(f"Error inesperado: {e}")
+                return Response(
+                    {"error": "Ocurrió un error interno al procesar la solicitud."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )    
 
         except Producto.DoesNotExist:
              return Response({"error": "Uno o más IDs de productos no fueron encontrados."}, status=404)
