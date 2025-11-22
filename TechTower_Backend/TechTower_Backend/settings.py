@@ -26,12 +26,16 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:5173',
-    # 'https://frontend.vercel.app', # Url de producción del frontend
+    "https://techtower.duckdns.org",
+    "https://django-react-e-commerce-cjge.vercel.app", # Url de vercel en desarrollo con el backend en Render!
+    "https://django-react-e-commerce.vercel.app", # Url que está ligado a vercel con el backend de AWS EC2!
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
-    # "https://frontend.vercel.app", # Url de producción del frontend
+    "https://techtower.duckdns.org",
+    "https://django-react-e-commerce-cjge.vercel.app", # Url de vercel en desarrollo con el backend en Render!
+    "https://django-react-e-commerce.vercel.app", # Url que está ligado a vercel con el backend de AWS EC2!
 ]
 
 CORS_ALLOW_CREDENTIALS = True
