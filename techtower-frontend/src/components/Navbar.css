@@ -6,13 +6,12 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Esto sí es útil */
+    box-sizing: border-box;
     font-family: "Outfit", sans-serif;
     font-style: normal;
 }
 
 body {
-    /* Evitar scroll horizontal -_- */
     overflow-x: hidden;
 }
 
@@ -45,7 +44,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
+    padding: 10px 20px;
 }
 
 /* ESTILOS DEL LOGO TECHTOWER */
@@ -54,11 +53,11 @@ body {
     font-size: 1.8rem !important;
     font-weight: 700 !important;
     text-decoration: none !important;
-    color: #ffffff !important; /* Color blanco para "Tower" */
+    color: #ffffff !important;
 }
 
 .tech-highlight {
-    color: #00bcd4 !important; /* Cian para "Tech" */
+    color: #00bcd4 !important;
 }
 
 .navbar-search {
@@ -66,30 +65,40 @@ body {
     margin: 0 20px;
 }
 
+.navbar-search-form {
+    display: flex;
+    width: 100%;
+}
+
 .navbar-search-input {
-    padding: 5px;
-    width: 80%;
+    padding: 8px 12px;
+    width: 100%;
     font-size: 16px;
     border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
 }
 
 .navbar-search-button {
-    background-color: #333;
+    background-color: #555;
     color: white;
-    padding: 7px 10px;
+    padding: 8px 15px;
     border: none;
     cursor: pointer;
+    border-radius: 0 4px 4px 0;
+    transition: background-color 0.3s;
+}
+
+.navbar-search-button:hover {
+    background-color: #777;
 }
 
 /* Inicio de sesión y Carrito */
-
 .navbar-icons {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-/* ícono y menú desplegable */
 .navbar-icon {
     position: relative;
 }
@@ -141,11 +150,10 @@ body {
     cursor: pointer;
 }
 
-.navbar-link:hover{
+.navbar-link:hover {
     background-color: #ddd;
 }
 
-/* Links dentro del dropdown */
 .dropdown-content span,
 .dropdown-content button {
     color: #000000;
@@ -170,7 +178,6 @@ body {
     font-family: 'Outfit', sans-serif;
 }
 
-/* Botón de logout con estilos */
 .navbar-link-user[role="logout"] {
     color: #cc1717;
     font-weight: bold;
@@ -178,17 +185,16 @@ body {
     text-align: center;
 }
 
-/* Botón de logout al hover */
 .navbar-link-user[role="logout"]:hover {
     background-color: #da1515;
     color: white;
 }
 
-/* Ajustes del ícono */
 .icon-user {
     margin: 0 5px;
 }
 
+/* OCULTAR hamburguesa en desktop */
 .navbar-hamburger {
     display: none;
 }
@@ -226,26 +232,95 @@ body {
     transition: 0.3s;
 }
 
-/* Responsividad: colapsar en pantallas pequeñas */
+/* ========================================
+   RESPONSIVIDAD: MÓVIL (máx 768px)
+   ======================================== */
 @media (max-width: 768px) {
+    
+    /* Reorganizar navbar principal en columna */
     .navbar-main {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    /* Logo y hamburguesa en la misma fila */
+    .navbar-logo {
+        order: 1;
     }
 
     .navbar-hamburger {
         display: block;
+        order: 2;
+        margin-left: auto;
     }
 
-    .dropdown-content {
-        left: 0;
+    .hamburger-button {
+        font-size: 1.8rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: white;
+        padding: 5px;
+        transition: transform 0.2s;
     }
-    
+
+    .hamburger-button:hover {
+        transform: scale(1.1);
+    }
+
+    /* Ocultar buscador por defecto en móvil */
     .navbar-search {
+        display: none;
+    }
+
+    /* Iconos ocultos por defecto en móvil */
+    .navbar-icons {
+        display: none;
         width: 100%;
+        order: 3;
+        justify-content: center;
+        padding: 15px 0;
+        gap: 30px;
+        background-color: #444;
+    }
+
+    /* Cuando el menú está abierto, mostrar los iconos */
+    .navbar-main.menu-open .navbar-icons {
+        display: flex;
+    }
+
+    /* Categorías ocultas por defecto en móvil */
+    .navbar-categories {
+        display: none;
+        flex-direction: column;
+    }
+
+    /* Cuando el menú móvil está abierto, mostrar categorías */
+    .navbar-categories.mobile-open {
+        display: flex;
     }
 
     .categories-list {
         flex-direction: column;
+    }
+
+    .category-item {
+        width: 100%;
+    }
+
+    .category-item a {
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: left;
+    }
+
+    .category-item a:hover {
+        background-color: #0866cc;
+        border-radius: 0;
+    }
+
+    /* Ajustar dropdown en móvil */
+    .dropdown-content {
+        left: auto;
+        right: 0;
     }
 }

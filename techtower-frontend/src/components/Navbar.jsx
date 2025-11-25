@@ -1,42 +1,38 @@
 import React, { useState } from 'react';
 import './Navbar.css';
 import { BsFillCartFill } from "react-icons/bs";
-import { FiUser } from "react-icons/fi";
-import { FiMenu } from "react-icons/fi";
+import { FiUser, FiMenu, FiX } from "react-icons/fi"
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../services/AuthContext.jsx';
 import { useClickOutside } from '../services/useClickOutside.jsx';
 
 export function Navbar() {
-
-// --- LÓGICA con "context" ---
-    // Se obtiene el estado y las funciones de nuestro AuthContext
-    // 'user' tendrá los datos como {email, is_staff, ...}
-    // 'logoutAction' es la función que borra el token
-    // Agregar que se "recarge" la página al deslogearse
     const { authToken, user, logoutAction } = useAuth();
-    
-    // El estado del dropdown se mantiene igual
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
+    
+    // ÚNICO CAMBIO: Estado para el menú móvil
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const dropdownRef = useClickOutside(() => {
         setIsDropdownOpen(false);
     });
-
-    const handleSearch = (e) => {
-        e.preventDefault(); // Evita que la página se recargue
-        if (searchTerm.trim()) {
-            // Redirige a la página de búsqueda con el query param
-            navigate(`/busqueda?q=${encodeURIComponent(searchTerm)}`);
-            setSearchTerm(''); // Limpia la barra (opcional)
-        }
+    
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    const toggleDropdown = () => {
-        setIsDropdownOpen(!isDropdownOpen);
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchTerm.trim()) {
+            navigate(`/busqueda?q=${encodeURIComponent(searchTerm)}`);
+            setSearchTerm('');
+        }
     };
 
     return (
@@ -46,27 +42,27 @@ export function Navbar() {
                 <div className="navbar-top-message">
                     <span>
                         ¡Recuerda que siempre será gratis el retiro de los productos! Además de la variedad de productos con despacho gratis, vea más&nbsp;
-                        <Link to="/terminos">Aquí</Link> {/* Uso este link como acceso a sitios de prueba */}
-                        {/* <Link to="/Pasarela">Aquí</Link> */}
-                        {/* <Link to="/crud">Aquí</Link> */}
+                        <Link to="/terminos">Aquí</Link>
                     </span>
                 </div>
 
-                <div className="navbar-main">
+                <div className={`navbar-main ${isMobileMenuOpen ? 'menu-open' : ''}`}>
+                    {/* Logo */}
                     <div className="navbar-logo">
                         <Link to="/">
                             <span className="tech-highlight">Tech</span>Tower
                         </Link>
                     </div>
 
+                    {/* Buscador */}
                     <div className="navbar-search">
                         <form className="navbar-search-form" onSubmit={handleSearch}>
                             <input 
                                 type="text" 
                                 placeholder="Busca lo mejor para ti..." 
                                 className="navbar-search-input"
-                                value={searchTerm} // VALOR!
-                                onChange={(e) => setSearchTerm(e.target.value)} // Busca el cambio
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                             <button type="submit" className="navbar-search-button">
                                 <svg stroke="currentColor" fill="none" viewBox="0 0 32 32" height="20" width="20">
@@ -77,6 +73,7 @@ export function Navbar() {
                         </form>
                     </div>
 
+                    {/* Iconos */}
                     <div className="navbar-icons">
                         <div className="navbar-icon dropdown" ref={dropdownRef}> 
                             <button className='dropbtn' onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
@@ -84,34 +81,27 @@ export function Navbar() {
                             </button>
 
                             <div className={`dropdown-content ${isDropdownOpen ? 'open' : ''}`}>
-                            {authToken ? (
-                                // SI ESTÁ LOGEADO
-                                <>
-                                    {/*Saludo*/}
-                                    <span className="navbar-link-user">
-                                        Bienvenido, {user ? user.email : 'Cargando...'}
-                                    </span>
-                                    
-                                    {/*Lógica de Roles*/}
-                                    {user && (user.is_staff || user.isStaff) ? (
-                                        // SI ES EMPLEADO (is_staff = true)
-                                        <Link to="/PanelEmpleado" className="navbar-link" onClick={() => setIsDropdownOpen(false)}>Panel de Empleado</Link>
-                                    ) : (
-                                        // SI ES CLIENTE NORMAL (is_staff = false)
-                                        <Link to="/MiCuenta" className="navbar-link" onClick={() => setIsDropdownOpen(false)}>Mi Cuenta y Pedidos</Link>
-                                    )}
+                                {authToken ? (
+                                    <>
+                                        <span className="navbar-link-user">
+                                            Bienvenido, {user ? user.email : 'Cargando...'}
+                                        </span>
+                                        
+                                        {user && (user.is_staff || user.isStaff) ? (
+                                            <Link to="/PanelEmpleado" className="navbar-link" onClick={() => setIsDropdownOpen(false)}>Panel de Empleado</Link>
+                                        ) : (
+                                            <Link to="/MiCuenta" className="navbar-link" onClick={() => setIsDropdownOpen(false)}>Mi Cuenta y Pedidos</Link>
+                                        )}
 
-                                    <button onClick={() => { logoutAction(); setIsDropdownOpen(false); }} className='navbar-link-user' role="logout">Cerrar Sesión</button>
-                                </>
-                                
-                            ) : (
-                                // SI NO ESTÁ LOGEADO
-                                <>
-                                    <Link to="/login" className='navbar-link' onClick={() => setIsDropdownOpen(false)}>Iniciar Sesión</Link>
-                                    <Link to="/register" className='navbar-link' onClick={() => setIsDropdownOpen(false)}>Registrarse</Link>
-                                </>
-                            )}
-                        </div>
+                                        <button onClick={() => { logoutAction(); setIsDropdownOpen(false); }} className='navbar-link-user' role="logout">Cerrar Sesión</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link to="/login" className='navbar-link' onClick={() => setIsDropdownOpen(false)}>Iniciar Sesión</Link>
+                                        <Link to="/register" className='navbar-link' onClick={() => setIsDropdownOpen(false)}>Registrarse</Link>
+                                    </>
+                                )}
+                            </div>
                         </div>
                         <div className="navbar-icon">
                             <Link to="/carrito">
@@ -121,22 +111,25 @@ export function Navbar() {
                             </Link>
                         </div>
                     </div>
+
+                    {/* NUEVO: Botón hamburguesa (solo visible en móvil) */}
                     <div className="navbar-hamburger">
-                        <button className="hamburger-button">
-                            <FiMenu />
+                        <button className="hamburger-button" onClick={toggleMobileMenu}>
+                            {isMobileMenuOpen ? <FiX /> : <FiMenu />}
                         </button>
                     </div>
                 </div>
             </nav>
+
             {/* Segunda navbar: categorías */}
-            <nav className="navbar-categories">
+            <nav className={`navbar-categories ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
                 <ul className="categories-list">
-                    <li className="category-item"><Link to="/Computacion">Computación</Link></li>
-                    <li className="category-item"><Link to="/Gaming">Streaming y Gaming</Link></li>
-                    <li className="category-item"><Link to="/Componentes">Componentes</Link></li>
-                    <li className="category-item"><Link to="/Conectividad">Conectividad y Redes</Link></li>
-                    <li className="category-item"><Link to="/AudioVideo">Equipos de Audio y Video</Link></li>
-                    <li className="category-item"><Link to="/PcBuilder">Armado de Pc</Link></li>
+                    <li className="category-item"><Link to="/Computacion" onClick={closeMobileMenu}>Computación</Link></li>
+                    <li className="category-item"><Link to="/Gaming" onClick={closeMobileMenu}>Streaming y Gaming</Link></li>
+                    <li className="category-item"><Link to="/Componentes" onClick={closeMobileMenu}>Componentes</Link></li>
+                    <li className="category-item"><Link to="/Conectividad" onClick={closeMobileMenu}>Conectividad y Redes</Link></li>
+                    <li className="category-item"><Link to="/AudioVideo" onClick={closeMobileMenu}>Equipos de Audio y Video</Link></li>
+                    <li className="category-item"><Link to="/PcBuilder" onClick={closeMobileMenu}>Armado de Pc</Link></li>
                 </ul>
             </nav>
         </>

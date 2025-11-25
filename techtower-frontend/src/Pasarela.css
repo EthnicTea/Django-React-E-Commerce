@@ -352,6 +352,16 @@ body {
     height: 35px;
 }
 
+.input-error {
+    border-color: #dc3545 !important;
+}
+.error-text-small {
+    color: #dc3545;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+}
+
 /* Media Queries para responsividad */
 @media (max-width: 768px) {
     .webpay-card-header, .webpay-card-footer {

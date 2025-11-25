@@ -10,6 +10,7 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
     const [expiryDate, setExpiryDate] = useState('');
     const [cvv, setCvv] = useState('');
     const [cardHolder, setCardHolder] = useState('');
+    const [expiryError, setExpiryError] = useState('');
     
     const [isLoading, setIsLoading] = useState(false); 
     
@@ -21,26 +22,58 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
     const handleExpiryChange = (e) => {
         let valorNuevo = e.target.value;
 
+        // 1. Limpieza y formato (tu lógica actual)
         valorNuevo = valorNuevo.replace(/[^0-9/]/g, '');
-
         if (valorNuevo.length === 2 && expiryDate.length === 1) {
             valorNuevo = valorNuevo + '/';
         }
-
         if (valorNuevo === '/') {
             valorNuevo = '';
         }
-
         if (valorNuevo.length === 4 && !valorNuevo.includes('/')) {
             valorNuevo = valorNuevo.slice(0, 2) + '/' + valorNuevo.slice(2, 4);
         }
+        
+        // Limitamos a 5 caracteres (MM/AA)
+        valorNuevo = valorNuevo.slice(0, 5);
+        setExpiryDate(valorNuevo);
 
-        setExpiryDate(valorNuevo.slice(0, 5));
+        // --- 2. VALIDACIÓN DE FECHA ---
+        if (valorNuevo.length === 5) {
+            const [mesStr, anoStr] = valorNuevo.split('/');
+            const mes = parseInt(mesStr, 10);
+            const ano = parseInt('20' + anoStr, 10); // Asumimos siglo 21 (20AA)
+            
+            const fechaActual = new Date();
+            const mesActual = fechaActual.getMonth() + 1; // getMonth() devuelve 0-11
+            const anoActual = fechaActual.getFullYear();
+
+            // Validación de mes válido (01-12)
+            if (mes < 1 || mes > 12) {
+                setExpiryError('Mes inválido.');
+                return;
+            }
+
+            // Validación de fecha futura
+            if (ano < anoActual || (ano === anoActual && mes < mesActual)) {
+                setExpiryError('La tarjeta ha expirado.');
+            } else {
+                setExpiryError(''); // Fecha válida
+            }
+        } else {
+            setExpiryError(''); // Limpiamos error si aún está escribiendo
+        }
     };
 
     const handleContinuePayment = async (e) => {
         e.preventDefault();
-        setIsLoading(true); 
+        setIsLoading(true);
+        
+        if (expiryError) {
+            alert('Por favor, corrige la fecha de vencimiento.');
+            setIsLoading(false);
+            return;
+        }
 
         if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
             alert('Por favor, ingresa un número de tarjeta válido de 16 dígitos.');
@@ -225,8 +258,10 @@ function Pasarela({ onPaymentSuccess, onPaymentCancel }) {
                                         title="Ingresa la fecha en formato MM/AA" 
                                         value={expiryDate}
                                         onChange={handleExpiryChange}
+                                        className={expiryError ? 'input-error' : ''}
                                         required
                                     />
+                                    {expiryError && <span className="error-text-small">{expiryError}</span>}
                                 </div>
                                 <div className="form-group-small">
                                     <label htmlFor="cvv">CVV</label>
