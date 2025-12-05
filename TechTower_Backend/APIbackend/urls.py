@@ -27,6 +27,7 @@ urlpatterns = [
     # Pedidos
     path('mi-ordenes/', views.MisOrdenesListView.as_view(), name='mis-ordenes'),
     path('admin/ordenes/', views.AdminOrdenListView.as_view(), name='admin-ordenes'),
+    path('admin/ordenes/<int:orden_id>/', views.AdminOrdenDetailView.as_view(), name='admin-orden-detail'),
     # Endpoints para el crud
     path('categorias/', views.CategoriaListView.as_view(), name='categoria-list'),
     path('tipos/', views.TipoProductoListView.as_view(), name='tipo-producto-list'),

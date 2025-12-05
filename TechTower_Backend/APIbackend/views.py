@@ -16,8 +16,8 @@ from django.contrib.auth.hashers import check_password
 from django.db.models.functions import TruncMonth
 
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, BasePermission
+from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework import permissions, status, filters
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -40,7 +40,8 @@ from .serializers import (
     OrdenProductoSimpleSerializer,
     UserProfileUpdateSerializer,
     CategoriaSerializer,
-    TipoProductoSerializer
+    TipoProductoSerializer,
+    OrdenAdminUpdateSerializer,
 )
 
 from .validations import custom_validation # No es util
@@ -396,6 +397,31 @@ class AdminOrdenListView(ListAPIView):
         """ Devuelve todas las órdenes, ordenadas por fecha """
         return Orden.objects.all().order_by('-fecha_orden')
         
+class EsGerenteOSuperuser(BasePermission):
+    """
+    Permiso personalizado: solo gerentes y superusers pueden editar órdenes
+    """
+    def has_permission(self, request, view):
+        # Superuser siempre puede
+        if request.user.is_superuser:
+            return True
+        
+        # Staff normal solo puede GET (ver)
+        if request.method == 'GET':
+            return request.user.is_staff
+        
+        # Para PATCH/PUT/DELETE: debe tener el permiso específico
+        return request.user.has_perm('APIbackend.puede_editar_ordenes')
+
+class AdminOrdenDetailView(RetrieveUpdateAPIView):
+    """
+    Permite a un Admin ver y editar (pero no borrar) una orden específica.
+    """
+    permission_classes = [IsAdminUser] # Solo Staff/Superuser
+    queryset = Orden.objects.all()
+    serializer_class = OrdenAdminUpdateSerializer # Usamos el serializer seguro que creamos
+    lookup_field = 'orden_id' # Buscamos por el ID de la orden
+
 # ================== Google GenAI ==================
 
 # **¡Para producción, SE DEBE usar el método seguro de Django!**

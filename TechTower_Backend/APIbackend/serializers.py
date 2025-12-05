@@ -193,6 +193,48 @@ class OrdenSerializer(serializers.ModelSerializer):
         model = Orden
         fields = ['orden_id', 'fecha_orden', 'estado_orden', 'usuario_orden', 'total_orden', 'items']
 
+
+class OrdenItemInputSerializer(serializers.Serializer):
+    """ Ayuda a validar la entrada de datos para editar items """
+    producto_id = serializers.IntegerField()
+    cantidad = serializers.IntegerField()
+
+class OrdenAdminUpdateSerializer(serializers.ModelSerializer):
+    items = OrdenProductoSimpleSerializer(many=True, read_only=True, source='ordenproducto_set')
+    usuario_orden = serializers.StringRelatedField(read_only=True)
+
+    items_editar = OrdenItemInputSerializer(many=True, write_only=True, required=False)
+
+    class Meta:
+        model = Orden
+        fields = [
+            'orden_id', 'fecha_orden', 'estado_orden', 'usuario_orden', 'total_orden', 
+            'items',      
+            'items_editar'   
+        ]
+        read_only_fields = ['orden_id', 'fecha_orden', 'usuario_orden', 'items']
+
+    def update(self, instance, validated_data):
+        items_data = validated_data.pop('items_editar', None)
+
+        instance.estado_orden = validated_data.get('estado_orden', instance.estado_orden)
+        instance.total_orden = validated_data.get('total_orden', instance.total_orden)
+        instance.save()
+
+        # Si nos enviaron una nueva lista de items...
+        if items_data is not None:
+            instance.ordenproducto_set.all().delete()
+
+            # B. Creamos los nuevos items
+            for item in items_data:
+                OrdenProducto.objects.create(
+                    orden=instance,
+                    producto_id=item['producto_id'],
+                    cantidad=item['cantidad']
+                )
+        
+        return instance
+
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
