@@ -112,7 +112,7 @@ class UserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        serializer = UserProfileUpdateSerializer(request.user)
+        serializer = UserSerializer(request.user) # ESTO CAMBIÉ Y SE ROMPÏÓ TODO. UserProfileUpdateSerializer si no se rompe todo
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
     
     def patch(self, request):
@@ -128,8 +128,9 @@ class UserView(APIView):
         )
         
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            updated_user = serializer.save()
+            read_serializer = UserSerializer(updated_user)
+            return Response(read_serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDeleteView(APIView):
@@ -414,12 +415,9 @@ class EsGerenteOSuperuser(BasePermission):
         return request.user.has_perm('APIbackend.puede_editar_ordenes')
 
 class AdminOrdenDetailView(RetrieveUpdateAPIView):
-    """
-    Permite a un Admin ver y editar (pero no borrar) una orden específica.
-    """
-    permission_classes = [IsAdminUser] # Solo Staff/Superuser
+    permission_classes = [EsGerenteOSuperuser]
     queryset = Orden.objects.all()
-    serializer_class = OrdenAdminUpdateSerializer # Usamos el serializer seguro que creamos
+    serializer_class = OrdenAdminUpdateSerializer 
     lookup_field = 'orden_id' # Buscamos por el ID de la orden
 
 # ================== Google GenAI ==================

@@ -71,9 +71,13 @@ class UserLoginSerializer(serializers.Serializer):
     # print("Serializer ha fallado")
 
 class UserSerializer(serializers.ModelSerializer):
+    es_gerente = serializers.SerializerMethodField()
     class Meta:
         model = UserModel
-        fields = ('email', 'rut', 'nombre', 'apellido', 'telefono', 'region', 'comuna', 'direccion', 'data_departamento', 'is_staff')
+        fields = ('email', 'rut', 'nombre', 'apellido', 'telefono', 'region', 'comuna', 'direccion', 'data_departamento', 'is_staff', 'es_gerente')
+
+    def get_es_gerente(self, obj):
+        return obj.groups.filter(name='Gerente').exists()
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     """
@@ -93,7 +97,7 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
             'region', 
             'comuna', 
             'data_departamento',
-            'is_staff'
+            'is_staff',
         )
         
         # Ninguno es obligatorio en la actualización

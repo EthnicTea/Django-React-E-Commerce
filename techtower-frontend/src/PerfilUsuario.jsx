@@ -122,6 +122,7 @@ function PerfilUsuario() {
             const updatedUserData = await response.json();
             console.log('Perfil actualizado en el backend:', updatedUserData);
             alert('¡Perfil actualizado exitosamente!');
+            navigate('/MiCuenta'); // Redirige a la página de cuenta
             
             // Opcional: aquí se podría actualizar el 'user' en tu AuthContext 
             // pero se actualizará solo al recargar la página de todos modos, eso creo... :P

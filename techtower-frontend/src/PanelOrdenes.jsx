@@ -277,9 +277,8 @@ export default function PanelOrdenes() {
     });
 
     const estaEditando = (ordenId) => !!ediciones[ordenId];
-    const esAdmin = user && (user.is_superuser || user.is_staff);
-    console.log('👤 Usuario:', user);
-    console.log('🔐 Es Admin?:', esAdmin);
+    const esAdmin = user && user.is_superuser;
+    const esGerente = user && (user.es_gerente || user.is_superuser);
 
     // ========================================
     // RENDERIZADO
@@ -322,13 +321,13 @@ export default function PanelOrdenes() {
                             <th>Estado</th>
                             <th>Total</th>
                             <th>Items</th>
-                            {esAdmin && <th>Acciones</th>}
+                            {(esAdmin || esGerente) && <th>Acciones</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {ordenesFiltradas.length === 0 ? (
                             <tr>
-                                <td colSpan={esAdmin ? "7" : "6"} style={{ textAlign: 'center' }}>
+                                <td colSpan={(esAdmin || esGerente) ? "7" : "6"} style={{ textAlign: 'center' }}>
                                     No hay órdenes que coincidan con el filtro.
                                 </td>
                             </tr>
@@ -348,7 +347,7 @@ export default function PanelOrdenes() {
                                         
                                         {/* COLUMNA ESTADO */}
                                         <td>
-                                            {esAdmin && editando ? (
+                                            {(esAdmin || esGerente) && editando ? (
                                                 <select 
                                                     value={edicion.estado_orden}
                                                     onChange={(e) => actualizarEdicion(orden.orden_id, 'estado_orden', e.target.value)}
@@ -369,7 +368,7 @@ export default function PanelOrdenes() {
 
                                         {/* COLUMNA TOTAL */}
                                         <td>
-                                            {esAdmin && editando ? (
+                                            {(esAdmin || esGerente) && editando ? (
                                                 <input
                                                     type="number"
                                                     value={edicion.total_orden}
@@ -394,7 +393,7 @@ export default function PanelOrdenes() {
                                                     <span>{item.producto.nombre_producto} (x{item.cantidad})</span>
                                                 </div>
                                             ))}
-                                            {esAdmin && editando && (
+                                            {(esAdmin || esGerente) && editando && (
                                                 <button
                                                     onClick={() => abrirModalItems(orden.orden_id)}
                                                     className="edit-items-btn"
@@ -405,7 +404,7 @@ export default function PanelOrdenes() {
                                         </td>
 
                                         {/* COLUMNA ACCIONES */}
-                                        {esAdmin && (
+                                        {(esAdmin || esGerente) && (
                                             <td>
                                                 {editando ? (
                                                     <div className="action-buttons">

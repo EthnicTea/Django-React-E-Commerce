@@ -1,10 +1,12 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import (
     UsuarioApp, Producto, Categoria, TipoProducto, 
     Orden, OrdenProducto, Pago
 )
+
 @admin.register(UsuarioApp)
-class UsuarioAdmin(admin.ModelAdmin):
+class UsuarioAdmin(BaseUserAdmin):
     list_display = (
         'user_id', 
         'email', 
@@ -14,7 +16,8 @@ class UsuarioAdmin(admin.ModelAdmin):
         'region', 
         'comuna', 
         'is_staff', 
-        'is_superuser'
+        'is_superuser',
+        'ver_grupos'
     )
     list_editable = (
         'nombre', 
@@ -23,23 +26,44 @@ class UsuarioAdmin(admin.ModelAdmin):
         'region', 
         'comuna', 
         'is_staff', 
-        'is_superuser'
+        'is_superuser',
     )
     search_fields = ('email', 'nombre', 'apellido')
-    list_filter = ('is_staff', 'is_superuser', 'region') 
-    ordering = ('user_id',) 
+    list_filter = ('is_staff', 'is_superuser', 'region', 'groups') 
+    ordering = ('user_id',)
+    
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+        ('Información Personal', {'fields': ('nombre', 'apellido', 'telefono', 'direccion', 'data_departamento', 'region', 'comuna')}),
+        ('Permisos', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
+        ('Fechas importantes', {'fields': ('last_login',)}), 
+    )
+    
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_superuser', 'groups'),
+        }),
+    )
 
-# --- Admin de Producto (El tuyo, un poco mejorado) ---
+    def ver_grupos(self, obj):
+        return ", ".join([g.name for g in obj.groups.all()])
+    
+    ver_grupos.short_description = 'Grupos'
+
+# --- Admin de Producto ---
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
     list_display = (
-        'producto_id', # Es bueno ver el ID
+        'producto_id',
         'nombre_producto', 
         'categoria', 
         'tipo', 
         'stock_producto', 
         'precio_transferencia',
-        'precio_otro', # Añadido
+        'precio_otro',
         'descuento',
         'es_destacado',
         'watts',
@@ -62,9 +86,6 @@ class ProductoAdmin(admin.ModelAdmin):
 
 
 class OrdenProductoInline(admin.TabularInline):
-    """
-    Esto permite ver y editar los *productos* DENTRO de una orden.
-    """
     model = OrdenProducto
     readonly_fields = ('producto', 'cantidad')
     extra = 0 

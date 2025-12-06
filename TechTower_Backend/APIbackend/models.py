@@ -126,6 +126,11 @@ class Orden(models.Model):
     productos = models.ManyToManyField('Producto', through=OrdenProducto)
     total_orden = models.IntegerField(blank=True, null=True) # Se puede calcular dinámicamente
 
+    class Meta:
+        permissions = [
+            ("puede_editar_ordenes", "Puede editar órdenes de clientes"),
+        ]
+
 class Pago(models.Model):
     pago_id = models.AutoField(primary_key=True)
     orden = models.OneToOneField('Orden', on_delete=models.CASCADE)
