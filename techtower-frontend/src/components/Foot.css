@@ -2,55 +2,110 @@
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 0;
+    padding: 40px 20px 20px 20px;
     font-family: Arial, sans-serif;
+    width: 100%;
 }
 
 .fm-footer-pay-container {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .fm-footer-pay {
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.fm-footer-pay-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap; /* Para móviles */
 }
 
 .fm-footer-pay-logos img {
-    height: 40px; /* Ajusta el tamaño según sea necesario */
-    margin: 0 10px;
+    height: 40px;
+    max-width: 150px;
+    object-fit: contain;
 }
 
 .fm-footer-social {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .fm-footer-social-p {
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    font-weight: 600;
 }
 
 .fm-footer-social-icons {
     display: flex;
     justify-content: center;
+    gap: 15px;
 }
 
 .social-icon {
-    height: 32px; /* Ajusta el tamaño del icono */
-    margin: 0 10px;
-    transition: transform 0.3s;
+    height: 32px;
+    width: 32px;
+    object-fit: contain;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .social-icon:hover {
     cursor: pointer;
-    transform: scale(1.1); /* Hace que el ícono crezca un poco */
+    transform: scale(1.15);
+    opacity: 0.8;
 }
 
 .fm-footer-finalfooter {
-    background-color: #333;
-    color: #fff;
+    background-color: #222;
+    color: #aaa;
     text-align: center;
-    margin-top: 4px 0;
-    font-size: .871rem;
-    padding: 4px 0;
+    margin-top: 20px;
+    font-size: 0.871rem;
+    padding: 15px 0;
     width: 100%;
+    border-top: 1px solid #444;
+}
+
+.fm-footer-finalfooter-p {
+    margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .fm-footer {
+        padding: 30px 15px 15px 15px;
+    }
+    
+    .fm-footer-pay-logos img {
+        height: 32px;
+        max-width: 100px;
+    }
+    
+    .fm-footer-pay,
+    .fm-footer-social-p {
+        font-size: 16px;
+    }
+    
+    .social-icon {
+        height: 28px;
+        width: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .fm-footer-pay-logos {
+        gap: 15px;
+    }
+    
+    .fm-footer-social-icons {
+        gap: 12px;
+    }
 }

@@ -3,6 +3,7 @@ from django.db import models
 # que nosotros no queremos realizar
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.utils import timezone
 
 # Creando un manager para crear modelos customizados
 
@@ -115,7 +116,7 @@ class OrdenProducto(models.Model):
 
 class Orden(models.Model):
     orden_id = models.AutoField(primary_key=True)
-    fecha_orden = models.DateField(auto_now_add=True)
+    fecha_orden = models.DateTimeField(default=timezone.now)
     estado_orden = models.CharField(max_length=30, default='Pendiente')
     usuario_orden = models.ForeignKey(
         'UsuarioApp', 

@@ -99,7 +99,7 @@ class OrdenAdmin(admin.ModelAdmin):
         'estado_orden', 
         'total_orden'
     )
-    list_editable = ('estado_orden',) 
+    list_editable = ('estado_orden', 'fecha_orden') 
     list_filter = ('estado_orden', 'fecha_orden')
     search_fields = ('orden_id', 'usuario_orden__email')
     ordering = ('-fecha_orden',) 

@@ -107,7 +107,7 @@ export default function MiCuenta() {
                                         </span>
                                     </div>
                                     <div className="pedido-info">
-                                        <span>Fecha: {orden.fecha_orden}</span>
+                                        <span>Fecha: {new Date(orden.fecha_orden).toLocaleDateString('es-CL')}</span>
                                         <span>Total: ${orden.total_orden.toLocaleString('es-CL')}</span>
                                     </div>
                                     <div className="pedido-items-list">

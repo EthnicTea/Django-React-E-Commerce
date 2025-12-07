@@ -1,23 +1,84 @@
+/* ========================================
+   RESET Y CONFIGURACIÓN BASE
+   ======================================== */
 
-/*@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-/* Css example */
-/*#root {
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================================
+   LAYOUT PRINCIPAL - STICKY FOOTER
+   ======================================== */
+
+article {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* El header mantiene su altura natural */
+header {
+  flex-shrink: 0; /* No se encoge */
+}
+
+/* Las rutas (contenido principal) crecen para llenar el espacio */
+article > * {
+  flex-shrink: 0;
+}
+
+/* Este selector apunta al contenedor de las Routes */
+article > :nth-child(2) {
+  flex: 1; /* Crece para empujar el footer al fondo */
+  display: flex;
+  flex-direction: column;
+}
+
+/* El footer siempre al fondo */
+footer {
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+/* ========================================
+   CONTENEDORES DE ITEMS (Tu clase existente)
+   ======================================== */
+
+.items-container {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
+  width: 100%;
 }
 
+/* ========================================
+   ESTILOS OPCIONALES (Si los necesitas)
+   ======================================== */
+
+/* Logos con animación */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -36,11 +97,3 @@
     animation: logo-spin infinite 20s linear;
   }
 }
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}*/

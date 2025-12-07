@@ -5,7 +5,7 @@ import { useAuth } from './services/AuthContext.jsx'; // ¡Para traer los datos 
 import { useNavigate } from 'react-router-dom';
 
 function PerfilUsuario() {
-    const { user, authToken, logoutAction } = useAuth();
+    const { user, authToken, logoutAction, refreshUser } = useAuth();
     const navigate = useNavigate();
 
     console.log("PerfilUsuario RENDERIZADO. El objeto 'user' es:", user); // Debugging!!
@@ -100,16 +100,18 @@ function PerfilUsuario() {
         alert("Tu sesión ha expirado. Por favor, inicia sesión de nuevo.");
         return;
     }
+    
     const { email, departamento, ...Perfil } = profileData;
 
     const datosParaActualizar = {
-            ...Perfil, // nombre, apellido, etc.
-            "data_departamento": departamento // No saben CUANTO me costó saber por que cresta no se enviaba el departamento...
-        };
+        ...Perfil,
+        "data_departamento": departamento
+    };
+    
     console.log('Datos del perfil a ENVIAR:', datosParaActualizar);
 
     try {
-        const response = await fetch(import.meta.env.VITE_API_URL + '/api/user/', { //fetch('http://127.0.0.1:8000/api/user/',
+        const response = await fetch(import.meta.env.VITE_API_URL + '/api/user/', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -121,14 +123,18 @@ function PerfilUsuario() {
         if (response.ok) {
             const updatedUserData = await response.json();
             console.log('Perfil actualizado en el backend:', updatedUserData);
-            alert('¡Perfil actualizado exitosamente!');
-            navigate('/MiCuenta'); // Redirige a la página de cuenta
             
-            // Opcional: aquí se podría actualizar el 'user' en tu AuthContext 
-            // pero se actualizará solo al recargar la página de todos modos, eso creo... :P
+            // 🆕 REFRESCAR EL USUARIO EN EL CONTEXTO
+            const refreshSuccess = await refreshUser(); // 👈 Llamamos a la nueva función
+            
+            if (refreshSuccess) {
+                alert('¡Perfil actualizado exitosamente!');
+                navigate('/MiCuenta'); // Ahora sí redirige con datos actualizados
+            } else {
+                alert('Perfil guardado, pero hubo un problema al recargar los datos. Recarga la página.');
+            }
 
         } else {
-            // Validaciones, etc etc...
             const errorData = await response.json();
             console.error('Error al actualizar:', errorData);
             alert(`Error al guardar los cambios: ${JSON.stringify(errorData)}`);

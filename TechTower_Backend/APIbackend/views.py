@@ -76,7 +76,8 @@ class UserLogin(APIView):
     permission_classes = [permissions.AllowAny]
     
     def post(self, request):
-        print("Datos recibidos en el backend:", request.data) # Depuración
+        # print("Datos recibidos en el backend:", request.data) # Depuración
+        print("iniciando login de una cuenta...")
         data = request.data
         serializer = UserLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
@@ -674,7 +675,7 @@ class DashboardSalesByCategoryView(APIView):
 
         sales_data = OrdenProducto.objects.filter(
                 # Filtro de estado y año
-                orden__estado_orden='aprobado',
+                orden__estado_orden__in=['aprobado', 'enviado', 'entregado'],
                 orden__fecha_orden__year=year
             ) \
             .values('producto__categoria__nombre_categoria') \
@@ -692,10 +693,9 @@ class DashboardSalesByCategoryView(APIView):
         return Response(data_para_frontend, status=status.HTTP_200_OK)
 
 
+# APIbackend/views.py
+
 class DashboardSalesByMonthView(APIView):
-    """
-    Devuelve el total de ventas (aprobadas) agrupado por mes.
-    """
     permission_classes = [IsAdminUser]
 
     def get(self, request):
@@ -704,20 +704,45 @@ class DashboardSalesByMonthView(APIView):
         except ValueError:
             return Response({"error": "Año inválido"}, status=400)
 
-        sales_data = Orden.objects.filter(
-                estado_orden='aprobado',
-                fecha_orden__year=year
-            ) \
-            .annotate(mes=TruncMonth('fecha_orden')) \
-            .values('mes') \
-            .annotate(total_ventas=Sum('total_orden')) \
-            .order_by('mes')
+        print(f"Calculando ventas por mes (Vía Python) para: {year}...") 
 
-        data_para_frontend = [
-            {'label': item['mes'].strftime('%B'), 'value': item['total_ventas']} # Mostramos solo el mes
-            for item in sales_data
-        ]
+        ordenes = Orden.objects.filter(
+            estado_orden__in=['aprobado', 'enviado', 'entregado'],
+            fecha_orden__year=year
+        )
 
+        ventas_por_mes = {}
+
+        # Si no hay ventas en un mes, no aparecerá en el dict.
+        # (Opcional)
+        meses_orden = ["January", "February", "March", "April", "May", "June", 
+                       "July", "August", "September", "October", "November", "December"]
+        for m in meses_orden: ventas_por_mes[m] = 0
+
+        for orden in ordenes:
+            if orden.fecha_orden:
+                # Obtenemos el nombre del mes (ej: 'October')
+                # strftime('%B') te da el nombre completo del mes en inglés
+                mes_nombre = orden.fecha_orden.strftime('%B')
+                
+                # Sumamos al acumulador
+                current_total = ventas_por_mes.get(mes_nombre, 0)
+                ventas_por_mes[mes_nombre] = current_total + orden.total_orden
+
+        # formateo para el frontend
+        data_para_frontend = []
+        for mes, total in ventas_por_mes.items():
+            data_para_frontend.append({
+                'label': mes,
+                'value': total
+            })
+
+        # (Opcional) Ordenar por mes si es necesario, usando el orden original:
+        # mes_orden_index = {mes: index for index, mes in enumerate(meses_orden)}
+        # data_para_frontend.sort(key=lambda x: mes_orden_index[x['label']])
+
+        # Nota: Si un mes no tiene ventas, su valor será 0.
+        # No quise agregar más funcionalidades, se rompió el dashboard como unas 5 veces por el cambio de formato de las ordenes.
         return Response(data_para_frontend, status=status.HTTP_200_OK)
 
 class DashboardTopProductsView(APIView):
@@ -735,7 +760,7 @@ class DashboardTopProductsView(APIView):
         # Usamos el modelo Producto como base
         top_products = Producto.objects.filter(
                 # Filtramos por productos que aparecen en órdenes aprobadas de ese año
-                ordenproducto__orden__estado_orden='aprobado',
+                ordenproducto__orden__estado_orden__in=['aprobado', 'enviado', 'entregado'],
                 ordenproducto__orden__fecha_orden__year=year
             ) \
             .annotate(

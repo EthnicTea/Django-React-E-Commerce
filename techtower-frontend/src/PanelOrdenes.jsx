@@ -343,7 +343,7 @@ export default function PanelOrdenes() {
                                     >
                                         <td><strong>#{orden.orden_id}</strong></td>
                                         <td>{orden.usuario_orden}</td>
-                                        <td>{orden.fecha_orden}</td>
+                                        <td>{new Date(orden.fecha_orden).toLocaleString('es-CL')}</td>
                                         
                                         {/* COLUMNA ESTADO */}
                                         <td>

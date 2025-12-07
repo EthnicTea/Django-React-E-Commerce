@@ -65,7 +65,13 @@ export function Register() {
 
   const submitRegistration = async (e) => {
     e.preventDefault();
-    setMessage(null); // Limpiar mensajes anteriores
+    setMessage(null);
+
+    const passwordError = checkPasswordStrength(password);
+    if (passwordError) {
+        setMessage({ type: 'error', text: passwordError });
+        return; 
+    }
 
     if (password !== confirmPassword) {
       setMessage({ type: 'error', text: 'Las contraseñas no coinciden. Por favor, revísalas.' });
@@ -118,6 +124,22 @@ export function Register() {
         setMessage({ type: 'error', text: errorMessage });
     }
   };
+
+  const checkPasswordStrength = (pwd) => {
+    if (pwd.length < 8) {
+        return "La contraseña debe tener al menos 8 caracteres.";
+    }
+    if (!/[A-Z]/.test(pwd)) {
+        return "La contraseña debe incluir al menos una letra mayúscula.";
+    }
+    if (!/[0-9]/.test(pwd)) {
+        return "La contraseña debe incluir al menos un número.";
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) {
+        return "La contraseña debe incluir al menos un símbolo especial (!@#...).";
+    }
+    return null; // null significa que pasó todas las pruebas
+};
 
   return (
     <div className="register-page">
@@ -226,6 +248,9 @@ export function Register() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
+                <span style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>
+                    Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo.
+                </span>
             </div>
             
             {/* Confirmar Contraseña */}

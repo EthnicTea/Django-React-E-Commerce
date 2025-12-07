@@ -8,9 +8,6 @@ export default function EditProduct({ productToEdit, onFinished }) {
     const [categorias, setCategorias] = useState([]);
     const [tipos, setTipos] = useState([]);
 
-    // --- Rellenamos el estado con los datos del producto ---
-    // ¡OJO! Tu 'productToEdit.categoria' es un objeto anidado,
-    // pero nuestro <select> solo necesita el ID.
     const [product, setProduct] = useState({
         nombre_producto: productToEdit.nombre_producto || "",
         marca_producto: productToEdit.marca_producto || "",
@@ -29,7 +26,6 @@ export default function EditProduct({ productToEdit, onFinished }) {
     
     const [error, setError] = useState("");
 
-    // --- Cargar datos para los Dropdowns (Igual que AddProduct) ---
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
@@ -51,7 +47,7 @@ export default function EditProduct({ productToEdit, onFinished }) {
         fetchTipos();
     }, []); // Se ejecuta solo una vez
 
-    // --- Manejador de Cambios (Igual que AddProduct) ---
+    // --- Manejador de Cambios ---
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setProduct(prevProduct => ({
@@ -60,13 +56,12 @@ export default function EditProduct({ productToEdit, onFinished }) {
         }));
     };
 
-    // --- Manejador de Submit (¡Actualizado para PATCH!) ---
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         
         try {
-            // ¡Llamamos al endpoint PATCH con el ID del producto!
+            // Llamamos al endpoint PATCH con el ID del producto
             await api.patch(`/products/${productToEdit.producto_id}/`, product);
             
             console.log("Producto actualizado: ", product);
@@ -80,7 +75,7 @@ export default function EditProduct({ productToEdit, onFinished }) {
     };
 
     return (
-        <div className="edit-product-container"> {/* (Puedes renombrar a .add-product-form-container si usas el mismo CSS) */}
+        <div className="edit-product-container"> {/* Se puede renombrar a .add-product-form-container */}
             <h2>Editar Producto (ID: {productToEdit.producto_id})</h2>
             <form onSubmit={handleSubmit} className="form-box-crud">
                 
@@ -104,8 +99,6 @@ export default function EditProduct({ productToEdit, onFinished }) {
                     onChange={handleChange}
                     required
                 />
-
-                {/* --- ¡DROPDOWNS! (Igual que AddProduct) --- */}
                 <span className="crudspan">Categoría del Producto</span>
                 <select name="categoria" value={product.categoria} onChange={handleChange} required className="crudinput">
                     <option value="">-- Selecciona una Categoría --</option>
@@ -171,7 +164,6 @@ export default function EditProduct({ productToEdit, onFinished }) {
                     onChange={handleChange}
                 />
 
-                {/* --- ¡CAMPOS NUEVOS! (Igual que AddProduct) --- */}
                 <span className="crudspan">Watts (Consumo)</span>
                 <input 
                     className="crudinput" 
